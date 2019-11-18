@@ -1,16 +1,17 @@
 #pragma once
 #include <string>
 
+/* Common includes for LClasses below */
+#include "LTexture.h"
+
 class LClass
 {
 protected:
 	std::string className;
 
 public:
-	LClass(const std::string className, LClass* newClass);
+	LClass(LClass* newClass);
 	virtual ~LClass();
 	virtual void init();
 	virtual void update(const float deltaTime);
-	LClass* getClass(const std::string className);
-	std::string getName();
 };

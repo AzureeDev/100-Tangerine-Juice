@@ -32,7 +32,7 @@ void LTexture::destroy()
 {
 	this->textureWidth = 0;
 	this->textureHeight = 0;
-	SDL_DestroyTexture(this->texture);
+	Globals::resources->destroyTexture(this->texturePath);
 	this->texture = nullptr;
 }
 
@@ -98,6 +98,16 @@ int LTexture::getX()
 int LTexture::getY()
 {
 	return this->texturePosition.y;
+}
+
+Vector2i LTexture::top()
+{
+	return Vector2i(this->getX(), this->getY());
+}
+
+Vector2i LTexture::bottom()
+{
+	return Vector2i(this->getX(), this->getY() + this->getHeight());
 }
 
 Vector2i LTexture::getPosition()
@@ -178,6 +188,11 @@ void LTexture::setX(const int x)
 void LTexture::setY(const int y)
 {
 	this->texturePosition.y = y;
+}
+
+void LTexture::setPosition(Vector2i position)
+{
+	this->texturePosition = position;
 }
 
 void LTexture::setPosition(const int x, const int y)
@@ -275,15 +290,26 @@ void LTexture::setFade(const TextureFadingState state)
 	this->textureFadeState = state;
 }
 
-void LTexture::placeMiddleScreen()
+void LTexture::placeMiddleScreen(const bool useSheetSize)
 {
 	int screenWidth = Globals::engine->getDisplaySettings().w;
 	int screenHeight = Globals::engine->getDisplaySettings().h;
 
-	this->setPosition(
-		(screenWidth / 2) - this->getWidth() / 2,
-		(screenHeight / 2) - this->getHeight() / 2
-	);
+	if (!useSheetSize)
+	{
+		this->setPosition(
+			(screenWidth / 2) - this->getWidth() / 2,
+			(screenHeight / 2) - this->getHeight() / 2
+		);
+	}
+	else
+	{
+		this->setPosition(
+			(screenWidth / 2) - this->getSheetSize() / 2,
+			(screenHeight / 2) - this->getSheetSize() / 2
+		);
+	}
+		
 }
 
 void LTexture::render()

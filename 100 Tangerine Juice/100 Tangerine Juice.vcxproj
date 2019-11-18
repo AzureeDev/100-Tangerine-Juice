@@ -135,21 +135,29 @@
   <ItemGroup>
     <ClCompile Include="GameIntro.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="LButton.cpp" />
     <ClCompile Include="LClass.cpp" />
     <ClCompile Include="LilacEngine.cpp" />
     <ClCompile Include="LTexture.cpp" />
+    <ClCompile Include="LTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameIntro.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="LButton.h" />
     <ClInclude Include="LClass.h" />
     <ClInclude Include="LilacEngine.h" />
     <ClInclude Include="LTexture.h" />
+    <ClInclude Include="LTimer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="Unit.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>

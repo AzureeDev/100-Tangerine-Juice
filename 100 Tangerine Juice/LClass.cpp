@@ -12,31 +12,39 @@
 	update() is shipped with deltaTime as an argument.
 
 	If you want to get rid of a LClass, call:
-	Constants::game->destroyLilacClass("classname");
+	Globals::engine->destroyLilacClass("name");
 
 	The destructor will then be executed.
 */
 
-LClass::LClass(const std::string className, LClass* newClass)
+LClass::LClass(LClass* newClass)
 {
 	if (newClass == nullptr)
 	{
 		return;
 	}
-
-	this->className = className;
 }
 
 LClass::~LClass()
 {
+	/*
+		Virtual destructor, define one in the LClasses themselves.
+	*/
 }
 
 void LClass::init()
 {
+	/*
+		Init is automatically called when you create the LClass.
+	*/
 }
 
 void LClass::update(const float deltaTime)
 {
+	/*
+		Updated once per frame, shipping the deltaTime.
+	*/
+
 	for (auto& it : Globals::engine->getLilacClasses())
 	{
 		if (it.lilacClass == nullptr)
@@ -46,23 +54,4 @@ void LClass::update(const float deltaTime)
 
 		it.lilacClass->update(deltaTime);
 	}
-}
-
-LClass* LClass::getClass(const std::string className)
-{
-	for (auto& it : Globals::engine->getLilacClasses())
-	{
-		if (it.lilacClass->getName() == className)
-		{
-			return it.lilacClass;
-		}
-	}
-
-	SDL_Log("LClass::getClass() - ERROR : Class %s is not found.", className.c_str());
-	return nullptr;
-}
-
-std::string LClass::getName()
-{
-	return this->className;
 }

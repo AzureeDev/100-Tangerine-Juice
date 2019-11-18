@@ -8,3 +8,4 @@ int Globals::mousePositionY = 0;
 LilacEngine* Globals::engine = nullptr; 
 unique_ptr<ResourcesManager> Globals::resources = nullptr; 
 unique_ptr<LClass> Globals::classEngine = nullptr;
+unique_ptr<UIManager> Globals::UI = nullptr;

@@ -25,7 +25,7 @@ private:
 	int textureWidth = 0;
 	int textureHeight = 0;
 	int fixedSizeSheet = 0;
-	int animationSpeed = 125;
+	int animationSpeed = 100;
 	int nbAnimations = 0;
 	int textureAngle = 0;
 	bool textureFlipped = false;
@@ -43,6 +43,8 @@ public:
 	int getSheetSize();
 	int getX();
 	int getY();
+	Vector2i top();
+	Vector2i bottom();
 	Vector2i getPosition();
 	SDL_Color getColor();
 	int getAlpha();
@@ -55,6 +57,7 @@ public:
 	void setAlpha(int alpha);
 	void setX(const int x);
 	void setY(const int y);
+	void setPosition(Vector2i position);
 	void setPosition(const int x, const int y);
 	void setHeight(const int newHeight);
 	void setWidth(const int newWidth);
@@ -66,6 +69,6 @@ public:
 	void setAnimationSpeed(const unsigned int animSpeed);
 	void setNewTexture(const string path);
 	void setFade(const TextureFadingState state);
-	void placeMiddleScreen();
+	void placeMiddleScreen(const bool useSheetSize = false);
 	void render();
 };

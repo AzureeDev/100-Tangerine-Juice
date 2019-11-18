@@ -33,6 +33,7 @@ private:
 
 public:
 	SDL_Texture* createTexture(const string path);
+	void destroyTexture(const string path);
 	TTF_Font* createFont(const string name, const string path, const int ptSize = 16);
 	TTF_Font* getFont(const string name); // Simple getter so we don't ship a path everytime
 	void destroy();

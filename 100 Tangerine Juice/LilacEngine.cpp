@@ -11,9 +11,12 @@
 #include "Globals.h"
 #include "GameIntro.h"
 
-// Define the window and renderer
 void LilacEngine::createWindow()
 {
+	/*
+		Define the window and renderer
+	*/
+	
 	// Get the display size
 	SDL_DisplayMode dm;
 	SDL_GetCurrentDisplayMode(0, &dm);
@@ -42,23 +45,36 @@ void LilacEngine::createWindow()
 		-1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
 	);
+
+	// Hide the mouse cursor (got a custom one.)
+	SDL_ShowCursor(false);
 }
 
-// Init global pointers to core resources
 void LilacEngine::initGlobals()
 {
+	/*
+		Init global pointers to core resources
+	*/
+	
 	Globals::engine = this;
 	Globals::resources = std::make_unique<ResourcesManager>(ResourcesManager());
-	Globals::classEngine = std::make_unique<LClass>(LClass("", nullptr));
+	Globals::UI = std::make_unique<UIManager>(UIManager());
+	Globals::classEngine = std::make_unique<LClass>(LClass(nullptr));
 }
 
 void LilacEngine::initBaseResources()
 {
+	/*
+		Initiate base resources for the game to work.
+	*/
+	
 	// Fonts
 	Globals::resources->createFont("defaultFontTiny", "assets/fonts/sofia.otf", 11);
 	Globals::resources->createFont("defaultFontSmall", "assets/fonts/sofia.otf", 16);
 	Globals::resources->createFont("defaultFont", "assets/fonts/sofia.otf", 24);
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
+
+	this->cursor.setNewTexture("assets/ui/cursor.png");
 }
 
 void LilacEngine::initBaseClasses()
@@ -66,9 +82,12 @@ void LilacEngine::initBaseClasses()
 	this->createClass("GameIntro", new GameIntro);
 }
 
-// Main game loop
 void LilacEngine::update()
 {
+	/*
+		Main game loop
+	*/
+	
 	// Define variables to get a solid deltatime
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
@@ -91,17 +110,17 @@ void LilacEngine::update()
 				break;
 
 			case SDL_EventType::SDL_MOUSEBUTTONDOWN:
-				/*for (auto uiBtnIt : Constants::uiManager->allButtons())
+				for (auto uiBtnIt : Globals::UI->getButtons())
 				{
-					if (uiBtnIt.second->isMouseInside() && uiBtnIt.first == uiBtnIt.second->getId())
+					if (uiBtnIt.buttonRef->isMouseInside() && uiBtnIt.name == uiBtnIt.buttonRef->getId())
 					{
-						if (uiBtnIt.second->isEnabled())
+						if (uiBtnIt.buttonRef->isEnabled())
 						{
-							uiBtnIt.second->event(event);
+							uiBtnIt.buttonRef->event(event);
 							break;
 						}
 					}
-				}*/
+				}
 				break;
 			}
 		}
@@ -112,13 +131,24 @@ void LilacEngine::update()
 		deltaTime = ((NOW - LAST) / (float)SDL_GetPerformanceFrequency());
 
 		SDL_RenderClear(this->renderer);
+
+		// LClass updates.
 		Globals::classEngine->update(deltaTime);
+
+		// Cursor pos and render, always on top
+		this->cursor.setPosition({ Globals::mousePositionX, Globals::mousePositionY });
+		this->cursor.render();
+
 		SDL_RenderPresent(this->renderer);
 	}
 }
 
 void LilacEngine::destroyClasses()
 {
+	/*
+		Destroy all loaded classes.
+	*/
+	
 	for (size_t i = 0; i < this->lilacClasses.size(); ++i)
 	{
 		delete this->lilacClasses[i].lilacClass;
@@ -127,9 +157,12 @@ void LilacEngine::destroyClasses()
 	}
 }
 
-// Initialize the game engine with all the SDL modules we need
 void LilacEngine::init()
 {
+	/*
+		Initialize the game engine with all the SDL modules we need
+	*/
+	
 	// Init Rand()
 	srand((unsigned int)time(NULL));
 	// Init SDL with the following modules
@@ -157,13 +190,19 @@ void LilacEngine::init()
 	// Init the base classes
 	this->initBaseClasses();
 
+	SDL_Log("Initialized. Starting the main loop...");
+
 	// And initiate our game loop
 	this->update();
 }
 
-// Create a new LClass, which is automatically initialized. Returns the created class.
+
 LClass* LilacEngine::createClass(const string name, LClass* lilacClass)
 {
+	/*
+		Create a new LClass, which is automatically initialized. Returns the created class.
+	*/
+
 	LilacClass classDef = { name, lilacClass };
 	this->lilacClasses.push_back(classDef);
 
@@ -192,9 +231,31 @@ vector<LilacClass> LilacEngine::getLilacClasses()
 	return this->lilacClasses;
 }
 
-// On quit, quit all SDL modules and extra classes that need a cleanup
+void LilacEngine::destroyLilacClass(const string className)
+{
+	/*
+		Destroy a single LClass by name
+	*/
+
+	for (size_t i = 0; i < this->lilacClasses.size(); ++i)
+	{
+		if (this->lilacClasses[i].name == className)
+		{
+			delete this->lilacClasses[i].lilacClass;
+			this->lilacClasses[i].lilacClass = nullptr;
+			this->lilacClasses.erase(this->lilacClasses.begin() + i);
+
+			break;
+		}
+	}
+}
+
 void LilacEngine::exit()
 {
+	/*
+		On quit, quit all SDL modules and extra classes that need a cleanup
+	*/
+
 	this->running = false;
 
 	this->destroyClasses();

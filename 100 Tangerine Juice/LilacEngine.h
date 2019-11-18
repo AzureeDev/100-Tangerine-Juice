@@ -4,6 +4,7 @@
 #include <memory>
 #include <SDL.h>
 #include "LClass.h"
+#include "LTexture.h"
 
 using std::string;
 using std::vector;
@@ -14,11 +15,12 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.42.0";
+	string engineVersion = "1.43.0";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 	DisplaySettings displaySettings = {};
 	vector<LilacClass> lilacClasses = {};
+	LTexture cursor;
 
 	bool running = true;
 
@@ -39,6 +41,7 @@ public:
 	SDL_Renderer* getRenderer();
 	SDL_Window* getWindow();
 	vector<LilacClass> getLilacClasses();
+	void destroyLilacClass(const string className);
 
 	void exit();
 };

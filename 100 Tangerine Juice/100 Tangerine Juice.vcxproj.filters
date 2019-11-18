@@ -47,6 +47,18 @@
     <ClCompile Include="GameIntro.cpp">
       <Filter>LClasses</Filter>
     </ClCompile>
+    <ClCompile Include="Unit.cpp">
+      <Filter>LClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="LButton.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="LTimer.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -73,6 +85,18 @@
     </ClInclude>
     <ClInclude Include="GameIntro.h">
       <Filter>LClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Unit.h">
+      <Filter>LClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="LButton.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="LTimer.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
