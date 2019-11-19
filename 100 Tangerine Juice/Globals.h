@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+
+/* Globals */
 #include "LilacEngine.h"
 #include "ResourcesManager.h"
 #include "UIManager.h"
@@ -7,9 +9,8 @@
 
 using std::unique_ptr;
 
-class Globals
+struct Globals
 {
-public:
 	// Global Variables
 	static int mousePositionX;
 	static int mousePositionY;
@@ -21,3 +22,12 @@ public:
 	static unique_ptr<LClass> classEngine;
 };
 
+/* LilacClasses */
+#include "GameIntro.h"
+#include "MainMenu.h"
+
+struct LilacClasses
+{
+	static GameIntro* GameIntro;
+	static MainMenu* MainMenu;
+};

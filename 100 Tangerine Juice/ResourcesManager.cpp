@@ -78,6 +78,46 @@ TTF_Font* ResourcesManager::getFont(const string name)
 	return nullptr;
 }
 
+Mix_Music* ResourcesManager::createMusic(const string path)
+{
+	/*
+		Create a new music and returns it
+	*/
+
+	for (size_t i = 0; i < this->musics.size(); ++i)
+	{
+		if (this->musics[i].path == path)
+		{
+			return this->musics[i].instance;
+		}
+	}
+
+	Mix_Music* music = Mix_LoadMUS(path.c_str());
+	this->musics.push_back({ path, music });
+
+	return music;
+}
+
+Mix_Chunk* ResourcesManager::createSFX(const string path)
+{
+	/*
+		Create a new sfx sound and returns it
+	*/
+
+	for (size_t i = 0; i < this->sfx.size(); ++i)
+	{
+		if (this->sfx[i].path == path)
+		{
+			return this->sfx[i].instance;
+		}
+	}
+
+	Mix_Chunk* sfx = Mix_LoadWAV(path.c_str());
+	this->sfx.push_back({ path, sfx });
+
+	return sfx;
+}
+
 void ResourcesManager::destroy()
 {
 	/*
@@ -94,6 +134,18 @@ void ResourcesManager::destroy()
 		TTF_CloseFont(font.instance);
 	}
 
+	for (auto& music : this->musics)
+	{
+		Mix_FreeMusic(music.instance);
+	}
+
+	for (auto& sfx : this->sfx)
+	{
+		Mix_FreeChunk(sfx.instance);
+	}
+
 	this->textures.clear();
 	this->fonts.clear();
+	this->musics.clear();
+	this->sfx.clear();
 }

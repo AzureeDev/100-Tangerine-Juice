@@ -29,6 +29,10 @@ private:
 	int nbAnimations = 0;
 	int textureAngle = 0;
 	bool textureFlipped = false;
+	bool scrollable = false;
+	int scrollingOffset = 0;
+	int scrollSpeedMultiplier = 1;
+	bool scrollToRight = false;
 	Vector2i texturePosition = { 0, 0 };
 	Uint8 textureSpriteId = 0;
 
@@ -69,6 +73,8 @@ public:
 	void setAnimationSpeed(const unsigned int animSpeed);
 	void setNewTexture(const string path);
 	void setFade(const TextureFadingState state);
+	void setScrollable(const bool state, const int multiplier = 1);
+	void reverseScroll(const bool state);
 	void placeMiddleScreen(const bool useSheetSize = false);
 	void render();
 };

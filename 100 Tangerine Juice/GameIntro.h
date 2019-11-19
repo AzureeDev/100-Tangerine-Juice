@@ -12,6 +12,7 @@ private:
 
 public:
 	GameIntro();
+	~GameIntro();
 	void init();
 	void update(const float dt);
 };

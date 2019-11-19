@@ -1,5 +1,6 @@
 #include "LButton.h"
 #include "Globals.h"
+#include "SFXManager.h"
 
 /*
 	LButton
@@ -88,7 +89,7 @@ void LButton::event(const SDL_Event& ev)
 		{
 			if (this->allowSound)
 			{
-				//SFXManager::playSFX("btn_clicked");
+				SFXManager::playSFX("btn_clicked");
 			}
 
 			if (this->buttonCallback != NULL)
@@ -139,6 +140,11 @@ void LButton::setPosition(const int x, const int y)
 	this->buttonText.setPosition(x, y);
 }
 
+void LButton::setPosition(const Vector2i pos)
+{
+	this->setPosition(pos.x, pos.y);
+}
+
 void LButton::setVisible(const bool state)
 {
 	this->buttonVisible = state;
@@ -158,7 +164,7 @@ void LButton::setHighlightColor(const SDL_Color color)
 void LButton::setText(const string text)
 {
 	this->buttonTextStr = text;
-	this->buttonText.createText(text, this->buttonTextColor, this->buttonTexture.getWidth());
+	this->buttonText.createText(text, this->buttonTextColor, this->buttonTexture.getWidth(), Globals::resources->getFont("defaultFont32"));
 	this->buttonText.setPosition(
 		this->buttonTexture.getX() + (this->buttonTexture.getWidth() / 2) - buttonText.getWidth() / 2,
 		this->buttonTexture.getY() + (this->buttonTexture.getHeight() / 2) - buttonText.getHeight() / 2
@@ -192,7 +198,7 @@ void LButton::render()
 
 				if (!this->playedSoundHighlight && this->allowSound)
 				{
-					//SFXManager::playSFX("btn_over");
+					SFXManager::playSFX("btn_over");
 					this->playedSoundHighlight = true;
 				}
 			}

@@ -7,9 +7,11 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 
+// Include our headers
 #include "LilacEngine.h"
 #include "Globals.h"
 #include "GameIntro.h"
+#include "OverlayManager.h"
 
 void LilacEngine::createWindow()
 {
@@ -28,6 +30,9 @@ void LilacEngine::createWindow()
 	// Base workspace size
 	const Uint16 workspaceWidth = 1920;
 	const Uint16 workspaceHeight = 1080;
+
+	this->displaySettings.wsWidth = workspaceWidth;
+	this->displaySettings.wsHeight = workspaceHeight;
 
 	// Create the window
 	this->window = SDL_CreateWindow(
@@ -72,7 +77,11 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("defaultFontTiny", "assets/fonts/sofia.otf", 11);
 	Globals::resources->createFont("defaultFontSmall", "assets/fonts/sofia.otf", 16);
 	Globals::resources->createFont("defaultFont", "assets/fonts/sofia.otf", 24);
+	Globals::resources->createFont("defaultFont32", "assets/fonts/sofia.otf", 32);
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
+
+	Globals::resources->createFont("bleachFont", "assets/fonts/bleach.ttf", 24);
+	Globals::resources->createFont("bleachFontLarge", "assets/fonts/bleach.ttf", 54);
 
 	this->cursor.setNewTexture("assets/ui/cursor.png");
 }
@@ -139,6 +148,8 @@ void LilacEngine::update()
 		this->cursor.setPosition({ Globals::mousePositionX, Globals::mousePositionY });
 		this->cursor.render();
 
+		OverlayManager::update(deltaTime);
+
 		SDL_RenderPresent(this->renderer);
 	}
 }
@@ -190,6 +201,9 @@ void LilacEngine::init()
 	// Init the base classes
 	this->initBaseClasses();
 
+	// Init OverlayManager
+	OverlayManager::init();
+
 	SDL_Log("Initialized. Starting the main loop...");
 
 	// And initiate our game loop
@@ -231,7 +245,7 @@ vector<LilacClass> LilacEngine::getLilacClasses()
 	return this->lilacClasses;
 }
 
-void LilacEngine::destroyLilacClass(const string className)
+void LilacEngine::destroyClass(const string className)
 {
 	/*
 		Destroy a single LClass by name
@@ -250,6 +264,11 @@ void LilacEngine::destroyLilacClass(const string className)
 	}
 }
 
+string LilacEngine::getVersion()
+{
+	return this->engineVersion;
+}
+
 void LilacEngine::exit()
 {
 	/*
@@ -260,6 +279,7 @@ void LilacEngine::exit()
 
 	this->destroyClasses();
 	Globals::resources->destroy();
+	OverlayManager::destroy();
 
 	SDL_DestroyRenderer(this->renderer);
 	SDL_DestroyWindow(this->window);

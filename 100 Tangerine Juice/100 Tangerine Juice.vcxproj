@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ButtonCallbacks.cpp" />
     <ClCompile Include="GameIntro.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="LButton.cpp" />
@@ -141,12 +142,18 @@
     <ClCompile Include="LTexture.cpp" />
     <ClCompile Include="LTimer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="MusicManager.cpp" />
+    <ClCompile Include="OverlayManager.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="SFXManager.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ButtonCallbacks.h" />
     <ClInclude Include="GameIntro.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="LButton.h" />
@@ -154,12 +161,17 @@
     <ClInclude Include="LilacEngine.h" />
     <ClInclude Include="LTexture.h" />
     <ClInclude Include="LTimer.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="MusicManager.h" />
+    <ClInclude Include="OverlayManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="SFXManager.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vector2.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc" />

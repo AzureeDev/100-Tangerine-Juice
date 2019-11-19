@@ -17,6 +17,7 @@ private:
 
 public:
 	LButton* createButton(const string btnName, const string btnTexturePath = "assets/ui/transparent.png");
+	void destroyButton(const string btnName);
 	vector<ButtonDefinition> getButtons();
 };
 

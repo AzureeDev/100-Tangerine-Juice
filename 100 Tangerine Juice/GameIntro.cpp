@@ -4,6 +4,16 @@
 
 GameIntro::GameIntro() : LClass(this)
 {
+	/*
+		Initializer to our globals so we can mess with this instance everywhere.
+	*/
+
+	LilacClasses::GameIntro = this;
+}
+
+GameIntro::~GameIntro()
+{
+	Globals::UI->destroyButton("introBtn");
 }
 
 void GameIntro::init()
@@ -18,6 +28,7 @@ void GameIntro::init()
 
 	this->introBtn = Globals::UI->createButton("introBtn");
 	this->introBtn->getTexture().setSize(Globals::engine->getDisplaySettings().w, Globals::engine->getDisplaySettings().h);
+	this->introBtn->supplyCallback(ButtonCallbacks::proceedToMainMenu);
 }
 
 void GameIntro::update(const float dt)

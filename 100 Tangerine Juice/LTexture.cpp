@@ -290,6 +290,17 @@ void LTexture::setFade(const TextureFadingState state)
 	this->textureFadeState = state;
 }
 
+void LTexture::setScrollable(const bool state, const int multiplier)
+{
+	this->scrollable = state;
+	this->scrollSpeedMultiplier = multiplier;
+}
+
+void LTexture::reverseScroll(const bool state)
+{
+	this->scrollToRight = state;
+}
+
 void LTexture::placeMiddleScreen(const bool useSheetSize)
 {
 	int screenWidth = Globals::engine->getDisplaySettings().w;
@@ -384,6 +395,46 @@ void LTexture::render()
 	else
 	{
 		SDL_SetTextureAlphaMod(this->texture, Utils::unpackColor(this->textureColor)[static_cast<int>(ColorIndex::Alpha)]);
+	}
+
+	if (this->scrollable)
+	{
+		/*
+			From World.cpp, adapted to a texture
+		*/
+
+		if (this->scrollToRight)
+		{
+			this->scrollingOffset += (1 * this->scrollSpeedMultiplier);
+
+			if (this->scrollingOffset > Globals::engine->getDisplaySettings().wsWidth)
+			{
+				this->scrollingOffset = 0;
+			}
+
+			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
+			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset - Globals::engine->getDisplaySettings().wsWidth, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
+			
+			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture);
+			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture2);
+		}
+		else
+		{
+			this->scrollingOffset -= (1 * this->scrollSpeedMultiplier);
+
+			if (this->scrollingOffset < -Globals::engine->getDisplaySettings().wsWidth)
+			{
+				this->scrollingOffset = 0;
+			}
+
+			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
+			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset + Globals::engine->getDisplaySettings().wsWidth, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
+		
+			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture);
+			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture2);
+		}
+
+		return;
 	}
 
 	SDL_RenderCopyEx(Globals::engine->getRenderer(), this->texture, &srcRect, &destRect, this->textureAngle, &pt, flipped);

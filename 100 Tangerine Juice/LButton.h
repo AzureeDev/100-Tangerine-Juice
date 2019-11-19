@@ -3,6 +3,7 @@
 #include <functional>
 #include "LTexture.h"
 #include "Unit.h"
+#include "ButtonCallbacks.h"
 
 using std::string;
 
@@ -46,6 +47,7 @@ public:
 	void setX(const int x);
 	void setY(const int y);
 	void setPosition(const int x, const int y);
+	void setPosition(const Vector2i pos);
 	void setVisible(const bool state);
 	void setEnabled(const bool state);
 	void setHighlightColor(const SDL_Color color);

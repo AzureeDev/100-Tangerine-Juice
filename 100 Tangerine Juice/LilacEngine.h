@@ -9,13 +9,13 @@
 using std::string;
 using std::vector;
 
-struct DisplaySettings { Uint16 w; Uint16 h; Uint16 refreshRate; };
+struct DisplaySettings { Uint16 w; Uint16 h; Uint16 refreshRate; Uint16 wsWidth; Uint16 wsHeight; };
 struct LilacClass { string name; LClass* lilacClass; };
 
 class LilacEngine
 {
 private:
-	string engineVersion = "1.43.0";
+	string engineVersion = "1.44.0";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 	DisplaySettings displaySettings = {};
@@ -41,7 +41,8 @@ public:
 	SDL_Renderer* getRenderer();
 	SDL_Window* getWindow();
 	vector<LilacClass> getLilacClasses();
-	void destroyLilacClass(const string className);
+	void destroyClass(const string className);
+	string getVersion();
 
 	void exit();
 };
