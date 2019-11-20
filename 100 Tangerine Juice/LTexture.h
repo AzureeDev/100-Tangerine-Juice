@@ -25,7 +25,7 @@ private:
 	int textureWidth = 0;
 	int textureHeight = 0;
 	int fixedSizeSheet = 0;
-	int animationSpeed = 100;
+	int animationSpeed = 125;
 	int nbAnimations = 0;
 	int textureAngle = 0;
 	bool textureFlipped = false;
@@ -49,10 +49,12 @@ public:
 	int getY();
 	Vector2i top();
 	Vector2i bottom();
+	int right(const bool useSheetSize = false);
 	Vector2i getPosition();
 	SDL_Color getColor();
 	int getAlpha();
 	SDL_Color getHighlightColor();
+	int getAnimationCount();
 	void resetBaseColor();
 	void setColor(const SDL_Color color, const bool setDefault = false);
 	void setColorNoAlpha(const SDL_Color color);

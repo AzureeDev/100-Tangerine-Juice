@@ -28,6 +28,11 @@ void Unit::setPosition(const Vector2i pos)
 	this->unitTexture.setPosition(pos);
 }
 
+void Unit::setFlipped(const bool state)
+{
+	this->unitTexture.setTextureFlip(state);
+}
+
 void Unit::placeMiddleScreen()
 {
 	this->unitTexture.placeMiddleScreen(true);

@@ -18,6 +18,7 @@ public:
 	Unit(const string unitIdentifier, const string defaultAnimation = "std");
 	LTexture& texture();
 	void setPosition(const Vector2i pos);
+	void setFlipped(const bool state);
 	void placeMiddleScreen();
 	void render();
 };

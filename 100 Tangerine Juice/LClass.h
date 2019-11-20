@@ -10,7 +10,7 @@ protected:
 	std::string className;
 
 public:
-	LClass(LClass* newClass);
+	LClass();
 	virtual ~LClass();
 	virtual void init();
 	virtual void update(const float deltaTime);

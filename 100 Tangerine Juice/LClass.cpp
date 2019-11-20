@@ -17,12 +17,8 @@
 	The destructor will then be executed.
 */
 
-LClass::LClass(LClass* newClass)
+LClass::LClass()
 {
-	if (newClass == nullptr)
-	{
-		return;
-	}
 }
 
 LClass::~LClass()
@@ -45,7 +41,7 @@ void LClass::update(const float deltaTime)
 		Updated once per frame, shipping the deltaTime.
 	*/
 
-	for (auto& it : Globals::engine->getLilacClasses())
+	for (const auto& it : Globals::engine->getLilacClasses())
 	{
 		if (it.lilacClass == nullptr)
 		{

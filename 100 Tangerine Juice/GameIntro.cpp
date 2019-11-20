@@ -2,7 +2,7 @@
 #include <SDL.h>
 #include "Globals.h"
 
-GameIntro::GameIntro() : LClass(this)
+GameIntro::GameIntro()
 {
 	/*
 		Initializer to our globals so we can mess with this instance everywhere.
@@ -18,7 +18,7 @@ GameIntro::~GameIntro()
 
 void GameIntro::init()
 {
-	this->introUnit = Unit("sora_m", "intro");
+	this->introUnit = Unit("sora_m");
 	this->introUnit.placeMiddleScreen();
 	this->introUnit.texture().setFade(TextureFadingState::FadeIn);
 

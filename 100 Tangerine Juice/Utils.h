@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+
 enum class ColorIndex {
 	Red,
 	Green,
@@ -27,6 +28,7 @@ struct Utils
 	static float lerp(const float a, const float b, const float t);
 	static SDL_Color colorLerp(const FColor a, const FColor b, float t);
 	static const std::string getDateTime();
+	static std::string strToUpper(const std::string str);
 };
 
 template<typename Nb>

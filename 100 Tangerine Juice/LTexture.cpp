@@ -110,6 +110,16 @@ Vector2i LTexture::bottom()
 	return Vector2i(this->getX(), this->getY() + this->getHeight());
 }
 
+int LTexture::right(const bool useSheetSize)
+{
+	if (useSheetSize)
+	{
+		return this->getPosition().x + this->getSheetSize();
+	}
+
+	return this->getPosition().x + this->getWidth();
+}
+
 Vector2i LTexture::getPosition()
 {
 	return this->texturePosition;
@@ -128,6 +138,11 @@ int LTexture::getAlpha()
 SDL_Color LTexture::getHighlightColor()
 {
 	return this->textureHighlightColor;
+}
+
+int LTexture::getAnimationCount()
+{
+	return this->nbAnimations;
 }
 
 void LTexture::resetBaseColor()
@@ -412,8 +427,8 @@ void LTexture::render()
 				this->scrollingOffset = 0;
 			}
 
-			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
-			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset - Globals::engine->getDisplaySettings().wsWidth, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
+			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), this->getWidth(), this->getHeight() };
+			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset - Globals::engine->getDisplaySettings().wsWidth, this->getY(), this->getWidth(), this->getHeight() };
 			
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture);
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture2);
@@ -427,8 +442,8 @@ void LTexture::render()
 				this->scrollingOffset = 0;
 			}
 
-			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
-			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset + Globals::engine->getDisplaySettings().wsWidth, this->getY(), Globals::engine->getDisplaySettings().wsWidth, this->getHeight() };
+			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), this->getWidth(), this->getHeight() };
+			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset + Globals::engine->getDisplaySettings().wsWidth, this->getY(), this->getWidth(), this->getHeight() };
 		
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture);
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture2);

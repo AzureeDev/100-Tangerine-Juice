@@ -32,6 +32,12 @@
     <Filter Include="Classes">
       <UniqueIdentifier>{3faa6449-6600-4727-929e-73119f4fac58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Definitions">
+      <UniqueIdentifier>{ea39dbc1-f01e-466b-8efe-b07d17dba7dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LClasses\Components">
+      <UniqueIdentifier>{bd7ed74d-333f-4897-8a9b-e338395bbf37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -83,7 +89,15 @@
     <ClCompile Include="Unit.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="SFXManager.cpp" />
+    <ClCompile Include="SFXManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitDefinitions.cpp">
+      <Filter>Definitions</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitCardComponent.cpp">
+      <Filter>LClasses\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -138,7 +152,15 @@
     <ClInclude Include="Unit.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="SFXManager.h" />
+    <ClInclude Include="SFXManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitDefinitions.h">
+      <Filter>Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitCardComponent.h">
+      <Filter>LClasses\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

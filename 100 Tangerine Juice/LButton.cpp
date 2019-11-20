@@ -70,6 +70,12 @@ void LButton::supplyCallback(const std::function<void()> clbk)
 	this->buttonCallback = clbk;
 }
 
+void LButton::supplyCallback(std::function<void(string)> clbk, const string arg)
+{
+	this->buttonStrCallback = clbk;
+	this->buttonBindedStr = arg;
+}
+
 void LButton::supplyUnitCallback(Unit* unit, std::function<void(Unit*)> clbk)
 {
 	this->buttonBindedUnit = unit;
@@ -95,6 +101,11 @@ void LButton::event(const SDL_Event& ev)
 			if (this->buttonCallback != NULL)
 			{
 				this->buttonCallback();
+			}
+
+			if (this->buttonStrCallback != NULL)
+			{
+				this->buttonStrCallback(this->buttonBindedStr);
 			}
 
 			if (this->buttonUnitCallback != NULL)
@@ -137,7 +148,10 @@ void LButton::setPosition(const int x, const int y)
 	this->buttonTexture.setX(x);
 	this->buttonY = y;
 	this->buttonTexture.setY(y);
-	this->buttonText.setPosition(x, y);
+	this->buttonText.setPosition(
+		this->buttonTexture.getX() + (this->buttonTexture.getWidth() / 2) - buttonText.getWidth() / 2,
+		this->buttonTexture.getY() + (this->buttonTexture.getHeight() / 2) - buttonText.getHeight() / 2
+	);
 }
 
 void LButton::setPosition(const Vector2i pos)

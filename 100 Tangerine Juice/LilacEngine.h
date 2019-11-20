@@ -15,7 +15,8 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.44.0";
+	string engineVersion = "1.45.0";
+	string mainMenuMessage = "Welcome to 100% Tangerine Juice! The update 45 brings a mockup of the Unit Database.";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 	DisplaySettings displaySettings = {};
@@ -43,6 +44,7 @@ public:
 	vector<LilacClass> getLilacClasses();
 	void destroyClass(const string className);
 	string getVersion();
+	string getMainMenuMessage();
 
 	void exit();
 };

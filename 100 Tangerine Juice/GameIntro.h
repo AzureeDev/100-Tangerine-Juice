@@ -8,7 +8,7 @@ class GameIntro : public LClass
 private:
 	Unit introUnit;
 	LTexture gameIntroLabel;
-	LButton* introBtn;
+	LButton* introBtn = nullptr;
 
 public:
 	GameIntro();

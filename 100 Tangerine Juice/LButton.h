@@ -19,9 +19,13 @@ private:
 	SDL_Color buttonTextColor = { 255, 255, 255, 255 };
 	SDL_Color buttonHighlightColor = { 255, 255, 255, 255 };
 	string buttonPath;
+
+	std::function<void(string)> buttonStrCallback = NULL;
 	std::function<void()> buttonCallback = NULL;
 	std::function<void(Unit*)> buttonUnitCallback = NULL;
+
 	Unit* buttonBindedUnit = nullptr;
+	string buttonBindedStr = "";
 	int buttonX = 0;
 	int buttonY = 0;
 	int buttonWidth = 0;
@@ -40,6 +44,7 @@ public:
 	bool isMouseInside();
 	bool isEnabled();
 	void supplyCallback(std::function<void()> clbk);
+	void supplyCallback(std::function<void(string)> clbk, const string arg);
 	void supplyUnitCallback(Unit* unit, std::function<void(Unit*)> clbk);
 	void event(const SDL_Event& ev);
 	int getX();

@@ -34,6 +34,7 @@ void ResourcesManager::destroyTexture(const string path)
 		if (this->textures[i].path == path)
 		{
 			SDL_DestroyTexture(this->textures[i].instance);
+			this->textures[i].instance = nullptr;
 			this->textures.erase(this->textures.begin() + i);
 
 			break;
@@ -124,22 +125,22 @@ void ResourcesManager::destroy()
 		Destroy everything loaded, called in LilacEngine::exit()
 	*/
 	
-	for (auto& texture : this->textures)
+	for (const auto& texture : this->textures)
 	{
 		SDL_DestroyTexture(texture.instance);
 	}
 
-	for (auto& font : this->fonts)
+	for (const auto& font : this->fonts)
 	{
 		TTF_CloseFont(font.instance);
 	}
 
-	for (auto& music : this->musics)
+	for (const auto& music : this->musics)
 	{
 		Mix_FreeMusic(music.instance);
 	}
 
-	for (auto& sfx : this->sfx)
+	for (const auto& sfx : this->sfx)
 	{
 		Mix_FreeChunk(sfx.instance);
 	}

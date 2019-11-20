@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include <time.h>
+#include <algorithm>
 
 std::vector<unsigned int> Utils::unpackColor(const SDL_Color& color)
 {
@@ -43,4 +44,11 @@ const std::string Utils::getDateTime()
 	strftime(buf, sizeof(buf), "%d/%m/%Y - %X", &tstruct);
 
 	return buf;
+}
+
+std::string Utils::strToUpper(const std::string str)
+{
+	std::string upper = str;
+	std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
+	return upper;
 }

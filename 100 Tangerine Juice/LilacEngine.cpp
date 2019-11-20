@@ -1,6 +1,9 @@
 // Base Libraries
 #include <ctime>
 #include <cstdlib>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 // Include SDL Libraries
 #include <SDL_image.h>
@@ -64,7 +67,7 @@ void LilacEngine::initGlobals()
 	Globals::engine = this;
 	Globals::resources = std::make_unique<ResourcesManager>(ResourcesManager());
 	Globals::UI = std::make_unique<UIManager>(UIManager());
-	Globals::classEngine = std::make_unique<LClass>(LClass(nullptr));
+	Globals::classEngine = std::make_unique<LClass>(LClass());
 }
 
 void LilacEngine::initBaseResources()
@@ -84,11 +87,22 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("bleachFontLarge", "assets/fonts/bleach.ttf", 54);
 
 	this->cursor.setNewTexture("assets/ui/cursor.png");
+
+	// Sprites
+	string spriteBasePath = "assets/units";
+
+	for (const auto& dir : fs::directory_iterator(spriteBasePath))
+	{
+		for (const auto& sprite : fs::directory_iterator(dir.path().generic_string().c_str()))
+		{
+			Globals::resources->createTexture(sprite.path().generic_string());
+		}
+	}
 }
 
 void LilacEngine::initBaseClasses()
 {
-	this->createClass("GameIntro", new GameIntro);
+	this->createClass("GameIntro", new GameIntro());
 }
 
 void LilacEngine::update()
@@ -119,7 +133,7 @@ void LilacEngine::update()
 				break;
 
 			case SDL_EventType::SDL_MOUSEBUTTONDOWN:
-				for (auto uiBtnIt : Globals::UI->getButtons())
+				for (const auto& uiBtnIt : Globals::UI->getButtons())
 				{
 					if (uiBtnIt.buttonRef->isMouseInside() && uiBtnIt.name == uiBtnIt.buttonRef->getId())
 					{
@@ -157,7 +171,7 @@ void LilacEngine::update()
 void LilacEngine::destroyClasses()
 {
 	/*
-		Destroy all loaded classes.
+		Destroy all loaded classes, and soft classes.
 	*/
 	
 	for (size_t i = 0; i < this->lilacClasses.size(); ++i)
@@ -267,6 +281,11 @@ void LilacEngine::destroyClass(const string className)
 string LilacEngine::getVersion()
 {
 	return this->engineVersion;
+}
+
+string LilacEngine::getMainMenuMessage()
+{
+	return this->mainMenuMessage;
 }
 
 void LilacEngine::exit()
