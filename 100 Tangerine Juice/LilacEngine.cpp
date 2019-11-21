@@ -68,6 +68,7 @@ void LilacEngine::initGlobals()
 	Globals::resources = std::make_unique<ResourcesManager>(ResourcesManager());
 	Globals::UI = std::make_unique<UIManager>(UIManager());
 	Globals::classEngine = std::make_unique<LClass>(LClass());
+	Globals::timer = std::make_unique<TimerManager>(TimerManager());
 }
 
 void LilacEngine::initBaseResources()
@@ -80,6 +81,7 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("defaultFontTiny", "assets/fonts/sofia.otf", 11);
 	Globals::resources->createFont("defaultFontSmall", "assets/fonts/sofia.otf", 16);
 	Globals::resources->createFont("defaultFont", "assets/fonts/sofia.otf", 24);
+	Globals::resources->createFont("defaultFont28", "assets/fonts/sofia.otf", 28);
 	Globals::resources->createFont("defaultFont32", "assets/fonts/sofia.otf", 32);
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
 
@@ -155,6 +157,9 @@ void LilacEngine::update()
 
 		SDL_RenderClear(this->renderer);
 
+		// TimerManager update.
+		Globals::timer->update(deltaTime);
+
 		// LClass updates.
 		Globals::classEngine->update(deltaTime);
 
@@ -225,7 +230,7 @@ void LilacEngine::init()
 }
 
 
-LClass* LilacEngine::createClass(const string name, LClass* lilacClass)
+void LilacEngine::createClass(const string name, LClass* lilacClass)
 {
 	/*
 		Create a new LClass, which is automatically initialized. Returns the created class.
@@ -235,8 +240,6 @@ LClass* LilacEngine::createClass(const string name, LClass* lilacClass)
 	this->lilacClasses.push_back(classDef);
 
 	lilacClass->init();
-
-	return lilacClass;
 }
 
 DisplaySettings LilacEngine::getDisplaySettings()

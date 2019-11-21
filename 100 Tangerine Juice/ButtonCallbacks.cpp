@@ -5,7 +5,7 @@
 void ButtonCallbacks::proceedToMainMenu()
 {
 	Globals::engine->destroyClass("GameIntro");
-	Globals::engine->createClass("MainMenu", new MainMenu());
+	Globals::engine->createClass("MainMenu", new MainMenu);
 }
 
 void ButtonCallbacks::quitGame()
@@ -50,4 +50,9 @@ void ButtonCallbacks::backToMainMenu()
 	LilacClasses::MainMenu->clearButtons();
 	LilacClasses::MainMenu->setHeaderTitle("MAIN MENU");
 	LilacClasses::MainMenu->createMainMenuButtons();
+}
+
+void ButtonCallbacks::openLink(const string link)
+{
+	Utils::openBrowserLink(link);
 }

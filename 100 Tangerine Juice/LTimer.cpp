@@ -73,7 +73,7 @@ void LTimer::unpause()
 
 void LTimer::update(const float dt)
 {
-	if (started)
+	if (started && !paused)
 	{
 		timer += dt;
 	}

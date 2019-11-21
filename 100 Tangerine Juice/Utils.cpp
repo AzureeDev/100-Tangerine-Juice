@@ -1,6 +1,8 @@
 #include "Utils.h"
 #include <time.h>
 #include <algorithm>
+#define NOMINMAX
+#include <Windows.h>
 
 std::vector<unsigned int> Utils::unpackColor(const SDL_Color& color)
 {
@@ -51,4 +53,9 @@ std::string Utils::strToUpper(const std::string str)
 	std::string upper = str;
 	std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
 	return upper;
+}
+
+void Utils::openBrowserLink(const std::string link)
+{
+	ShellExecute(0, 0, LPCSTR(link.c_str()), 0, 0, SW_SHOW);
 }

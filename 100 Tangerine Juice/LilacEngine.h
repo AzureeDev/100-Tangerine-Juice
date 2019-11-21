@@ -15,8 +15,8 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.45.0";
-	string mainMenuMessage = "Welcome to 100% Tangerine Juice! The update 45 brings a mockup of the Unit Database.";
+	string engineVersion = "1.46.0";
+	string mainMenuMessage = "Welcome to 100% Tangerine Juice! The update 46 added a TimerManager, and continued work on the unit card.";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 	DisplaySettings displaySettings = {};
@@ -36,8 +36,7 @@ private:
 public:
 	void init();
 
-	LClass* createClass(const string name, LClass* lilacClass);
-
+	void createClass(const string name, LClass* lilacClass);
 	DisplaySettings getDisplaySettings();
 	SDL_Renderer* getRenderer();
 	SDL_Window* getWindow();

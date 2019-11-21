@@ -98,6 +98,15 @@
     <ClCompile Include="UnitCardComponent.cpp">
       <Filter>LClasses\Components</Filter>
     </ClCompile>
+    <ClCompile Include="SkillDefinitions.cpp">
+      <Filter>Definitions</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerCallbacks.cpp">
+      <Filter>Callbacks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -160,6 +169,15 @@
     </ClInclude>
     <ClInclude Include="UnitCardComponent.h">
       <Filter>LClasses\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillDefinitions.h">
+      <Filter>Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerCallbacks.h">
+      <Filter>Callbacks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,20 @@ private:
 	Unit unit;
 	LTexture unitDescriptionLabel;
 
+	// Stats
+	LTexture unitStatsTitle;
+	LTexture unitHPLabel;
+	LTexture unitHPAmount;
+	LTexture unitAtkLabel;
+	LTexture unitAtkAmount;
+	LTexture unitDefLabel;
+	LTexture unitDefAmount;
+	LTexture unitEvaLabel;
+	LTexture unitEvaAmount;
+
+	// Skills
+	LTexture unitSkillTitle;
+
 public:
 	UnitCardComponent(const UnitParams params);
 	void init();

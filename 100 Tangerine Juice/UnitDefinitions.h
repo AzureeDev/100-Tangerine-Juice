@@ -7,11 +7,17 @@ using std::vector;
 
 struct UnitParams 
 {
+	enum class UnitStatistics {
+		Attack,
+		Defense,
+		Evasion
+	};
+	
 	string unitId;
 	string unitName;
 	string unitDesc;
 	string unitDefaultPose;
-	int unitMaxHealth;
+	int unitMaxHealth = 5;
 	vector<int> unitStats;
 };
 

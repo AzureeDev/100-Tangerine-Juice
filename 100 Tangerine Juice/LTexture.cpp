@@ -372,7 +372,7 @@ void LTexture::render()
 	}
 
 	SDL_Point pt = { 0, 0 };
-	SDL_RendererFlip flipped = this->textureFlipped ? SDL_RendererFlip::SDL_FLIP_HORIZONTAL : SDL_RendererFlip::SDL_FLIP_NONE;
+	const int flipped = this->textureFlipped ? 1 : 0;
 
 	SDL_SetTextureBlendMode(this->texture, SDL_BLENDMODE_BLEND);
 	SDL_SetTextureColorMod(
@@ -452,5 +452,5 @@ void LTexture::render()
 		return;
 	}
 
-	SDL_RenderCopyEx(Globals::engine->getRenderer(), this->texture, &srcRect, &destRect, this->textureAngle, &pt, flipped);
+	SDL_RenderCopyEx(Globals::engine->getRenderer(), this->texture, &srcRect, &destRect, this->textureAngle, &pt, static_cast<SDL_RendererFlip>(flipped));
 }

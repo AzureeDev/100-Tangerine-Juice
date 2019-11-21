@@ -414,7 +414,7 @@ static int_T ulp_distance(const float_T a, const float_T b)
 {
 	if (a == b) return 0;
 
-	const auto max = std::numeric_limits<int_T>::max();
+	constexpr auto max = std::numeric_limits<int_T>::max();
 
 	// check for NaN and inf
 	if (std::isnan(a) || std::isnan(b)) return max;

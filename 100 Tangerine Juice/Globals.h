@@ -6,6 +6,7 @@
 #include "ResourcesManager.h"
 #include "UIManager.h"
 #include "LClass.h"
+#include "TimerManager.h"
 
 using std::unique_ptr;
 
@@ -20,6 +21,7 @@ struct Globals
 	static unique_ptr<ResourcesManager> resources;
 	static unique_ptr<UIManager> UI;
 	static unique_ptr<LClass> classEngine;
+	static unique_ptr<TimerManager> timer;
 };
 
 /* LilacClasses */

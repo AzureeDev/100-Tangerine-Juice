@@ -23,6 +23,9 @@ void MainMenu::init()
 	this->createLeftPanel();
 	this->createTopBar();
 	this->createInformationBar();
+
+	Globals::timer->createTimer("helloworld", 5, TimerCallbacks::clbkTest);
+	Globals::timer->createTimer("hellowww", 1, TimerCallbacks::clbkTest2, 10);
 }
 
 void MainMenu::createWorld()
@@ -188,6 +191,7 @@ void MainMenu::createCreditsButtons()
 {
 	LButton* back = Globals::UI->createButton("back", DEFAULT_BUTTON_TEXTURE);
 	LButton* fbf = Globals::UI->createButton("fbf", DEFAULT_BUTTON_TEXTURE);
+	fbf->supplyCallback(ButtonCallbacks::openLink, "https://fruitbatfactory.com/");
 	back->supplyCallback(ButtonCallbacks::backToMainMenu);
 
 	mainMenuButtons.push_back({ "back", back });

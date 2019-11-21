@@ -149,6 +149,9 @@
     <ClCompile Include="OverlayManager.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="SFXManager.cpp" />
+    <ClCompile Include="SkillDefinitions.cpp" />
+    <ClCompile Include="TimerCallbacks.cpp" />
+    <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="UnitCardComponent.cpp" />
@@ -171,6 +174,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="SFXManager.h" />
+    <ClInclude Include="SkillDefinitions.h" />
+    <ClInclude Include="TimerCallbacks.h" />
+    <ClInclude Include="TimerManager.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="UnitCardComponent.h" />
