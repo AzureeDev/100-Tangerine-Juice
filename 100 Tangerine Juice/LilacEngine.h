@@ -15,8 +15,8 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.47.0";
-	string mainMenuMessage = "Welcome to 100% Tangerine Juice! The update 47 brings a simple Camera.";
+	string engineVersion = "1.48.0";
+	string mainMenuMessage = "Welcome to 100% Tangerine Juice! Hope you will enjoy your time here. ~";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 	SDL_Rect camera = { 0, 0, 1920, 1080 };

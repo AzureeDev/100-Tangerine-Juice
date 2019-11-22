@@ -21,6 +21,7 @@ protected:
 public:
 	Unit();
 	Unit(const string unitIdentifier, const string defaultAnimation = "std");
+	string identifier();
 	LTexture& texture();
 	Vector2i position();
 	int x();
@@ -32,6 +33,6 @@ public:
 	void setPosition(const Vector2i pos);
 	void setFlipped(const bool state);
 	void placeMiddleScreen();
-	virtual void render(int camX = 0, int camY = 0);
+	virtual void render(SDL_Rect cameraRect);
 };
 

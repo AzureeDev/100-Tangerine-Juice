@@ -259,7 +259,7 @@ void MainMenu::update(const float dt)
 	world.render();
 
 	// Unit layer
-	mmUnit.render();
+	mmUnit.render(Globals::engine->getCamera());
 
 	// Top Bar layer
 	topBar.render();

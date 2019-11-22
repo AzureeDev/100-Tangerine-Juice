@@ -196,7 +196,7 @@ void LilacEngine::update()
 void LilacEngine::destroyClasses()
 {
 	/*
-		Destroy all loaded classes, and soft classes.
+		Destroy all loaded classes
 	*/
 	
 	for (size_t i = 0; i < this->lilacClasses.size(); ++i)

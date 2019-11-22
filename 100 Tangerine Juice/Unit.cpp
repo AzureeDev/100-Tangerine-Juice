@@ -19,6 +19,11 @@ Unit::Unit(const string unitIdentifier, const string defaultAnimation)
 	this->unitShadow.setNewTexture("assets/units/shared/shadow.png");
 }
 
+string Unit::identifier()
+{
+	return this->unitId;
+}
+
 LTexture& Unit::texture()
 {
 	return this->unitTexture;
@@ -99,7 +104,7 @@ void Unit::placeMiddleScreen()
 	this->unitPosition = this->unitTexture.getPosition();
 }
 
-void Unit::render(int camX, int camY)
+void Unit::render(SDL_Rect cameraRect)
 {
 	//this->unitShadow.render();
 	this->unitTexture.render();

@@ -79,5 +79,6 @@ public:
 	void setScrollable(const bool state, const int multiplier = 1);
 	void reverseScroll(const bool state);
 	void placeMiddleScreen(const bool useSheetSize = false);
+	void placeLeftScreen();
 	void render(SDL_Rect cameraRect = {});
 };

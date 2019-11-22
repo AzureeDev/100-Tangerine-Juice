@@ -33,7 +33,7 @@ void GameIntro::init()
 
 void GameIntro::update(const float dt)
 {
-	this->introUnit.render();
+	this->introUnit.render(Globals::engine->getCamera());
 	this->gameIntroLabel.render();
 	this->introBtn->render();
 }

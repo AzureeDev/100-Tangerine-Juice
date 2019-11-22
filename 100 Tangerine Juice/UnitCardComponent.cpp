@@ -105,7 +105,7 @@ void UnitCardComponent::update(const float dt)
 {
 	unitCardBg.render();
 	unitArt.render();
-	unit.render();
+	unit.render(Globals::engine->getCamera());
 	unitDescriptionLabel.render();
 
 	/* Stats */
@@ -131,6 +131,6 @@ void UnitCardComponent::update(const float dt)
 
 	if (unitArt.getX() > unitCardBg.getX() + unitCardBg.getWidth() - unitArt.getWidth() + 196)
 	{
-		unitArt.setX(unitArt.getX() - 1);
+		unitArt.setX(unitArt.getX() - 2);
 	}
 }

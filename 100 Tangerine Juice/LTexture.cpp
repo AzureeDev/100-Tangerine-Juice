@@ -336,7 +336,14 @@ void LTexture::placeMiddleScreen(const bool useSheetSize)
 			(screenHeight / 2) - this->getSheetSize() / 2
 		);
 	}
-		
+}
+
+void LTexture::placeLeftScreen()
+{
+	int screenWidth = Globals::engine->getDisplaySettings().w;
+	int screenHeight = Globals::engine->getDisplaySettings().h;
+
+	this->setY((screenHeight / 2) - this->getHeight() / 2);
 }
 
 void LTexture::render(SDL_Rect cameraRect)

@@ -7,6 +7,7 @@ PlayerUnit::PlayerUnit()
 
 PlayerUnit::PlayerUnit(string unitIdentifier) : Unit(unitIdentifier)
 {
+	this->hudElement = HUDUnit(this);
 }
 
 void PlayerUnit::setActiveUnit()
@@ -17,6 +18,7 @@ void PlayerUnit::setActiveUnit()
 void PlayerUnit::render(SDL_Rect cameraRect)
 {
 	this->unitTexture.render(cameraRect);
+	this->hudElement.update();
 
 	if (this->unitDashing)
 	{
@@ -29,4 +31,15 @@ void PlayerUnit::render(SDL_Rect cameraRect)
 			this->setX(this->x() - (1 * this->unitDashMultiplier));
 		}
 	}
+}
+
+void PlayerUnit::setPlayerId(Uint8 id)
+{
+	this->playerId = id;
+	this->hudElement.setPosition(
+		{
+			48 * (1 + id) + (this->hudElement.getTexture().getWidth() * id),
+			32
+		}
+	);
 }

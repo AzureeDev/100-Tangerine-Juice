@@ -41,6 +41,9 @@
     <Filter Include="LClasses\Ingame">
       <UniqueIdentifier>{9a5d6224-be9c-4320-b1fa-de556a84e442}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Panels">
+      <UniqueIdentifier>{e902babf-6df4-4fd7-bdbc-532ece53c4d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -119,6 +122,28 @@
     <ClCompile Include="PlayerUnit.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Classes\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelEncounter.cpp">
+      <Filter>Classes\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelBonus.cpp">
+      <Filter>Classes\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelDrop.cpp">
+      <Filter>Classes\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelHeal.cpp">
+      <Filter>Classes\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelMove.cpp">
+      <Filter>Classes\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelPower.cpp">
+      <Filter>Classes\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="HUDUnit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -200,6 +225,28 @@
     <ClInclude Include="PlayerUnit.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>Classes\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelEncounter.h">
+      <Filter>Classes\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelBonus.h">
+      <Filter>Classes\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelDrop.h">
+      <Filter>Classes\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelHeal.h">
+      <Filter>Classes\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelMove.h">
+      <Filter>Classes\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelPower.h">
+      <Filter>Classes\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="HUDUnit.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">
