@@ -20,4 +20,6 @@ unique_ptr<TimerManager> Globals::timer = nullptr;
 */
 
 GameIntro* LilacClasses::GameIntro = nullptr; 
-MainMenu* LilacClasses::MainMenu = nullptr;
+MainMenu* LilacClasses::MainMenu = nullptr; 
+PreGame* LilacClasses::PreGame = nullptr;
+Tangerine* LilacClasses::Tangerine = nullptr;

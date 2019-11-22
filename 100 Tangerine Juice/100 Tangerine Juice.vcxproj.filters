@@ -38,6 +38,9 @@
     <Filter Include="LClasses\Components">
       <UniqueIdentifier>{bd7ed74d-333f-4897-8a9b-e338395bbf37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LClasses\Ingame">
+      <UniqueIdentifier>{9a5d6224-be9c-4320-b1fa-de556a84e442}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -106,6 +109,15 @@
     </ClCompile>
     <ClCompile Include="TimerCallbacks.cpp">
       <Filter>Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="PreGame.cpp">
+      <Filter>LClasses\Ingame</Filter>
+    </ClCompile>
+    <ClCompile Include="Tangerine.cpp">
+      <Filter>LClasses\Ingame</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUnit.cpp">
+      <Filter>Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +190,15 @@
     </ClInclude>
     <ClInclude Include="TimerCallbacks.h">
       <Filter>Callbacks</Filter>
+    </ClInclude>
+    <ClInclude Include="PreGame.h">
+      <Filter>LClasses\Ingame</Filter>
+    </ClInclude>
+    <ClInclude Include="Tangerine.h">
+      <Filter>LClasses\Ingame</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUnit.h">
+      <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

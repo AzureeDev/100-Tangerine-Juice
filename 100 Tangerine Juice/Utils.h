@@ -29,6 +29,7 @@ struct Utils
 	static const std::string getDateTime();
 	static std::string strToUpper(const std::string str);
 	static void openBrowserLink(const std::string link);
+	static int randBetween(const int min, const int max);
 };
 
 template<typename Nb>

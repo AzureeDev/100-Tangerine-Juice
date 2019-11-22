@@ -18,6 +18,12 @@ SDL_Texture* ResourcesManager::createTexture(const string path)
 	}
 
 	SDL_Texture* texture = IMG_LoadTexture(Globals::engine->getRenderer(), path.c_str());
+
+	if (texture == nullptr)
+	{
+		SDL_Log("ResourcesManager::createTexture - There was an error loading %s. Is the path correct?", path.c_str());
+	}
+
 	this->textures.push_back({ path, texture });
 
 	return texture;

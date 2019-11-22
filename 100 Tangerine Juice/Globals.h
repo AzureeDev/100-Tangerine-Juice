@@ -27,9 +27,13 @@ struct Globals
 /* LilacClasses */
 #include "GameIntro.h"
 #include "MainMenu.h"
+#include "PreGame.h"
+#include "Tangerine.h"
 
 struct LilacClasses
 {
 	static GameIntro* GameIntro;
 	static MainMenu* MainMenu;
+	static PreGame* PreGame;
+	static Tangerine* Tangerine;
 };

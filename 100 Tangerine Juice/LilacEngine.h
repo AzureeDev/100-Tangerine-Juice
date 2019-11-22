@@ -4,7 +4,7 @@
 #include <memory>
 #include <SDL.h>
 #include "LClass.h"
-#include "LTexture.h"
+#include "Unit.h"
 
 using std::string;
 using std::vector;
@@ -15,10 +15,12 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.46.0";
-	string mainMenuMessage = "Welcome to 100% Tangerine Juice! The update 46 added a TimerManager, and continued work on the unit card.";
+	string engineVersion = "1.47.0";
+	string mainMenuMessage = "Welcome to 100% Tangerine Juice! The update 47 brings a simple Camera.";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
+	SDL_Rect camera = { 0, 0, 1920, 1080 };
+	Unit* activeUnit = nullptr;
 	DisplaySettings displaySettings = {};
 	vector<LilacClass> lilacClasses = {};
 	LTexture cursor;
@@ -32,6 +34,7 @@ private:
 	void initBaseClasses();
 	void update();
 	void destroyClasses();
+	void checkBackButton();
 
 public:
 	void init();
@@ -40,6 +43,8 @@ public:
 	DisplaySettings getDisplaySettings();
 	SDL_Renderer* getRenderer();
 	SDL_Window* getWindow();
+	SDL_Rect getCamera();
+	void setActiveCameraUnit(Unit* newUnit);
 	vector<LilacClass> getLilacClasses();
 	void destroyClass(const string className);
 	string getVersion();

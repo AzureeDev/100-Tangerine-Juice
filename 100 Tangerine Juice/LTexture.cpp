@@ -231,9 +231,10 @@ void LTexture::setSize(const int w, const int h)
 	this->textureHeight = h;
 }
 
-void LTexture::setFixedSize(const unsigned int fixedSize)
+void LTexture::setFixedSize(const unsigned int fixedSize, const bool keepHeight)
 {
 	this->fixedSizeSheet = fixedSize;
+	this->keepSheetHeight = keepHeight;
 }
 
 void LTexture::setTextureFlip(const bool state)
@@ -338,7 +339,7 @@ void LTexture::placeMiddleScreen(const bool useSheetSize)
 		
 }
 
-void LTexture::render()
+void LTexture::render(SDL_Rect cameraRect)
 {
 	if (this->texture == nullptr)
 	{
@@ -355,20 +356,34 @@ void LTexture::render()
 
 	if (this->fixedSizeSheet > 0)
 	{
-		int ticks = SDL_GetTicks();
+		const int ticks = SDL_GetTicks();
 
 		if (this->nbAnimations > 0)
 		{
 			this->textureSpriteId = (ticks / this->animationSpeed) % this->nbAnimations;
 		}
 
+		const int heightSize = this->keepSheetHeight ? this->getHeight() : this->fixedSizeSheet;
+
 		srcRect = { this->fixedSizeSheet * this->textureSpriteId, 0, this->fixedSizeSheet, this->fixedSizeSheet };
-		destRect = { this->getX(), this->getY(), this->fixedSizeSheet, this->fixedSizeSheet };
+		destRect = { this->getX(), this->getY(), this->fixedSizeSheet, heightSize };
+
+		if (cameraRect.x > 0 || cameraRect.y > 0)
+		{
+			destRect.x = this->getPosition().x - cameraRect.x;
+			destRect.y = this->getPosition().y - cameraRect.y;
+		}
 	}
 	else
 	{
 		srcRect = { 0, 0, this->getWidth(), this->getHeight() };
 		destRect = { this->getX(), this->getY(), this->getWidth(), this->getHeight() };
+
+		if (cameraRect.x > 0 || cameraRect.y > 0)
+		{
+			destRect.x = this->getPosition().x - cameraRect.x;
+			destRect.y = this->getPosition().y - cameraRect.y;
+		}
 	}
 
 	SDL_Point pt = { 0, 0 };

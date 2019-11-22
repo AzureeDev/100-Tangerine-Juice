@@ -5,7 +5,8 @@ using std::string;
 
 struct TimerCallbacks
 {
-	static void clbkTest();
-	static void clbkTest2();
+	static void mainMenuUnitAnimation();
+	static void createGame();
+	static void getInGame();
 };
 

@@ -82,6 +82,24 @@ void LButton::supplyUnitCallback(Unit* unit, std::function<void(Unit*)> clbk)
 	this->buttonUnitCallback = clbk;
 }
 
+void LButton::executeCallback()
+{
+	if (this->buttonCallback != NULL)
+	{
+		this->buttonCallback();
+	}
+
+	if (this->buttonStrCallback != NULL)
+	{
+		this->buttonStrCallback(this->buttonBindedStr);
+	}
+
+	if (this->buttonUnitCallback != NULL)
+	{
+		this->buttonUnitCallback(this->buttonBindedUnit);
+	}
+}
+
 void LButton::event(const SDL_Event& ev)
 {
 	if (!this->buttonEnabled)
@@ -98,22 +116,7 @@ void LButton::event(const SDL_Event& ev)
 				SFXManager::playSFX("btn_clicked");
 			}
 
-			if (this->buttonCallback != NULL)
-			{
-				this->buttonCallback();
-			}
-
-			if (this->buttonStrCallback != NULL)
-			{
-				this->buttonStrCallback(this->buttonBindedStr);
-			}
-
-			if (this->buttonUnitCallback != NULL)
-			{
-				this->buttonUnitCallback(this->buttonBindedUnit);
-			}
-
-			SDL_Log("Button %s clicked.", this->getId().c_str());
+			this->executeCallback();
 		}
 	}
 }
@@ -132,14 +135,30 @@ void LButton::setX(const int x)
 {
 	this->buttonX = x;
 	this->buttonTexture.setX(x);
-	this->buttonText.setX(x);
+
+	// Recalculate text position
+	if (this->buttonTextStr != "")
+	{
+		this->buttonText.setPosition(
+			this->buttonTexture.getX() + (this->buttonTexture.getWidth() / 2) - buttonText.getWidth() / 2,
+			this->buttonTexture.getY() + (this->buttonTexture.getHeight() / 2) - buttonText.getHeight() / 2
+		);
+	}
 }
 
 void LButton::setY(const int y)
 {
 	this->buttonY = y;
 	this->buttonTexture.setY(y);
-	this->buttonText.setY(y);
+
+	// Recalculate text position
+	if (this->buttonTextStr != "")
+	{
+		this->buttonText.setPosition(
+			this->buttonTexture.getX() + (this->buttonTexture.getWidth() / 2) - buttonText.getWidth() / 2,
+			this->buttonTexture.getY() + (this->buttonTexture.getHeight() / 2) - buttonText.getHeight() / 2
+		);
+	}
 }
 
 void LButton::setPosition(const int x, const int y)
@@ -152,6 +171,9 @@ void LButton::setPosition(const int x, const int y)
 		this->buttonTexture.getX() + (this->buttonTexture.getWidth() / 2) - buttonText.getWidth() / 2,
 		this->buttonTexture.getY() + (this->buttonTexture.getHeight() / 2) - buttonText.getHeight() / 2
 	);
+
+	this->animationMaxButtonX = x + 20;
+	this->animationOriginalX = x;
 }
 
 void LButton::setPosition(const Vector2i pos)
@@ -195,6 +217,11 @@ void LButton::setAllowSound(const bool state)
 	this->allowSound = state;
 }
 
+void LButton::setAllowAnimation(const bool state)
+{
+	this->allowHoverAnimation = state;
+}
+
 void LButton::render()
 {
 	if (this == nullptr)
@@ -215,12 +242,22 @@ void LButton::render()
 					SFXManager::playSFX("btn_over");
 					this->playedSoundHighlight = true;
 				}
+
+				if (this->getX() < this->animationMaxButtonX && this->allowHoverAnimation)
+				{
+					this->setX(this->getX() + 2);
+				}
 			}
 		}
 		else
 		{
 			this->buttonTexture.resetBaseColor();
 			this->playedSoundHighlight = false;
+
+			if (this->getX() > this->animationOriginalX && this->allowHoverAnimation)
+			{
+				this->setX(this->getX() - 2);
+			}
 		}
 
 		this->buttonTexture.render();

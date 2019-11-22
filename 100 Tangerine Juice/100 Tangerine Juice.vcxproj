@@ -138,6 +138,8 @@
     <ClCompile Include="ButtonCallbacks.cpp" />
     <ClCompile Include="GameIntro.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="PlayerUnit.cpp" />
+    <ClCompile Include="PreGame.cpp" />
     <ClCompile Include="LButton.cpp" />
     <ClCompile Include="LClass.cpp" />
     <ClCompile Include="LilacEngine.cpp" />
@@ -150,6 +152,7 @@
     <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="SFXManager.cpp" />
     <ClCompile Include="SkillDefinitions.cpp" />
+    <ClCompile Include="Tangerine.cpp" />
     <ClCompile Include="TimerCallbacks.cpp" />
     <ClCompile Include="TimerManager.cpp" />
     <ClCompile Include="UIManager.cpp" />
@@ -163,6 +166,8 @@
     <ClInclude Include="ButtonCallbacks.h" />
     <ClInclude Include="GameIntro.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="PlayerUnit.h" />
+    <ClInclude Include="PreGame.h" />
     <ClInclude Include="LButton.h" />
     <ClInclude Include="LClass.h" />
     <ClInclude Include="LilacEngine.h" />
@@ -175,6 +180,7 @@
     <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="SFXManager.h" />
     <ClInclude Include="SkillDefinitions.h" />
+    <ClInclude Include="Tangerine.h" />
     <ClInclude Include="TimerCallbacks.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="UIManager.h" />

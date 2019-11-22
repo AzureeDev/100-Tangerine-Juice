@@ -10,7 +10,10 @@ struct UnitParams
 	enum class UnitStatistics {
 		Attack,
 		Defense,
-		Evasion
+		Evasion,
+		Recovery,
+		SkillPowerStart,
+		SkillPowerMax
 	};
 	
 	string unitId;

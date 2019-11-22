@@ -7,19 +7,31 @@ using std::string;
 
 class Unit
 {
-private:
+protected:
 	string unitId = "";
 	string unitAnimation = "std";
+	string currentAnimation = "std";
 	LTexture unitTexture;
+	LTexture unitShadow;
 	Vector2i unitPosition = { 0, 0 };
+	bool unitFlipped = false;
+	bool unitDashing = false;
+	int unitDashMultiplier = 1;
 
 public:
 	Unit();
 	Unit(const string unitIdentifier, const string defaultAnimation = "std");
 	LTexture& texture();
+	Vector2i position();
+	int x();
+	int y();
+	void setAnimation(const string newAnimation);
+	void setDash(const bool state, const int multiplier = 1);
+	void setX(const int x);
+	void setY(const int y);
 	void setPosition(const Vector2i pos);
 	void setFlipped(const bool state);
 	void placeMiddleScreen();
-	void render();
+	virtual void render(int camX = 0, int camY = 0);
 };
 

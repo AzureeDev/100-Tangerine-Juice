@@ -81,7 +81,7 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("defaultFontTiny", "assets/fonts/sofia.otf", 11);
 	Globals::resources->createFont("defaultFontSmall", "assets/fonts/sofia.otf", 16);
 	Globals::resources->createFont("defaultFont", "assets/fonts/sofia.otf", 24);
-	Globals::resources->createFont("defaultFont28", "assets/fonts/sofia.otf", 28);
+	Globals::resources->createFont("defaultFont27", "assets/fonts/sofia.otf", 27);
 	Globals::resources->createFont("defaultFont32", "assets/fonts/sofia.otf", 32);
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
 
@@ -104,7 +104,7 @@ void LilacEngine::initBaseResources()
 
 void LilacEngine::initBaseClasses()
 {
-	this->createClass("GameIntro", new GameIntro());
+	this->createClass("GameIntro", new GameIntro);
 }
 
 void LilacEngine::update()
@@ -132,6 +132,16 @@ void LilacEngine::update()
 
 			case SDL_EventType::SDL_QUIT:
 				this->exit();
+				break;
+
+			case SDL_EventType::SDL_KEYDOWN:
+				
+				switch (event.key.keysym.sym) {
+				case SDLK_ESCAPE:
+					this->checkBackButton();
+					break;
+				}
+
 				break;
 
 			case SDL_EventType::SDL_MOUSEBUTTONDOWN:
@@ -163,6 +173,16 @@ void LilacEngine::update()
 		// LClass updates.
 		Globals::classEngine->update(deltaTime);
 
+		// Camera update on a active unit
+		if (this->activeUnit != nullptr)
+		{
+			this->camera.x = (this->activeUnit->position().x + 256) - (Globals::engine->getDisplaySettings().wsWidth / 2);
+			this->camera.y = this->activeUnit->position().y - (Globals::engine->getDisplaySettings().wsHeight / 2);
+		}
+
+		if (this->camera.x < 0) { this->camera.x = 0; }	
+		if (this->camera.y < 0) { this->camera.y = 0; }
+
 		// Cursor pos and render, always on top
 		this->cursor.setPosition({ Globals::mousePositionX, Globals::mousePositionY });
 		this->cursor.render();
@@ -184,6 +204,19 @@ void LilacEngine::destroyClasses()
 		delete this->lilacClasses[i].lilacClass;
 		this->lilacClasses[i].lilacClass = nullptr;
 		this->lilacClasses.erase(this->lilacClasses.begin() + i);
+	}
+}
+
+void LilacEngine::checkBackButton()
+{
+	// If a generic back button exists, execute it if escape is pressed.
+
+	for (const auto& button : Globals::UI->getButtons())
+	{
+		if (button.name == "back")
+		{
+			button.buttonRef->executeCallback();
+		}
 	}
 }
 
@@ -255,6 +288,16 @@ SDL_Renderer* LilacEngine::getRenderer()
 SDL_Window* LilacEngine::getWindow()
 {
 	return this->window;
+}
+
+SDL_Rect LilacEngine::getCamera()
+{
+	return this->camera;
+}
+
+void LilacEngine::setActiveCameraUnit(Unit* newUnit)
+{
+	this->activeUnit = newUnit;
 }
 
 vector<LilacClass> LilacEngine::getLilacClasses()

@@ -3,6 +3,7 @@
 #include <algorithm>
 #define NOMINMAX
 #include <Windows.h>
+#include <random>
 
 std::vector<unsigned int> Utils::unpackColor(const SDL_Color& color)
 {
@@ -58,4 +59,14 @@ std::string Utils::strToUpper(const std::string str)
 void Utils::openBrowserLink(const std::string link)
 {
 	ShellExecute(0, 0, LPCSTR(link.c_str()), 0, 0, SW_SHOW);
+}
+
+int Utils::randBetween(const int min, const int max)
+{
+	std::random_device seeder;
+	std::mt19937 engine(seeder());
+	const std::uniform_int_distribution<int> dist(min, max);
+	const int randomNumber = dist(engine);
+
+	return randomNumber;
 }

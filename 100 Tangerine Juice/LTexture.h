@@ -27,6 +27,7 @@ private:
 	int fixedSizeSheet = 0;
 	int animationSpeed = 125;
 	int nbAnimations = 0;
+	bool keepSheetHeight = true;
 	int textureAngle = 0;
 	bool textureFlipped = false;
 	bool scrollable = false;
@@ -68,7 +69,7 @@ public:
 	void setHeight(const int newHeight);
 	void setWidth(const int newWidth);
 	void setSize(const int w, const int h);
-	void setFixedSize(const unsigned int fixedSize);
+	void setFixedSize(const unsigned int fixedSize, const bool keepHeight = true);
 	void setTextureFlip(const bool state);
 	void setAngle(const int newAngle);
 	void setAnimationCount(const unsigned int animCount);
@@ -78,5 +79,5 @@ public:
 	void setScrollable(const bool state, const int multiplier = 1);
 	void reverseScroll(const bool state);
 	void placeMiddleScreen(const bool useSheetSize = false);
-	void render();
+	void render(SDL_Rect cameraRect = {});
 };

@@ -31,11 +31,13 @@ private:
 	vector<MainMenuButtonDefinition> mainMenuButtons = {};
 
 public:
-	vector<UnitCardComponent*> unitCards = {};
+	Unit mmUnit;
 
 	MainMenu();
+	~MainMenu();
 	void init();
 	void createWorld();
+	void createFwdUnits();
 	void createLeftPanel();
 	void createTopBar();
 	void createInformationBar();

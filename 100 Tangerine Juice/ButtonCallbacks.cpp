@@ -1,6 +1,8 @@
 #include "ButtonCallbacks.h"
 #include "Globals.h"
 #include "Utils.h"
+#include "OverlayManager.h"
+#include "MusicManager.h"
 
 void ButtonCallbacks::proceedToMainMenu()
 {
@@ -39,12 +41,6 @@ void ButtonCallbacks::unitDBRequestInfo(const string unitIdentifier)
 
 void ButtonCallbacks::backToMainMenu()
 {
-	for (auto& unitCard : LilacClasses::MainMenu->unitCards)
-	{
-		Globals::engine->destroyClass(unitCard->getParams().unitId + "_unitCard");
-		unitCard = nullptr;
-	}
-
 	Globals::engine->destroyClass("unitCardComponent");
 
 	LilacClasses::MainMenu->clearButtons();
@@ -55,4 +51,13 @@ void ButtonCallbacks::backToMainMenu()
 void ButtonCallbacks::openLink(const string link)
 {
 	Utils::openBrowserLink(link);
+}
+
+void ButtonCallbacks::startGame()
+{
+	LilacClasses::MainMenu->clearButtons();
+	OverlayManager::fadeIn(3);
+	MusicManager::fadeOutMusic();
+
+	Globals::timer->createTimer("ingameState", 3, TimerCallbacks::createGame, 1);
 }

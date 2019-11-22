@@ -11,5 +11,6 @@ public:
 	static void unitDBRequestInfo(const string unitIdentifier);
 	static void backToMainMenu();
 	static void openLink(const string link);
+	static void startGame();
 };
 

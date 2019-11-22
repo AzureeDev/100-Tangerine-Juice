@@ -11,6 +11,11 @@ MainMenu::MainMenu()
 	LilacClasses::MainMenu = this;
 }
 
+MainMenu::~MainMenu()
+{
+	Globals::timer->removeTimer("mmUnit1_clbk");
+}
+
 void MainMenu::init()
 {
 	MusicManager::playMusic("assets/musics/mainmenu.mp3");
@@ -20,12 +25,10 @@ void MainMenu::init()
 	std::reverse(UnitDefinitions::def.begin(), UnitDefinitions::def.end());
 
 	this->createWorld();
+	this->createFwdUnits();
 	this->createLeftPanel();
 	this->createTopBar();
 	this->createInformationBar();
-
-	Globals::timer->createTimer("helloworld", 5, TimerCallbacks::clbkTest);
-	Globals::timer->createTimer("hellowww", 1, TimerCallbacks::clbkTest2, 10);
 }
 
 void MainMenu::createWorld()
@@ -33,7 +36,8 @@ void MainMenu::createWorld()
 	const vector<string> worlds = {
 		"assets/worlds/ml_sky_bw.png",
 		"assets/worlds/wire_bw.png",
-		"assets/worlds/ri_se_sky.png"
+		"assets/worlds/ri_se_sky.png",
+		"assets/worlds/sr_sky.png"
 	};
 
 	const int worldChosen = rand() % worlds.size();
@@ -46,7 +50,12 @@ void MainMenu::createWorld()
 	}
 
 	world.setWorldColor({ 79, 202, 255, 255 });
-	world.setScrollMultiplier(6);
+	world.setScrollMultiplier(3);
+}
+
+void MainMenu::createFwdUnits()
+{
+	Globals::timer->createTimer("mmUnit1_clbk", 6, TimerCallbacks::mainMenuUnitAnimation);
 }
 
 void MainMenu::createLeftPanel()
@@ -150,7 +159,7 @@ void MainMenu::calculateButtonPosition()
 	{
 		if (i == 0)
 		{
-			mainMenuButtons[i].instance->setPosition({ (500 / 2) - mainMenuButtons[i].instance->getTexture().getWidth() / 2, leftPanel.bottom().y - mainMenuButtons[i].instance->getTexture().getHeight() - 64 });
+			mainMenuButtons[i].instance->setPosition({ (500 / 2) - mainMenuButtons[i].instance->getTexture().getWidth() / 2 - 16, leftPanel.bottom().y - mainMenuButtons[i].instance->getTexture().getHeight() - 64 });
 		}
 		else
 		{
@@ -160,6 +169,7 @@ void MainMenu::calculateButtonPosition()
 		mainMenuButtons[i].instance->setTextColor({ 20, 20, 20, 255 });
 		mainMenuButtons[i].instance->getTexture().setColor({ 255, 255, 255, 255 }, true);
 		mainMenuButtons[i].instance->setHighlightColor({ 171, 199, 209 });
+		mainMenuButtons[i].instance->setAllowAnimation(true);
 	}
 }
 
@@ -170,6 +180,7 @@ void MainMenu::createMainMenuButtons()
 	LButton* gameCredits = Globals::UI->createButton("gameCredits", DEFAULT_BUTTON_TEXTURE);
 	LButton* gameQuit = Globals::UI->createButton("gameQuit", DEFAULT_BUTTON_TEXTURE);
 
+	gameStart->supplyCallback(ButtonCallbacks::startGame);
 	characterDatabase->supplyCallback(ButtonCallbacks::mainMenuUnitDB);
 	gameCredits->supplyCallback(ButtonCallbacks::mainMenuCredits);
 	gameQuit->supplyCallback(ButtonCallbacks::quitGame);
@@ -191,16 +202,26 @@ void MainMenu::createCreditsButtons()
 {
 	LButton* back = Globals::UI->createButton("back", DEFAULT_BUTTON_TEXTURE);
 	LButton* fbf = Globals::UI->createButton("fbf", DEFAULT_BUTTON_TEXTURE);
+	LButton* oj = Globals::UI->createButton("oj", DEFAULT_BUTTON_TEXTURE);
+	LButton* deku = Globals::UI->createButton("deku", DEFAULT_BUTTON_TEXTURE);
+
+
+	deku->supplyCallback(ButtonCallbacks::openLink, "https://music.apple.com/us/artist/deku/657266888");
+	oj->supplyCallback(ButtonCallbacks::openLink, "http://daidai.moo.jp/");
 	fbf->supplyCallback(ButtonCallbacks::openLink, "https://fruitbatfactory.com/");
 	back->supplyCallback(ButtonCallbacks::backToMainMenu);
 
 	mainMenuButtons.push_back({ "back", back });
 	mainMenuButtons.push_back({ "fbf", fbf });
+	mainMenuButtons.push_back({ "deku", deku });
+	mainMenuButtons.push_back({ "oj", oj });
 
 	this->calculateButtonPosition();
 
 	back->setText("Back");
 	fbf->setText("Fruitbat Factory");
+	deku->setText("DEKU");
+	oj->setText("Orange_Juice");
 }
 
 void MainMenu::createUnitDBButtons()
@@ -236,6 +257,9 @@ void MainMenu::update(const float dt)
 {
 	// World layer
 	world.render();
+
+	// Unit layer
+	mmUnit.render();
 
 	// Top Bar layer
 	topBar.render();

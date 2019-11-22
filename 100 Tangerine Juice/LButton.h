@@ -15,7 +15,7 @@ private:
 	string buttonId;
 	LTexture buttonTexture;
 	LTexture buttonText;
-	string buttonTextStr;
+	string buttonTextStr = "";
 	SDL_Color buttonTextColor = { 255, 255, 255, 255 };
 	SDL_Color buttonHighlightColor = { 255, 255, 255, 255 };
 	string buttonPath;
@@ -28,12 +28,15 @@ private:
 	string buttonBindedStr = "";
 	int buttonX = 0;
 	int buttonY = 0;
+	int animationOriginalX = 0;
+	int animationMaxButtonX = 0;
 	int buttonWidth = 0;
 	int buttonHeight = 0;
 	bool buttonVisible = true;
 	bool buttonEnabled = true;
 	bool allowSound = true;
 	bool playedSoundHighlight = false;
+	bool allowHoverAnimation = false;
 
 public:
 	LButton();
@@ -46,6 +49,7 @@ public:
 	void supplyCallback(std::function<void()> clbk);
 	void supplyCallback(std::function<void(string)> clbk, const string arg);
 	void supplyUnitCallback(Unit* unit, std::function<void(Unit*)> clbk);
+	void executeCallback();
 	void event(const SDL_Event& ev);
 	int getX();
 	int getY();
@@ -59,6 +63,7 @@ public:
 	void setText(const string text);
 	void setTextColor(const SDL_Color color);
 	void setAllowSound(const bool state);
+	void setAllowAnimation(const bool state);
 
 	void render();
 };

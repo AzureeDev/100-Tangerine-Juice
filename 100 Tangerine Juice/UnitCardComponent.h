@@ -10,6 +10,7 @@ private:
 
 	LTexture unitCardBg;
 	Unit unit;
+	LTexture unitArt;
 	LTexture unitDescriptionLabel;
 
 	// Stats
@@ -22,6 +23,11 @@ private:
 	LTexture unitDefAmount;
 	LTexture unitEvaLabel;
 	LTexture unitEvaAmount;
+	LTexture unitRecLabel;
+	LTexture unitRecAmount;
+	LTexture unitPwrLabel;
+	LTexture unitPwrEffect;
+	LTexture unitPwrAmount;
 
 	// Skills
 	LTexture unitSkillTitle;

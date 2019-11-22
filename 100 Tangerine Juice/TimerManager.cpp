@@ -2,11 +2,11 @@
 
 void TimerManager::createTimer(const string timerID, const float interval, const function<void()> callback, const int executionRepeat)
 {
-	for (const auto& data : this->timers)
+	for (size_t i = 0; i < this->timers.size(); ++i)
 	{
-		if (data.timerName == timerID)
+		if (this->timers[i].timerName == timerID)
 		{
-			return;
+			this->timers.erase(this->timers.begin() + i);
 		}
 	}
 
@@ -20,6 +20,18 @@ void TimerManager::createTimer(const string timerID, const float interval, const
 			0
 		}
 	);
+}
+
+void TimerManager::removeTimer(const string timerID)
+{
+	for (size_t i = 0; i < this->timers.size(); ++i)
+	{
+		if (this->timers[i].timerName == timerID)
+		{
+			this->timers.erase(this->timers.begin() + i);
+			break;
+		}
+	}
 }
 
 void TimerManager::update(const float dt)
@@ -52,12 +64,13 @@ void TimerManager::update(const float dt)
 			if (params->callback != NULL)
 			{
 				params->instance.reset();
-				params->callback();
-			}
 
-			if (params->executionRepeat > 0)
-			{
-				params->totalCurrentRepeats++;
+				if (params->executionRepeat > 0)
+				{
+					params->totalCurrentRepeats++;
+				}
+
+				params->callback();
 			}
 		}
 
