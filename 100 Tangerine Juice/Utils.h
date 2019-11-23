@@ -1,5 +1,8 @@
 #pragma once
 #include <SDL.h>
+#include <algorithm>
+#include <random>
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -30,6 +33,8 @@ struct Utils
 	static std::string strToUpper(const std::string str);
 	static void openBrowserLink(const std::string link);
 	static int randBetween(const int min, const int max);
+	template <typename T>
+	static void shuffle(std::vector<T>& vec);
 };
 
 template<typename Nb>
@@ -39,4 +44,11 @@ inline Nb Utils::clamp(Nb number, const Nb min, const Nb max)
 	number = number < min ? min : number;
 
 	return number;
+}
+
+template<typename T>
+inline void Utils::shuffle(std::vector<T>& vec)
+{
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::shuffle(vec.begin(), vec.end(), std::default_random_engine(seed));
 }

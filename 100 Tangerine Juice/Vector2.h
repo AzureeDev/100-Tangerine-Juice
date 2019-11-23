@@ -20,7 +20,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-
+#pragma warning( push )
+#pragma warning( disable : 4244)
 #ifndef VECTOR2_HPP
 #define VECTOR2_HPP
 
@@ -308,6 +309,7 @@ public:
 	{
 		return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
 	}
+	
 
 	/// Linearly interpolates between this Vector2 and the given Vector2 using the provided value.
 	const Vector2 lerp(const Vector2& other, double value) const
@@ -322,8 +324,8 @@ public:
 		}
 		else
 		{
-			return Vector2(x + (other.x - x) * value,
-				y + (other.y - y) * value);
+			return Vector2(x + (other.x - x) * static_cast<float>(value),
+				y + (other.y - y) * static_cast<float>(value));
 		}
 	}
 
@@ -504,4 +506,5 @@ typedef Vector2<uint_fast16_t>      Vector2u16;
 typedef Vector2<uint_fast32_t>      Vector2u32;
 /// fast 64 bit unsigned int
 typedef Vector2<uint_fast64_t>      Vector2u64;
+#pragma warning( pop )
 #endif //VECTOR2_HPP

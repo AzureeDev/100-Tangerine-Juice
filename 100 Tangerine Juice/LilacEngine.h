@@ -9,22 +9,23 @@
 using std::string;
 using std::vector;
 
-struct DisplaySettings { Uint16 w; Uint16 h; Uint16 refreshRate; Uint16 wsWidth; Uint16 wsHeight; };
+struct DisplaySettings { int w; int h; int refreshRate; int wsWidth; int wsHeight; };
 struct LilacClass { string name; LClass* lilacClass; };
 
 class LilacEngine
 {
 private:
-	string engineVersion = "1.48.0";
+	string engineVersion = "1.49.0";
 	string mainMenuMessage = "Welcome to 100% Tangerine Juice! Hope you will enjoy your time here. ~";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 	SDL_Rect camera = { 0, 0, 1920, 1080 };
 	Unit* activeUnit = nullptr;
+	Unit* currentActiveUnit = nullptr;
 	DisplaySettings displaySettings = {};
 	vector<LilacClass> lilacClasses = {};
 	LTexture cursor;
-
+	float timer = 0.0f;
 	bool running = true;
 
 private:
@@ -37,6 +38,8 @@ private:
 	void checkBackButton();
 
 public:
+	float GLOBAL_DELTA_TIME = 0.0f;
+
 	void init();
 
 	void createClass(const string name, LClass* lilacClass);

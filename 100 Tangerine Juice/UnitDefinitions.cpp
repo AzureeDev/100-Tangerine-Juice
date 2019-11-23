@@ -8,6 +8,12 @@ vector<UnitParams> UnitDefinitions::def = {
 		Default Pose
 		Max Health
 		Vector unit stats
+
+		/*
+			Vector Stats
+		//*//*
+
+		Attack, Defense, Evasion, Recovery, SkillPowerStart, SkillPowerMax
 	*/
 	{
 		"suguri",
@@ -15,7 +21,7 @@ vector<UnitParams> UnitDefinitions::def = {
 		"Suguri is a high-risk, high-reward unit. She's able to gather more stars from Bonus panels, and have decent battle stats. Beware, loosing in battles could cost you the victory.",
 		"std",
 		4,
-		{ 1, -1, 2, 5, 1, 4 }
+		{ 1, -1, 2, 5, 1, 5 }
 	},
 	{ 
 		"sora",
@@ -23,7 +29,7 @@ vector<UnitParams> UnitDefinitions::def = {
 		"Sora is a balanced unit. Her skills are often relying on boosting her own stats rather speeding up through the end of the Road.",
 		"std", 
 		5, 
-		{ 1, 0, 1, 5, 1, 4 }
+		{ 1, 0, 1, 5, 1, 5 }
 	},
 	{ 
 		"sora_m", 
@@ -31,7 +37,7 @@ vector<UnitParams> UnitDefinitions::def = {
 		"Sora, in her Military variant, is more focused on combat, and the ability to pursue other units, in order to bring them down.",
 		"std", 
 		4, 
-		{ 1, 0, 1, 6, 1, 4 }
+		{ 1, 0, 1, 6, 1, 5 }
 	},
 	{
 		"hime",
@@ -39,7 +45,7 @@ vector<UnitParams> UnitDefinitions::def = {
 		"Hime is having the same passive as Suguri, which means she gather more stars from Bonus panels. Her battle stats are lowered though, making her less effective in battles.",
 		"std",
 		5,
-		{ 1, -1, 0, 5, 0, 4 }
+		{ 1, -1, 0, 5, 0, 5 }
 	},
 	{ 
 		"sham", 
@@ -63,7 +69,7 @@ vector<UnitParams> UnitDefinitions::def = {
 		"Saki heals herself by 1 HP at the beginning of her turns. She won't be very effective in battles.",
 		"std",
 		4,
-		{ -1, 0, 1, 5, 0, 4 }
+		{ -1, 0, 1, 5, 0, 3 }
 	},
 	{ 
 		"sb",

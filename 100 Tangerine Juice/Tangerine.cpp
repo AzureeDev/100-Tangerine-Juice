@@ -12,7 +12,7 @@
 #include "PanelMove.h"
 #include "PanelPower.h"
 
-float timer = 0.0f;
+const int MAX_MAP_SIZE = 100;
 
 Tangerine::Tangerine()
 {
@@ -36,18 +36,12 @@ void Tangerine::init()
 		"saki"
 	};
 
-	/*
-	test = PlayerUnit("sora_m");
-	test.setAnimation("fwd");
-	test.texture().placeLeftScreen();
-	test.setFlipped(true);
-	test.setDash(true, 9);
-	test.setActiveUnit();*/
-
-	world.setNewWorld("assets/worlds/ml_sky.png");
+	world.setNewWorld("assets/worlds/ri_se_sky.png");
+	world.setAllowClouds(true);
+	world.setWorldColor({ 100, 100, 255, 255 });
 	world.setScrollMultiplier(6);
 
-	for (size_t i = 0; i < 100; ++i)
+	for (size_t i = 0; i < MAX_MAP_SIZE; ++i)
 	{
 		const int randomizedPanel = Utils::randBetween(0, 6);
 		switch (randomizedPanel)
@@ -80,6 +74,8 @@ void Tangerine::init()
 			panels.push_back(make_unique<PanelPower>(PanelPower()));
 			break;
 		}
+
+		panels[i]->setIdentifier(i);
 		
 		if (i == 0)
 		{
@@ -94,7 +90,7 @@ void Tangerine::init()
 		{
 			panels[i]->setPosition(
 				{
-					panels[i - 1]->getPosition().x + 256,
+					panels[i - 1]->getPosition().x + 184,
 					Globals::engine->getDisplaySettings().wsHeight - panels[i]->getTexture().getHeight() - 64
 				}
 			);
@@ -105,14 +101,30 @@ void Tangerine::init()
 	{
 		units.push_back(make_unique<PlayerUnit>(PlayerUnit(uids[i])));
 		units[i]->setPlayerId(static_cast<Uint8>(i));
-		units[i]->setPosition(
-			{
+		const Vector2i initialPos = {
 				panels[0]->getPosition().x + (panels[0]->getTexture().getWidth() / 2) - (units[i]->texture().getSheetSize() / 2),
-				panels[0]->getPosition().y - 384 - (150 * static_cast<int>(i))
-			}
-		);
+				panels[0]->getPosition().y - 330// - (150 * static_cast<int>(i))
+		};
+		units[i]->setPosition(initialPos);
+		units[i]->setInitialPosition(initialPos);
 		units[i]->setFlipped(true);
+		units[i]->hud()->updateHud();
 	}
+
+	Utils::shuffle(units);
+
+	// Reposition of the huds on the right place
+	for (size_t i = 0; i < units.size(); ++i)
+	{
+		units[i]->updateHudPosition(i);
+	}
+
+	units[0]->setActiveUnit();
+}
+
+vector<unique_ptr<Panel>>& Tangerine::getMap()
+{
+	return this->panels;
 }
 
 void Tangerine::update(const float dt)
@@ -130,6 +142,4 @@ void Tangerine::update(const float dt)
 		/* Reverse order here to make the unit layer correct. */
 		units[(units.size() - 1) - i]->render(Globals::engine->getCamera());
 	}
-
-	test.render(Globals::engine->getCamera());
 }

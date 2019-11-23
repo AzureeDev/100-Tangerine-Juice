@@ -143,7 +143,9 @@
     <ClCompile Include="PanelPower.cpp">
       <Filter>Classes\Panels</Filter>
     </ClCompile>
-    <ClCompile Include="HUDUnit.cpp" />
+    <ClCompile Include="HUDUnit.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -246,7 +248,9 @@
     <ClInclude Include="PanelPower.h">
       <Filter>Classes\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="HUDUnit.h" />
+    <ClInclude Include="HUDUnit.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

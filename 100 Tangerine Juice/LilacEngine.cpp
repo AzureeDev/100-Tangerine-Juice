@@ -85,8 +85,10 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("defaultFont32", "assets/fonts/sofia.otf", 32);
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
 
-	Globals::resources->createFont("bleachFont", "assets/fonts/bleach.ttf", 24);
-	Globals::resources->createFont("bleachFontLarge", "assets/fonts/bleach.ttf", 54);
+	Globals::resources->createFont("bleachFont", "assets/fonts/bleach_fixed.ttf", 24);
+	Globals::resources->createFont("bleachFontLarge", "assets/fonts/bleach_fixed.ttf", 54);
+
+	Globals::resources->createFont("qeFont", "assets/fonts/qe.ttf", 24);
 
 	this->cursor.setNewTexture("assets/ui/cursor.png");
 
@@ -164,6 +166,10 @@ void LilacEngine::update()
 		LAST = NOW;
 		NOW = SDL_GetPerformanceCounter();
 		deltaTime = ((NOW - LAST) / (float)SDL_GetPerformanceFrequency());
+		
+		timer += deltaTime;
+
+		this->GLOBAL_DELTA_TIME = deltaTime;
 
 		SDL_RenderClear(this->renderer);
 
@@ -176,7 +182,11 @@ void LilacEngine::update()
 		// Camera update on a active unit
 		if (this->activeUnit != nullptr)
 		{
-			this->camera.x = (this->activeUnit->position().x + 256) - (Globals::engine->getDisplaySettings().wsWidth / 2);
+			Vector2i vecCamera = { this->camera.x, this->camera.y };
+#pragma warning( push )
+#pragma warning( disable : 4244)
+			this->camera.x = vecCamera.lerp({ (this->activeUnit->position().x + 256) - (Globals::engine->getDisplaySettings().wsWidth / 2), 0 }, this->timer).x;
+#pragma warning( pop )
 			this->camera.y = this->activeUnit->position().y - (Globals::engine->getDisplaySettings().wsHeight / 2);
 		}
 
@@ -297,6 +307,7 @@ SDL_Rect LilacEngine::getCamera()
 
 void LilacEngine::setActiveCameraUnit(Unit* newUnit)
 {
+	this->timer = 0.0f;
 	this->activeUnit = newUnit;
 }
 
