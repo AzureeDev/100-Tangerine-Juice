@@ -48,6 +48,25 @@ void ResourcesManager::destroyTexture(const string path)
 	}
 }
 
+void ResourcesManager::destroyTexture(const SDL_Texture* texture)
+{
+	/*
+		Destroys the texture defined by SDL_Texture*
+	*/
+
+	for (size_t i = 0; i < this->textures.size(); ++i)
+	{
+		if (this->textures[i].instance == texture)
+		{
+			SDL_DestroyTexture(this->textures[i].instance);
+			this->textures[i].instance = nullptr;
+			this->textures.erase(this->textures.begin() + i);
+
+			break;
+		}
+	}
+}
+
 TTF_Font* ResourcesManager::createFont(const string name, const string path, const int ptSize)
 {
 	/*

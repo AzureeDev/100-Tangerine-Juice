@@ -18,7 +18,8 @@ GameIntro::~GameIntro()
 
 void GameIntro::init()
 {
-	this->introUnit = Unit("sora_m");
+	this->introUnit = Unit("sora", "swordplay");
+	this->introUnit.texture().setAnimationSpeed(96);
 	this->introUnit.placeMiddleScreen();
 	this->introUnit.texture().setFade(TextureFadingState::FadeIn);
 

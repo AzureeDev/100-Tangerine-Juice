@@ -26,6 +26,19 @@ LTexture::LTexture(const string path)
 		this->textureHeight = textureSurface->h;
 	}
 	SDL_FreeSurface(textureSurface);
+	textureSurface = nullptr;
+}
+
+LTexture::~LTexture()
+{
+	/* Destroy the text (this fixes a memory leak) */
+	if (this->currentText != "")
+	{
+		SDL_DestroyTexture(this->texture);
+		this->texture = nullptr;
+		this->textureWidth = 0;
+		this->textureHeight = 0;
+	}
 }
 
 void LTexture::destroy()
@@ -56,7 +69,7 @@ void LTexture::createText(const string text, const SDL_Color color, const int ma
 	{
 		custom_font = Globals::resources->getFont("defaultFont");
 	}
-
+	
 	const unsigned int textMaxLength = maxLength == 0 ? Globals::engine->getDisplaySettings().w : maxLength;
 	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(custom_font, text.c_str(), color, textMaxLength);
 
@@ -65,6 +78,7 @@ void LTexture::createText(const string text, const SDL_Color color, const int ma
 		this->texture = SDL_CreateTextureFromSurface(Globals::engine->getRenderer(), textSurface);
 		this->textureWidth = textSurface->w;
 		this->textureHeight = textSurface->h;
+		this->currentText = text;
 
 		SDL_FreeSurface(textSurface);
 		textSurface = nullptr;
@@ -409,7 +423,7 @@ void LTexture::render(SDL_Rect cameraRect)
 		switch (this->textureFadeState)
 		{
 		case TextureFadingState::FadeIn:
-			Utils::clamp<Uint8>(this->textureColor.a += 15, 0, 255);
+			Utils::clamp<Uint8>(this->textureColor.a += 5, 0, 255);
 			SDL_SetTextureAlphaMod(this->texture, this->getAlpha());
 
 			if (this->textureColor.a >= this->textureBaseColor.a)
@@ -419,7 +433,7 @@ void LTexture::render(SDL_Rect cameraRect)
 			break;
 
 		case TextureFadingState::FadeOut:
-			Utils::clamp<Uint8>(this->textureColor.a -= 15, 0, 255);
+			Utils::clamp<Uint8>(this->textureColor.a -= 5, 0, 255);
 			SDL_SetTextureAlphaMod(this->texture, this->getAlpha());
 
 			if (this->textureColor.a <= 0)

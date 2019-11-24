@@ -18,6 +18,7 @@ class LTexture
 private:
 	SDL_Texture* texture = nullptr;
 	string texturePath = "";
+	string currentText = "";
 	SDL_Color textureBaseColor = { 255, 255, 255, 255 };
 	SDL_Color textureColor = { 255, 255, 255, 255 };
 	SDL_Color textureHighlightColor = { 255, 255, 255, 255 }; // Used by LButton
@@ -40,6 +41,7 @@ private:
 public:
 	LTexture();
 	LTexture(const string path);
+	~LTexture();
 	void destroy();
 	void hide();
 	void createText(const string text, const SDL_Color color = { 150, 150, 150, 255 }, const int maxLength = 0, TTF_Font* custom_font = nullptr);

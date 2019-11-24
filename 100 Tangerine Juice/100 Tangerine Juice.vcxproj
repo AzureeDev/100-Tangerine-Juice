@@ -84,10 +84,13 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -137,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="ButtonCallbacks.cpp" />
     <ClCompile Include="GameIntro.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="HUDUnit.cpp" />
     <ClCompile Include="Panel.cpp" />
@@ -173,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="ButtonCallbacks.h" />
     <ClInclude Include="GameIntro.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="HUDUnit.h" />
     <ClInclude Include="Panel.h" />

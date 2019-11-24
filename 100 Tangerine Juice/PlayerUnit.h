@@ -22,6 +22,7 @@ private:
 	Vector2i initialPosition = { 0, 0 };
 	Vector2i destinationPosition = { 0, 0 };
 	UnitStates currentState = UnitStates::Idle;
+	bool localPlayerUnit = false;
 	float timer = 0.0f;
 
 protected:
@@ -43,6 +44,7 @@ public:
 	void setInitialPosition(const Vector2i& pos);
 	void setActiveUnit();
 	void setPlayerId(const Uint8 id);
+	void setLocalPlayerUnit();
 	void moveTo(const Vector2i& destination);
 	void moveToPanel(const int panelId);
 	bool isKO() const;
@@ -53,5 +55,6 @@ public:
 	int getCurrentStars() const;
 	int getMaxPower() const;
 	int getCurrentPower() const;
+	bool isLocalUnit() const;
 };
 

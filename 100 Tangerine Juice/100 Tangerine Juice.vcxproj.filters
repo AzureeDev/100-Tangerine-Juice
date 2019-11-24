@@ -146,6 +146,9 @@
     <ClCompile Include="HUDUnit.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -250,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="HUDUnit.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

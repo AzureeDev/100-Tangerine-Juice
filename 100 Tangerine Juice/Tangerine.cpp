@@ -22,6 +22,8 @@ Tangerine::Tangerine()
 Tangerine::~Tangerine()
 {
 	Globals::engine->setActiveCameraUnit(nullptr);
+	this->gameManager.reset();
+	this->gameManager = nullptr;
 }
 
 void Tangerine::init()
@@ -47,31 +49,31 @@ void Tangerine::init()
 		switch (randomizedPanel)
 		{
 		case 0:
-			panels.push_back(make_unique<Panel>(Panel()));
+			panels.push_back(make_shared<Panel>(Panel()));
 			break;
 
 		case 1:
-			panels.push_back(make_unique<PanelEncounter>(PanelEncounter()));
+			panels.push_back(make_shared<PanelEncounter>(PanelEncounter()));
 			break;
 
 		case 2:
-			panels.push_back(make_unique<PanelBonus>(PanelBonus()));
+			panels.push_back(make_shared<PanelBonus>(PanelBonus()));
 			break;
 
 		case 3:
-			panels.push_back(make_unique<PanelDrop>(PanelDrop()));
+			panels.push_back(make_shared<PanelDrop>(PanelDrop()));
 			break;
 
 		case 4:
-			panels.push_back(make_unique<PanelHeal>(PanelHeal()));
+			panels.push_back(make_shared<PanelHeal>(PanelHeal()));
 			break;
 
 		case 5:
-			panels.push_back(make_unique<PanelMove>(PanelMove()));
+			panels.push_back(make_shared<PanelMove>(PanelMove()));
 			break;
 
 		case 6:
-			panels.push_back(make_unique<PanelPower>(PanelPower()));
+			panels.push_back(make_shared<PanelPower>(PanelPower()));
 			break;
 		}
 
@@ -99,7 +101,7 @@ void Tangerine::init()
 
 	for (size_t i = 0; i < 4; ++i)
 	{
-		units.push_back(make_unique<PlayerUnit>(PlayerUnit(uids[i])));
+		units.push_back(make_shared<PlayerUnit>(PlayerUnit(uids[i])));
 		units[i]->setPlayerId(static_cast<Uint8>(i));
 		const Vector2i initialPos = {
 				panels[0]->getPosition().x + (panels[0]->getTexture().getWidth() / 2) - (units[i]->texture().getSheetSize() / 2),
@@ -109,6 +111,12 @@ void Tangerine::init()
 		units[i]->setInitialPosition(initialPos);
 		units[i]->setFlipped(true);
 		units[i]->hud()->updateHud();
+
+		/* The player is always the first one, so we assume it is our local player. */
+		if (i == 0)
+		{
+			units[i]->setLocalPlayerUnit();
+		}
 	}
 
 	Utils::shuffle(units);
@@ -120,9 +128,12 @@ void Tangerine::init()
 	}
 
 	units[0]->setActiveUnit();
+
+	/* The usage of new here is being able to use lambdas with the TimerManager. */
+	this->gameManager = unique_ptr<GameManager>(new GameManager(panels, units));
 }
 
-vector<unique_ptr<Panel>>& Tangerine::getMap()
+vector<shared_ptr<Panel>>& Tangerine::getMap()
 {
 	return this->panels;
 }
@@ -131,6 +142,8 @@ void Tangerine::update(const float dt)
 {
 	timer += dt;
 	world.render();
+
+	this->gameManager->update(dt);
 
 	for (size_t i = 0; i < panels.size(); ++i)
 	{

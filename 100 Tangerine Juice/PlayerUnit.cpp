@@ -51,6 +51,11 @@ void PlayerUnit::setPlayerId(const Uint8 id)
 	this->updateHudPosition(id);
 }
 
+void PlayerUnit::setLocalPlayerUnit()
+{
+	this->localPlayerUnit = true;
+}
+
 void PlayerUnit::moveTo(const Vector2i& destination)
 {
 	this->timer = 0.0f;
@@ -82,7 +87,7 @@ void PlayerUnit::render(SDL_Rect cameraRect)
 
 	if (this->position() != this->destinationPosition)
 	{
-		this->setPosition(this->initialPosition.lerp(this->destinationPosition, timer / 6));
+		this->setPosition(this->initialPosition.lerp(this->destinationPosition, timer));
 		this->setAnimation("fwd");
 		this->currentState = UnitStates::Moving;
 	}
@@ -126,4 +131,9 @@ int PlayerUnit::getMaxPower() const
 int PlayerUnit::getCurrentPower() const
 {
 	return this->i_currentPower;
+}
+
+bool PlayerUnit::isLocalUnit() const
+{
+	return this->localPlayerUnit;
 }

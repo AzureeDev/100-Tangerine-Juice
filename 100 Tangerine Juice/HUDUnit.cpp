@@ -34,7 +34,7 @@ void HUDUnit::setPosition(Vector2i pos)
 	);
 	this->hudPowerAmount.setPosition(
 		{
-			pos.x + this->hudStarAmount.getX(),
+			pos.x + 229,
 			pos.y + 113
 		}
 	);

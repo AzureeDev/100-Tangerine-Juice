@@ -15,6 +15,7 @@ LButton::LButton()
 LButton::~LButton()
 {
 	this->buttonVisible = false;
+	this->buttonText.destroy();
 }
 
 LButton::LButton(const string id, const string btnTexturePath)
