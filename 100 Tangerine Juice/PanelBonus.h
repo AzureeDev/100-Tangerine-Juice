@@ -4,5 +4,6 @@ class PanelBonus : public Panel
 {
 public:
 	PanelBonus();
+	virtual void trigger();
 };
 

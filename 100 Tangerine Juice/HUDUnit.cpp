@@ -13,6 +13,11 @@ HUDUnit::HUDUnit(PlayerUnit* unitPtr)
 	this->hudStarAmount.createText("0 / 200", { 235, 235, 235, 255 }, 0, Globals::resources->getFont("bleachFont"));
 	this->hudPowerAmount.createText("0 / 5", { 255, 0, 208, 255 }, 0, Globals::resources->getFont("bleachFont"));
 
+	this->hudPowerEffect.setFixedSize(250);
+	this->hudPowerEffect.setAnimationSpeed(80);
+	this->hudPowerEffect.setNewTexture("assets/effects/lstrike.png");
+	this->hudPowerEffect.setColor({ 174, 0, 209, 0 }, true);
+
 	this->unitPointer = unitPtr;
 }
 
@@ -36,6 +41,13 @@ void HUDUnit::setPosition(Vector2i pos)
 		{
 			pos.x + 229,
 			pos.y + 113
+		}
+	);
+
+	this->hudPowerEffect.setPosition(
+		{
+			this->hudPowerAmount.getPosition().x + (this->hudPowerAmount.getWidth() / 2) - (this->hudPowerEffect.getSheetSize() / 2),
+			this->hudPowerAmount.getPosition().y + (this->hudPowerAmount.getHeight() / 2) - (this->hudPowerEffect.getHeight() / 2),
 		}
 	);
 }
@@ -82,8 +94,11 @@ LTexture& HUDUnit::getTexture()
 
 void HUDUnit::update()
 {
+	this->hudPowerEffect.render();
 	this->hudTextureBg.render();
 	this->hudStarAmount.render();
 	this->hudPowerAmount.render();
 	this->hudHPAmount.render();
+	
+	this->hudPowerEffect.setAlpha(255 * this->unitPointer->getCurrentPower() / this->unitPointer->getMaxPower());
 }

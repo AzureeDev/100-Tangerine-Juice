@@ -21,7 +21,8 @@
  *
  */
 #pragma warning( push )
-#pragma warning( disable : 4244)
+#pragma warning( disable : 4244)	// Complains about float values, which doesn't matter here - the timer is always reset to 0 when making up a lerp.
+#pragma warning( disable : 6287)	// Complains about equality, when the purpose of the operator == is to test the equality
 #ifndef VECTOR2_HPP
 #define VECTOR2_HPP
 

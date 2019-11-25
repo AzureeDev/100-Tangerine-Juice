@@ -16,6 +16,7 @@ private:
 	LTexture hudHPAmount;
 	LTexture hudStarAmount;
 	LTexture hudPowerAmount;
+	LTexture hudPowerEffect;
 	Vector2i hudPosition = { 0, 0 };
 
 public:

@@ -149,6 +149,9 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
+    <ClCompile Include="AIUnit.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="GameManager.h">
       <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="AIUnit.h">
+      <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

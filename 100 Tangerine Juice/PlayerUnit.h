@@ -13,7 +13,8 @@ class PlayerUnit : public Unit
 public:
 	enum class UnitStates {
 		Idle,
-		Moving
+		Moving,
+		CustomAnimation
 	};
 
 private:
@@ -24,6 +25,7 @@ private:
 	UnitStates currentState = UnitStates::Idle;
 	bool localPlayerUnit = false;
 	float timer = 0.0f;
+	LTexture statusMessage;
 
 protected:
 	/* Stats */
@@ -36,17 +38,24 @@ protected:
 	int i_maxPower = 0;
 	int i_currentPower = 0;
 
+	/* Current panel standing on */
+	int currentPanel = 0;
+
 public:
 	PlayerUnit();
 	PlayerUnit(string unitIdentifier);
+	~PlayerUnit();
 	shared_ptr<HUDUnit> hud();
 	void updateHudPosition(const int id);
 	void setInitialPosition(const Vector2i& pos);
 	void setActiveUnit();
 	void setPlayerId(const Uint8 id);
 	void setLocalPlayerUnit();
+	void setStatusMessage(const string message, const SDL_Color color = { 255, 255, 255, 0 });
+	void setCurrentState(const UnitStates state);
 	void moveTo(const Vector2i& destination);
-	void moveToPanel(const int panelId);
+	void moveToPanel(int panelId);
+	void moveByDiceNb(unsigned int diceNb);
 	bool isKO() const;
 	virtual void render(SDL_Rect cameraRect);
 	int getCurrentHealth() const;
@@ -55,6 +64,14 @@ public:
 	int getCurrentStars() const;
 	int getMaxPower() const;
 	int getCurrentPower() const;
+	int getUnitPanelId() const;
 	bool isLocalUnit() const;
+	void playTempAnimation(const string animation, const float duration = 1.f);
+	void addPower(const unsigned int amount);
+	void addStars(const unsigned int amount);
+	void dropStars(const unsigned int amount);
+
+	/* Game state related - turn start ect */
+	virtual void startTurn();
 };
 

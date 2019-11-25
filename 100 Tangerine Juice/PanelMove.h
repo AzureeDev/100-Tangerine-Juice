@@ -4,5 +4,6 @@ class PanelMove : public Panel
 {
 public:
 	PanelMove();
+	virtual void trigger();
 };
 

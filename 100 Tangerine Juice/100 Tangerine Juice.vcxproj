@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIUnit.cpp" />
     <ClCompile Include="ButtonCallbacks.cpp" />
     <ClCompile Include="GameIntro.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIUnit.h" />
     <ClInclude Include="ButtonCallbacks.h" />
     <ClInclude Include="GameIntro.h" />
     <ClInclude Include="GameManager.h" />

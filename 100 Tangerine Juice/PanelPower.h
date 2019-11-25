@@ -4,5 +4,6 @@ class PanelPower : public Panel
 {
 public:
 	PanelPower();
+	virtual void trigger();
 };
 

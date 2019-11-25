@@ -11,8 +11,9 @@
 #include "PanelHeal.h"
 #include "PanelMove.h"
 #include "PanelPower.h"
+#include "AIUnit.h"
 
-const int MAX_MAP_SIZE = 100;
+const int MAX_MAP_SIZE = 101;
 
 Tangerine::Tangerine()
 {
@@ -22,8 +23,9 @@ Tangerine::Tangerine()
 Tangerine::~Tangerine()
 {
 	Globals::engine->setActiveCameraUnit(nullptr);
-	this->gameManager.reset();
-	this->gameManager = nullptr;
+	Globals::timer->removeAll();
+	this->units.clear();
+	this->panels.clear();
 }
 
 void Tangerine::init()
@@ -101,7 +103,18 @@ void Tangerine::init()
 
 	for (size_t i = 0; i < 4; ++i)
 	{
-		units.push_back(make_shared<PlayerUnit>(PlayerUnit(uids[i])));
+		/* The player is always the first one, so we assume it is our local player. */
+		if (i == 0)
+		{
+			units.push_back(shared_ptr<PlayerUnit>(new PlayerUnit(uids[i])));
+			units[i]->setLocalPlayerUnit();
+		}
+		else
+		{
+			/* Push the AIs */
+			units.push_back(shared_ptr<AIUnit>(new AIUnit(uids[i])));
+		}
+
 		units[i]->setPlayerId(static_cast<Uint8>(i));
 		const Vector2i initialPos = {
 				panels[0]->getPosition().x + (panels[0]->getTexture().getWidth() / 2) - (units[i]->texture().getSheetSize() / 2),
@@ -110,13 +123,6 @@ void Tangerine::init()
 		units[i]->setPosition(initialPos);
 		units[i]->setInitialPosition(initialPos);
 		units[i]->setFlipped(true);
-		units[i]->hud()->updateHud();
-
-		/* The player is always the first one, so we assume it is our local player. */
-		if (i == 0)
-		{
-			units[i]->setLocalPlayerUnit();
-		}
 	}
 
 	Utils::shuffle(units);
@@ -125,6 +131,7 @@ void Tangerine::init()
 	for (size_t i = 0; i < units.size(); ++i)
 	{
 		units[i]->updateHudPosition(i);
+		units[i]->hud()->updateHud();
 	}
 
 	units[0]->setActiveUnit();
@@ -136,6 +143,11 @@ void Tangerine::init()
 vector<shared_ptr<Panel>>& Tangerine::getMap()
 {
 	return this->panels;
+}
+
+unique_ptr<GameManager>& Tangerine::getGameManager()
+{
+	return this->gameManager;
 }
 
 void Tangerine::update(const float dt)

@@ -1,5 +1,7 @@
 #include "GameManager.h"
 #include "Globals.h"
+#include "SFXManager.h"
+#include "MusicManager.h"
 
 void GameManager::callback(const string id, const function<void()> clbk, const float timer, const int repeat)
 {
@@ -42,19 +44,22 @@ GameManager::GameManager(Map& map, Players& units)
 GameManager::~GameManager()
 {
 	Globals::UI->destroyButton("restart_game_debug");
-	//this->
 }
 
 void GameManager::initGame()
 {
 	this->currentChapter++;
+
+	SFXManager::playSFX("new_chapter");
 	this->createHudMessage("Beginning of Chapter 1");
-	
-	this->nextTurn();
+	this->callback("gameBegin", [this]() { this->nextTurn(); }, 2);
 }
 
 void GameManager::createHudMessage(const string msg, const float duration)
 {
+	this->messageBg.setFade(TextureFadingState::FadeIn);
+	this->messageText.setFade(TextureFadingState::FadeIn);
+
 	this->messageText.createText(msg, { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFont32"));
 	this->messageText.setPosition(
 		{
@@ -81,6 +86,11 @@ shared_ptr<PlayerUnit> GameManager::getCurrentTurnUnit()
 	return this->units[0];
 }
 
+int GameManager::getCurrentChapter() const
+{
+	return this->currentChapter;
+}
+
 shared_ptr<PlayerUnit> GameManager::getLocalUnit()
 {
 	for (size_t i = 0; i < this->units.size(); ++i)
@@ -98,6 +108,19 @@ shared_ptr<PlayerUnit> GameManager::getLocalUnit()
 
 void GameManager::nextTurn()
 {
+	if (this->isStandingOnPanel(this->map.size() - 1))
+	{
+		this->gameEnded();
+		return;
+	}
+
+	int delay = 1;
+
+	if (static_cast<unsigned int>(this->currentPlayerTurn) >= this->units.size())
+	{
+		delay = 2;
+	}
+
 	this->callback("startChapter", [this]() {
 		this->currentPlayerTurn++;
 
@@ -107,10 +130,37 @@ void GameManager::nextTurn()
 			this->currentPlayerTurn = 0;
 			this->currentChapter++;
 			this->createHudMessage("Beginning of Chapter " + std::to_string(this->currentChapter));
+			SFXManager::playSFX("new_chapter");
 		}
 
 		SDL_Log("Now the turn of %s", this->getCurrentTurnUnit()->identifier().c_str());
-	}, 1);
+		SFXManager::playSFX("new_turn");
+
+		this->getCurrentTurnUnit()->startTurn();
+	}, delay);
+}
+
+void GameManager::gameEnded()
+{
+	MusicManager::fadeOutMusic(1000);
+	SFXManager::playSFX("victory");
+
+	/*
+		Game ending code here...
+	*/
+}
+
+bool GameManager::isStandingOnPanel(const int panelId) const
+{
+	for (const auto& unit : this->units)
+	{
+		if (unit->getUnitPanelId() == panelId)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void GameManager::update(const float dt)

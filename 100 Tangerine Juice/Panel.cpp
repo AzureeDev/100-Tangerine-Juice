@@ -51,6 +51,8 @@ void Panel::trigger()
 	/*
 		Trigger code goes here
 	*/
+
+	Globals::gameManager->nextTurn();
 }
 
 void Panel::render(const SDL_Rect camera)

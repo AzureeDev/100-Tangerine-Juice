@@ -4,5 +4,6 @@ class PanelDrop : public Panel
 {
 public:
 	PanelDrop();
+	virtual void trigger();
 };
 

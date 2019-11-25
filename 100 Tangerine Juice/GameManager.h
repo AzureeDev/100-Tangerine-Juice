@@ -39,8 +39,11 @@ public:
 	void initGame();
 	void createHudMessage(const string msg, const float duration = 3.0f);
 	shared_ptr<PlayerUnit> getCurrentTurnUnit();
+	int getCurrentChapter() const;
 	shared_ptr<PlayerUnit> getLocalUnit();
 	void nextTurn();
+	void gameEnded();
+	bool isStandingOnPanel(const int panelId) const;
 	void update(const float dt);
 };
 

@@ -26,6 +26,7 @@ public:
 	~Tangerine();
 	void init();
 	vector<shared_ptr<Panel>>& getMap();
+	unique_ptr<GameManager>& getGameManager();
 	void update(const float dt);
 };
 

@@ -34,6 +34,11 @@ void TimerManager::removeTimer(const string timerID)
 	}
 }
 
+void TimerManager::removeAll()
+{
+	this->timers.clear();
+}
+
 void TimerManager::update(const float dt)
 {
 	if (this->timers.empty())
