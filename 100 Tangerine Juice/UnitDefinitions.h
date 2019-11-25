@@ -5,7 +5,7 @@
 using std::string;
 using std::vector;
 
-struct UnitParams 
+struct UnitParams
 {
 	enum class UnitStatistics {
 		Attack,
@@ -15,7 +15,7 @@ struct UnitParams
 		SkillPowerStart,
 		SkillPowerMax
 	};
-	
+
 	string unitId;
 	string unitName;
 	string unitDesc;
@@ -29,4 +29,3 @@ struct UnitDefinitions
 	static vector<UnitParams> def;
 	static UnitParams getParamsById(const string unitIdentifier);
 };
-

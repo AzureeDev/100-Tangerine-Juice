@@ -21,7 +21,7 @@ void LilacEngine::createWindow()
 	/*
 		Define the window and renderer
 	*/
-	
+
 	// Get the display size
 	SDL_DisplayMode dm;
 	SDL_GetCurrentDisplayMode(0, &dm);
@@ -63,7 +63,7 @@ void LilacEngine::initGlobals()
 	/*
 		Init global pointers to core resources
 	*/
-	
+
 	Globals::engine = this;
 	Globals::resources = std::make_unique<ResourcesManager>(ResourcesManager());
 	Globals::UI = std::make_unique<UIManager>(UIManager());
@@ -76,7 +76,7 @@ void LilacEngine::initBaseResources()
 	/*
 		Initiate base resources for the game to work.
 	*/
-	
+
 	// Fonts
 	Globals::resources->createFont("defaultFontTiny", "assets/fonts/sofia.otf", 11);
 	Globals::resources->createFont("defaultFontSmall", "assets/fonts/sofia.otf", 16);
@@ -115,7 +115,7 @@ void LilacEngine::update()
 	/*
 		Main game loop
 	*/
-	
+
 	// Define variables to get a solid deltatime
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
@@ -138,7 +138,7 @@ void LilacEngine::update()
 				break;
 
 			case SDL_EventType::SDL_KEYDOWN:
-				
+
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:
 					this->checkBackButton();
@@ -167,7 +167,7 @@ void LilacEngine::update()
 		LAST = NOW;
 		NOW = SDL_GetPerformanceCounter();
 		deltaTime = ((NOW - LAST) / (float)SDL_GetPerformanceFrequency());
-		
+
 		timer += deltaTime;
 
 		this->GLOBAL_DELTA_TIME = deltaTime;
@@ -191,7 +191,7 @@ void LilacEngine::update()
 			this->camera.y = this->activeUnit->position().y - (Globals::engine->getDisplaySettings().wsHeight / 2);
 		}
 
-		if (this->camera.x < 0) { this->camera.x = 0; }	
+		if (this->camera.x < 0) { this->camera.x = 0; }
 		if (this->camera.y < 0) { this->camera.y = 0; }
 
 		// Cursor pos and render, always on top
@@ -209,7 +209,7 @@ void LilacEngine::destroyClasses()
 	/*
 		Destroy all loaded classes
 	*/
-	
+
 	for (size_t i = 0; i < this->lilacClasses.size(); ++i)
 	{
 		delete this->lilacClasses[i].lilacClass;
@@ -236,7 +236,7 @@ void LilacEngine::init()
 	/*
 		Initialize the game engine with all the SDL modules we need
 	*/
-	
+
 	// Init Rand()
 	srand((unsigned int)time(NULL));
 	// Init SDL with the following modules
@@ -273,7 +273,6 @@ void LilacEngine::init()
 	this->update();
 }
 
-
 void LilacEngine::createClass(const string name, LClass* lilacClass)
 {
 	/*
@@ -284,6 +283,19 @@ void LilacEngine::createClass(const string name, LClass* lilacClass)
 	this->lilacClasses.push_back(classDef);
 
 	lilacClass->init();
+}
+
+bool LilacEngine::hasClass(const string name) const
+{
+	for (const auto& lclass : this->lilacClasses)
+	{
+		if (lclass.name == name)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 DisplaySettings LilacEngine::getDisplaySettings()

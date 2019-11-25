@@ -23,7 +23,7 @@ void Panel::setIdentifier(const int id)
 {
 	panelId = id;
 	std::string identifierStr = std::to_string(id);
-	
+
 	if (id == 0)
 	{
 		identifierStr = "Start";

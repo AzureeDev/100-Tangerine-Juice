@@ -15,7 +15,6 @@ LButton::LButton()
 LButton::~LButton()
 {
 	this->buttonVisible = false;
-	this->buttonText.destroy();
 }
 
 LButton::LButton(const string id, const string btnTexturePath)
@@ -255,7 +254,7 @@ void LButton::render()
 			this->buttonTexture.resetBaseColor();
 			this->playedSoundHighlight = false;
 
-			if (this->getX() > this->animationOriginalX && this->allowHoverAnimation)
+			if (this->getX() > this->animationOriginalX&& this->allowHoverAnimation)
 			{
 				this->setX(this->getX() - 2);
 			}

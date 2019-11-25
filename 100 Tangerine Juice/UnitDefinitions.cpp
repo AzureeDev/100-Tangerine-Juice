@@ -23,20 +23,20 @@ vector<UnitParams> UnitDefinitions::def = {
 		4,
 		{ 1, -1, 2, 5, 1, 5 }
 	},
-	{ 
+	{
 		"sora",
 		"Sora",
 		"Sora is a balanced unit. Her skills are often relying on boosting her own stats rather speeding up through the end of the Road.",
-		"std", 
-		5, 
+		"std",
+		5,
 		{ 1, 0, 1, 5, 1, 5 }
 	},
-	{ 
-		"sora_m", 
-		"Sora (Military)", 
+	{
+		"sora_m",
+		"Sora (Military)",
 		"Sora, in her Military variant, is more focused on combat, and the ability to pursue other units, in order to bring them down.",
-		"std", 
-		4, 
+		"std",
+		4,
 		{ 1, 0, 1, 6, 1, 5 }
 	},
 	{
@@ -47,12 +47,12 @@ vector<UnitParams> UnitDefinitions::def = {
 		5,
 		{ 1, -1, 0, 5, 0, 5 }
 	},
-	{ 
-		"sham", 
+	{
+		"sham",
 		"Sham",
 		"Sham is more focused on defensive aspects in order to survive longer. She won't make miracles in terms of attack power though.",
-		"std", 
-		5, 
+		"std",
+		5,
 		{ -1, 2, 1, 4, 0, 3 }
 	},
 	{
@@ -71,12 +71,12 @@ vector<UnitParams> UnitDefinitions::def = {
 		4,
 		{ -1, 0, 1, 5, 0, 3 }
 	},
-	{ 
+	{
 		"sb",
 		"Star Breaker",
 		"Star Breaker is focused on pure damage. Her insane stats allows her to put down any other unit easily. She cannot count on stars though, as she cannot gather them.",
-		"std", 
-		5, 
+		"std",
+		5,
 		{ 2, 0, -1, 7, 2, 8 }
 	},
 };

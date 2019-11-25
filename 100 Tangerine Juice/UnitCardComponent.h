@@ -38,4 +38,3 @@ public:
 	UnitParams getParams();
 	void update(const float dt);
 };
-

@@ -6,4 +6,3 @@ public:
 	PanelBonus();
 	virtual void trigger();
 };
-

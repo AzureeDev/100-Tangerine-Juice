@@ -6,4 +6,3 @@ public:
 	PanelMove();
 	virtual void trigger();
 };
-

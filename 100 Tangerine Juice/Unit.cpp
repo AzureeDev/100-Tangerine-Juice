@@ -104,7 +104,7 @@ void Unit::placeMiddleScreen()
 	this->unitPosition = this->unitTexture.getPosition();
 }
 
-void Unit::render(SDL_Rect cameraRect)
+void Unit::render(SDL_Rect camera)
 {
 	//this->unitShadow.render();
 	this->unitTexture.render();

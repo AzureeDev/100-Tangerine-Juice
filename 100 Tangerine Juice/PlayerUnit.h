@@ -24,6 +24,7 @@ private:
 	Vector2i destinationPosition = { 0, 0 };
 	UnitStates currentState = UnitStates::Idle;
 	bool localPlayerUnit = false;
+	bool active = false;
 	float timer = 0.0f;
 	LTexture statusMessage;
 
@@ -49,6 +50,7 @@ public:
 	void updateHudPosition(const int id);
 	void setInitialPosition(const Vector2i& pos);
 	void setActiveUnit();
+	void setInactiveUnit();
 	void setPlayerId(const Uint8 id);
 	void setLocalPlayerUnit();
 	void setStatusMessage(const string message, const SDL_Color color = { 255, 255, 255, 0 });
@@ -66,6 +68,7 @@ public:
 	int getCurrentPower() const;
 	int getUnitPanelId() const;
 	bool isLocalUnit() const;
+	bool isActive() const;
 	void playTempAnimation(const string animation, const float duration = 1.f);
 	void addPower(const unsigned int amount);
 	void addStars(const unsigned int amount);
@@ -73,5 +76,5 @@ public:
 
 	/* Game state related - turn start ect */
 	virtual void startTurn();
+	virtual void movement(const int diceRoll);
 };
-

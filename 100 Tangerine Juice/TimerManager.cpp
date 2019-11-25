@@ -48,7 +48,7 @@ void TimerManager::update(const float dt)
 
 	for (size_t i = 0; i < this->timers.size(); ++i)
 	{
-		TimerParams *params = &this->timers[i];
+		TimerParams* params = &this->timers[i];
 
 		if (params->executionRepeat > 0)
 		{

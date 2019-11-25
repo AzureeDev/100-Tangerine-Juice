@@ -21,6 +21,11 @@ HUDUnit::HUDUnit(PlayerUnit* unitPtr)
 	this->unitPointer = unitPtr;
 }
 
+HUDUnit::~HUDUnit()
+{
+	SDL_Log("HUD Destroyed");
+}
+
 void HUDUnit::setPosition(Vector2i pos)
 {
 	this->hudPosition = pos;
@@ -64,7 +69,7 @@ void HUDUnit::updateCurrentHP()
 	string currentHP = std::to_string(this->unitPointer->getCurrentHealth());
 	string maxHP = std::to_string(this->unitPointer->getMaxHealth());
 
-	this->hudHPAmount.createText(currentHP + " / "+ maxHP + " HP", { 235, 235, 235, 255 }, 0, Globals::resources->getFont("bleachFont"));
+	this->hudHPAmount.createText(currentHP + " / " + maxHP + " HP", { 235, 235, 235, 255 }, 0, Globals::resources->getFont("bleachFont"));
 }
 
 void HUDUnit::updateCurrentStars()
@@ -99,6 +104,21 @@ void HUDUnit::update()
 	this->hudStarAmount.render();
 	this->hudPowerAmount.render();
 	this->hudHPAmount.render();
-	
+
 	this->hudPowerEffect.setAlpha(255 * this->unitPointer->getCurrentPower() / this->unitPointer->getMaxPower());
+
+	if (!this->unitPointer->isActive())
+	{
+		this->hudTextureBg.setColor({ 100, 100, 100, 255 });
+		this->hudStarAmount.setColor({ 100, 100, 100, 255 });
+		this->hudPowerAmount.setColor({ 100, 0, 100, 255 });
+		this->hudHPAmount.setColor({ 100, 100, 100, 255 });
+	}
+	else
+	{
+		this->hudTextureBg.setColor({ 255, 255, 255, 255 });
+		this->hudStarAmount.setColor({ 255, 255, 255, 255 });
+		this->hudPowerAmount.setColor({ 255, 0, 208, 255 });
+		this->hudHPAmount.setColor({ 255, 255, 255, 255 });
+	}
 }

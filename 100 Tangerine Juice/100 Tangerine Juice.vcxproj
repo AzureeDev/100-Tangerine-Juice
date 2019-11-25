@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="AIUnit.cpp" />
     <ClCompile Include="ButtonCallbacks.cpp" />
+    <ClCompile Include="DiceThrowComponent.cpp" />
     <ClCompile Include="GameIntro.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Globals.cpp" />
@@ -178,6 +179,7 @@
   <ItemGroup>
     <ClInclude Include="AIUnit.h" />
     <ClInclude Include="ButtonCallbacks.h" />
+    <ClInclude Include="DiceThrowComponent.h" />
     <ClInclude Include="GameIntro.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Globals.h" />

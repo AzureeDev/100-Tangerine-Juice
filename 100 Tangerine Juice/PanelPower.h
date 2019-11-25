@@ -6,4 +6,3 @@ public:
 	PanelPower();
 	virtual void trigger();
 };
-

@@ -1,7 +1,7 @@
 #include "PlayerUnit.h"
 #include "Globals.h"
 #include "Utils.h"
-
+#include "DiceThrowComponent.h"
 
 PlayerUnit::PlayerUnit()
 {
@@ -17,14 +17,13 @@ PlayerUnit::PlayerUnit(string unitIdentifier) : Unit(unitIdentifier)
 	this->i_currentPower = unitDefinition.unitStats[static_cast<int>(UnitParams::UnitStatistics::SkillPowerStart)];
 	this->i_maxPower = unitDefinition.unitStats[static_cast<int>(UnitParams::UnitStatistics::SkillPowerMax)];
 
-	this->hudElement = make_shared<HUDUnit>(HUDUnit(this));
+	this->hudElement = shared_ptr<HUDUnit>(new HUDUnit(this));
 
 	this->statusMessage.setAlpha(0);
 }
 
 PlayerUnit::~PlayerUnit()
 {
-	SDL_Log("I am destroyed.");
 }
 
 shared_ptr<HUDUnit> PlayerUnit::hud()
@@ -51,6 +50,12 @@ void PlayerUnit::setInitialPosition(const Vector2i& pos)
 void PlayerUnit::setActiveUnit()
 {
 	Globals::engine->setActiveCameraUnit(this);
+	this->active = true;
+}
+
+void PlayerUnit::setInactiveUnit()
+{
+	this->active = false;
 }
 
 void PlayerUnit::setPlayerId(const Uint8 id)
@@ -106,7 +111,7 @@ void PlayerUnit::moveToPanel(int panelId)
 
 	Globals::timer->createTimer("unitExecutePanel", 1, [panelId]() {
 		LilacClasses::Tangerine->getMap()[panelId]->trigger();
-	}, 1.5f);
+		}, 1.5f);
 }
 
 void PlayerUnit::moveByDiceNb(unsigned int diceNb)
@@ -153,7 +158,7 @@ void PlayerUnit::render(SDL_Rect cameraRect)
 		this->setAnimation("fwd");
 		this->currentState = UnitStates::Moving;
 	}
-	else if(this->position() == this->destinationPosition && !this->isKO() && this->currentState != UnitStates::CustomAnimation)
+	else if (this->position() == this->destinationPosition && !this->isKO() && this->currentState != UnitStates::CustomAnimation)
 	{
 		this->setAnimation("std");
 		this->currentState = UnitStates::Idle;
@@ -215,6 +220,11 @@ bool PlayerUnit::isLocalUnit() const
 	return this->localPlayerUnit;
 }
 
+bool PlayerUnit::isActive() const
+{
+	return this->active;
+}
+
 void PlayerUnit::playTempAnimation(const string animation, const float duration)
 {
 	this->currentState = UnitStates::CustomAnimation;
@@ -225,7 +235,6 @@ void PlayerUnit::playTempAnimation(const string animation, const float duration)
 			this->setCurrentState(UnitStates::Idle);
 		}, 1
 	);
-
 }
 
 void PlayerUnit::addPower(const unsigned int amount)
@@ -269,5 +278,15 @@ void PlayerUnit::startTurn()
 	SDL_Log("Player actions here");
 	this->setActiveUnit();
 
-	Globals::timer->createTimer("startTurn", 0.5f, [this]() { this->moveByDiceNb(Utils::randBetween(1, 6)); }, 1);
+	if (Globals::engine->hasClass("DiceThrowComponent"))
+	{
+		Globals::engine->destroyClass("DiceThrowComponent");
+	}
+
+	Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent);
+}
+
+void PlayerUnit::movement(const int diceRoll)
+{
+	Globals::timer->createTimer("playerUnitMovement", 0.5f, [this, diceRoll]() { this->moveByDiceNb(diceRoll); }, 1);
 }

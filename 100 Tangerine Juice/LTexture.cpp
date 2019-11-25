@@ -49,6 +49,17 @@ void LTexture::destroy()
 	this->texture = nullptr;
 }
 
+void LTexture::destroyText()
+{
+	if (this->texture != nullptr)
+	{
+		SDL_DestroyTexture(this->texture);
+		this->texture = nullptr;
+		this->textureWidth = 0;
+		this->textureHeight = 0;
+	}
+}
+
 void LTexture::hide()
 {
 	this->textureWidth = 0;
@@ -69,7 +80,7 @@ void LTexture::createText(const string text, const SDL_Color color, const int ma
 	{
 		custom_font = Globals::resources->getFont("defaultFont");
 	}
-	
+
 	const unsigned int textMaxLength = maxLength == 0 ? Globals::engine->getDisplaySettings().w : maxLength;
 	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(custom_font, text.c_str(), color, textMaxLength);
 
@@ -465,7 +476,7 @@ void LTexture::render(SDL_Rect cameraRect)
 
 			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), this->getWidth(), this->getHeight() };
 			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset - Globals::engine->getDisplaySettings().wsWidth, this->getY(), this->getWidth(), this->getHeight() };
-			
+
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture);
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture2);
 		}
@@ -480,7 +491,7 @@ void LTexture::render(SDL_Rect cameraRect)
 
 			const SDL_Rect r_scrollableTexture = { this->scrollingOffset, this->getY(), this->getWidth(), this->getHeight() };
 			const SDL_Rect r_scrollableTexture2 = { this->scrollingOffset + Globals::engine->getDisplaySettings().wsWidth, this->getY(), this->getWidth(), this->getHeight() };
-		
+
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture);
 			SDL_RenderCopy(Globals::engine->getRenderer(), this->texture, NULL, &r_scrollableTexture2);
 		}

@@ -5,4 +5,3 @@ class PanelEncounter : public Panel
 public:
 	PanelEncounter();
 };
-

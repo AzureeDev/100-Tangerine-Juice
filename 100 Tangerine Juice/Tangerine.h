@@ -29,4 +29,3 @@ public:
 	unique_ptr<GameManager>& getGameManager();
 	void update(const float dt);
 };
-

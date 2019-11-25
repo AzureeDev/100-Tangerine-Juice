@@ -7,4 +7,3 @@ public:
 	AIUnit(string identifier);
 	virtual void startTurn();
 };
-

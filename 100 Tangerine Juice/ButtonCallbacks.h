@@ -13,4 +13,3 @@ public:
 	static void openLink(const string link);
 	static void startGame();
 };
-

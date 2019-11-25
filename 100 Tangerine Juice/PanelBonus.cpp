@@ -20,7 +20,7 @@ void PanelBonus::trigger()
 
 			Globals::gameManager->getCurrentTurnUnit()->addStars(starAmount);
 			Globals::gameManager->getCurrentTurnUnit()->setStatusMessage("STARS\n+" + std::to_string(starAmount), { 255, 230, 0, 255 });
-			
+
 			if (Globals::gameManager->getCurrentTurnUnit()->getCurrentStars() >= 200)
 			{
 				Globals::gameManager->gameEnded();
@@ -29,7 +29,6 @@ void PanelBonus::trigger()
 			{
 				Globals::gameManager->nextTurn();
 			}
-				
 		}, 1
 	);
 }

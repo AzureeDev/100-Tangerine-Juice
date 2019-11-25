@@ -15,7 +15,7 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.51.0";
+	string engineVersion = "1.52.0";
 	string mainMenuMessage = "Welcome to 100% Tangerine Juice! Hope you will enjoy your time here. ~";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
@@ -43,6 +43,7 @@ public:
 	void init();
 
 	void createClass(const string name, LClass* lilacClass);
+	bool hasClass(const string name) const;
 	DisplaySettings getDisplaySettings();
 	SDL_Renderer* getRenderer();
 	SDL_Window* getWindow();

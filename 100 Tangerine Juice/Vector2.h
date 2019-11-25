@@ -75,7 +75,7 @@ public:
 		: x(std::move(x)), y(std::move(y))
 	{}
 
-	/// Constructor for Vector2 with both elements equal to n. 
+	/// Constructor for Vector2 with both elements equal to n.
 	explicit Vector2(const T& n)
 		: x(n), y(n)
 	{}
@@ -285,7 +285,7 @@ public:
 		return sqrt(x * x + y * y);
 	}
 
-	/// Returns the squared magnitude ("length") of the vector. This saves one sqrt operation and 
+	/// Returns the squared magnitude ("length") of the vector. This saves one sqrt operation and
 	/// is therefore significant faster for comparing two vector magnitudes.
 	const auto sqr_magnitude() const
 	{
@@ -304,13 +304,12 @@ public:
 		return sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
 	}
 
-	/// Returns the squared distance between both vectors. This is faster for comparisons as it saves 
+	/// Returns the squared distance between both vectors. This is faster for comparisons as it saves
 	/// on one sqrt operation.
 	const auto sqr_distance(const Vector2& other) const
 	{
 		return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
 	}
-	
 
 	/// Linearly interpolates between this Vector2 and the given Vector2 using the provided value.
 	const Vector2 lerp(const Vector2& other, double value) const
@@ -344,7 +343,7 @@ public:
 		return *this / sqrt(x * x + y * y);
 	}
 
-	/// Returns a vector with the elements equal to the square root of the elements of this vector. 
+	/// Returns a vector with the elements equal to the square root of the elements of this vector.
 	const Vector2 square_root() const
 	{
 		return Vector2(sqrt(x), sqrt(y));
@@ -383,14 +382,14 @@ public:
 
 // According to the standard, there are three floating point types: float, double, long double.
 // For this reason the below code will only cover those. For other types, either cast or write
-// your own functions. 
+// your own functions.
 
 // The defines make it possible to override the function used for comparison. In case you need
-// something faster & less accurate, you can use a simple `abs(a-b) < epsilon` for a big epsilon 
+// something faster & less accurate, you can use a simple `abs(a-b) < epsilon` for a big epsilon
 // like 0.00001. The functions used below attempt to make epsilon as accurate as possible.
 
 // float comparisons
-#ifndef VECTOR2_FLOAT_COMPARE 
+#ifndef VECTOR2_FLOAT_COMPARE
 #define VECTOR2_FLOAT_COMPARE(first, second) f_equality(first, second)
 #endif
 
@@ -406,9 +405,9 @@ public:
 
 // ulp = unit of least precision
 
-// NOTE: The following approach, although quite unsafe, is used because EPSILONs are very inaccurate when comparing 
+// NOTE: The following approach, although quite unsafe, is used because EPSILONs are very inaccurate when comparing
 // floats much larger than or much closer to zero than 1.0. Epsilon is only really accurate around 1.0,
-// so that is why this method is used instead. 
+// so that is why this method is used instead.
 // Instead of this, boost's floating point comparison(s) (which do a similar thing) may be used, but this header
 // does not want to introduce such a big dependency.
 
@@ -458,7 +457,6 @@ bool ld_equality(const long double first, const long double second)
 	// uses LDBL_EPSILON since no int with equivalent size to long double exists
 	return fabsl(first - second) <= LDBL_EPSILON;
 }
-
 
 // common type typedefs
 

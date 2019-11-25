@@ -6,4 +6,3 @@ public:
 	PanelDrop();
 	virtual void trigger();
 };
-

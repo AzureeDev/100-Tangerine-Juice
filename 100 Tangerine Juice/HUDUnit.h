@@ -22,6 +22,7 @@ private:
 public:
 	HUDUnit();
 	HUDUnit(PlayerUnit* unitPtr);
+	~HUDUnit();
 	void setPosition(Vector2i pos);
 	void updateHud();
 	void updateCurrentHP();
@@ -31,4 +32,3 @@ public:
 	LTexture& getTexture();
 	void update();
 };
-

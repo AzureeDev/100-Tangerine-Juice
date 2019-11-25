@@ -34,7 +34,7 @@ GameManager::GameManager(Map& map, Players& units)
 	this->restart->supplyCallback([]() {
 		Globals::engine->destroyClass("Tangerine");
 		Globals::engine->createClass("Tangerine", new Tangerine);
-	});
+		});
 	this->restart->getTexture().createText("RESTART");
 	this->restart->setPosition({ 5, Globals::engine->getDisplaySettings().wsHeight - this->restart->getTexture().getHeight() });
 
@@ -70,8 +70,8 @@ void GameManager::createHudMessage(const string msg, const float duration)
 
 	this->callback("destroyHudMessage", [this]() {
 		this->messageBg.setFade(TextureFadingState::FadeOut);
-		this->messageText.setFade(TextureFadingState::FadeOut);
-	}, duration);
+		this->messageText.destroyText();
+		}, duration);
 }
 
 shared_ptr<PlayerUnit> GameManager::getCurrentTurnUnit()
@@ -122,6 +122,9 @@ void GameManager::nextTurn()
 	}
 
 	this->callback("startChapter", [this]() {
+		// Old unit
+		this->getCurrentTurnUnit()->setInactiveUnit();
+
 		this->currentPlayerTurn++;
 
 		if (static_cast<unsigned int>(this->currentPlayerTurn) >= this->units.size())
@@ -136,8 +139,9 @@ void GameManager::nextTurn()
 		SDL_Log("Now the turn of %s", this->getCurrentTurnUnit()->identifier().c_str());
 		SFXManager::playSFX("new_turn");
 
+		// New unit
 		this->getCurrentTurnUnit()->startTurn();
-	}, delay);
+		}, delay);
 }
 
 void GameManager::gameEnded()

@@ -34,9 +34,9 @@ void Tangerine::init()
 	MusicManager::playMusic("assets/musics/shine.mp3");
 
 	const vector<string> uids = {
-		"sora_m",
+		"sora",
 		"suguri",
-		"hime",
+		"sham",
 		"saki"
 	};
 
@@ -51,36 +51,36 @@ void Tangerine::init()
 		switch (randomizedPanel)
 		{
 		case 0:
-			panels.push_back(make_shared<Panel>(Panel()));
+			panels.push_back(shared_ptr<Panel>(new Panel()));
 			break;
 
 		case 1:
-			panels.push_back(make_shared<PanelEncounter>(PanelEncounter()));
+			panels.push_back(shared_ptr<PanelEncounter>(new PanelEncounter()));
 			break;
 
 		case 2:
-			panels.push_back(make_shared<PanelBonus>(PanelBonus()));
+			panels.push_back(shared_ptr<PanelBonus>(new PanelBonus()));
 			break;
 
 		case 3:
-			panels.push_back(make_shared<PanelDrop>(PanelDrop()));
+			panels.push_back(shared_ptr<PanelDrop>(new PanelDrop()));
 			break;
 
 		case 4:
-			panels.push_back(make_shared<PanelHeal>(PanelHeal()));
+			panels.push_back(shared_ptr<PanelHeal>(new PanelHeal()));
 			break;
 
 		case 5:
-			panels.push_back(make_shared<PanelMove>(PanelMove()));
+			panels.push_back(shared_ptr<PanelMove>(new PanelMove()));
 			break;
 
 		case 6:
-			panels.push_back(make_shared<PanelPower>(PanelPower()));
+			panels.push_back(shared_ptr<PanelPower>(new PanelPower()));
 			break;
 		}
 
 		panels[i]->setIdentifier(i);
-		
+
 		if (i == 0)
 		{
 			panels[i]->setPosition(

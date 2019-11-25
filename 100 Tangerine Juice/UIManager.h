@@ -20,4 +20,3 @@ public:
 	void destroyButton(const string btnName);
 	vector<ButtonDefinition> getButtons();
 };
-

@@ -8,7 +8,7 @@ SDL_Texture* ResourcesManager::createTexture(const string path)
 	/*
 		Create a new texture and returns it
 	*/
-	
+
 	for (size_t i = 0; i < this->textures.size(); ++i)
 	{
 		if (this->textures[i].path == path)
@@ -34,7 +34,7 @@ void ResourcesManager::destroyTexture(const string path)
 	/*
 		Destroys the texture defined by path
 	*/
-	
+
 	for (size_t i = 0; i < this->textures.size(); ++i)
 	{
 		if (this->textures[i].path == path)
@@ -72,7 +72,7 @@ TTF_Font* ResourcesManager::createFont(const string name, const string path, con
 	/*
 		Create a new font with ptSize and returns it
 	*/
-	
+
 	for (size_t i = 0; i < this->fonts.size(); ++i)
 	{
 		if (this->fonts[i].name == name)
@@ -92,7 +92,7 @@ TTF_Font* ResourcesManager::getFont(const string name)
 	/*
 		Get the font with the name "name". Nullptr if the name wasn't found.
 	*/
-	
+
 	for (size_t i = 0; i < this->fonts.size(); ++i)
 	{
 		if (this->fonts[i].name == name)
@@ -149,7 +149,7 @@ void ResourcesManager::destroy()
 	/*
 		Destroy everything loaded, called in LilacEngine::exit()
 	*/
-	
+
 	for (const auto& texture : this->textures)
 	{
 		SDL_DestroyTexture(texture.instance);

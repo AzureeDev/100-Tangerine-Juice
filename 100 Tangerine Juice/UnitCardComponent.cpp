@@ -55,13 +55,13 @@ void UnitCardComponent::init()
 	unitHPLabel.setPosition({ unitDescriptionLabel.getX(), unit.texture().bottom().y - unitHPLabel.getHeight() - 224 });
 	unitHPAmount.createText(std::to_string(this->unitParams.unitMaxHealth) + " / " + std::to_string(this->unitParams.unitMaxHealth), { 225, 225, 255, 255 }, 0, Globals::resources->getFont("defaultFont27"));
 	unitHPAmount.setPosition(unitHPLabel.getX() + unitHPLabel.getWidth() + 128, unitHPLabel.getY() + (unitHPLabel.getHeight() / 2) - (unitHPAmount.getHeight() / 2));
-	
+
 	// ATTACK
 	unitAtkLabel.createText("ATTACK", { 255, 180, 180, 255 }, 0, Globals::resources->getFont("bleachFont"));
 	unitAtkLabel.setPosition({ unitHPLabel.getX(), unitHPLabel.bottom().y });
 	unitAtkAmount.createText(std::to_string(this->unitParams.unitStats[static_cast<int>(UnitParams::UnitStatistics::Attack)]), { 225, 225, 255, 255 }, 0, Globals::resources->getFont("defaultFont27"));
 	unitAtkAmount.setPosition({ unitHPAmount.getX(), unitHPAmount.bottom().y });
-	
+
 	// DEFENSE
 	unitDefLabel.createText("DEFENSE", { 180, 255, 180, 255 }, 0, Globals::resources->getFont("bleachFont"));
 	unitDefLabel.setPosition({ unitAtkLabel.getX(), unitAtkLabel.bottom().y });
@@ -73,7 +73,7 @@ void UnitCardComponent::init()
 	unitEvaLabel.setPosition({ unitDefLabel.getX(), unitDefLabel.bottom().y });
 	unitEvaAmount.createText(std::to_string(this->unitParams.unitStats[static_cast<int>(UnitParams::UnitStatistics::Evasion)]), { 225, 225, 255, 255 }, 0, Globals::resources->getFont("defaultFont27"));
 	unitEvaAmount.setPosition({ unitDefAmount.getX(), unitDefAmount.bottom().y });
-	
+
 	// RECOVERY
 	unitRecLabel.createText("RECOVERY", { 255, 255, 180, 255 }, 0, Globals::resources->getFont("bleachFont"));
 	unitRecLabel.setPosition({ unitEvaLabel.getX(), unitEvaLabel.bottom().y });

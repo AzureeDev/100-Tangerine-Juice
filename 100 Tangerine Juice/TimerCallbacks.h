@@ -9,4 +9,3 @@ struct TimerCallbacks
 	static void createGame();
 	static void getInGame();
 };
-

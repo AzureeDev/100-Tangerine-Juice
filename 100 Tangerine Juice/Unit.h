@@ -33,6 +33,5 @@ public:
 	void setPosition(const Vector2i pos);
 	void setFlipped(const bool state);
 	void placeMiddleScreen();
-	virtual void render(SDL_Rect cameraRect);
+	virtual void render(SDL_Rect camera);
 };
-

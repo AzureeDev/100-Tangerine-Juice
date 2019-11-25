@@ -152,6 +152,7 @@
     <ClCompile Include="AIUnit.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="DiceThrowComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -263,6 +264,7 @@
     <ClInclude Include="AIUnit.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="DiceThrowComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

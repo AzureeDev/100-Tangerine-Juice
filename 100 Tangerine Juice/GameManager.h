@@ -46,4 +46,3 @@ public:
 	bool isStandingOnPanel(const int panelId) const;
 	void update(const float dt);
 };
-

@@ -205,7 +205,6 @@ void MainMenu::createCreditsButtons()
 	LButton* oj = Globals::UI->createButton("oj", DEFAULT_BUTTON_TEXTURE);
 	LButton* deku = Globals::UI->createButton("deku", DEFAULT_BUTTON_TEXTURE);
 
-
 	deku->supplyCallback(ButtonCallbacks::openLink, "https://music.apple.com/us/artist/deku/657266888");
 	oj->supplyCallback(ButtonCallbacks::openLink, "http://daidai.moo.jp/");
 	fbf->supplyCallback(ButtonCallbacks::openLink, "https://fruitbatfactory.com/");
@@ -239,7 +238,7 @@ void MainMenu::createUnitDBButtons()
 	for (size_t i = 0; i < UnitDefinitions::def.size(); ++i)
 	{
 		const UnitParams params = UnitDefinitions::def[i];
-		
+
 		LButton* btn = Globals::UI->createButton(params.unitId + "_db_btn", DEFAULT_BUTTON_TEXTURE);
 		btn->supplyCallback(ButtonCallbacks::unitDBRequestInfo, params.unitId);
 		mainMenuButtons.push_back({ params.unitId + "_db_btn", btn });
@@ -278,7 +277,7 @@ void MainMenu::update(const float dt)
 	{
 		mainMenuButtons[i].instance->render();
 	}
-	
+
 	engineVersionLabel.render();
 	gameLogo.render();
 }

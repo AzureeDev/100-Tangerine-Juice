@@ -108,7 +108,6 @@ void World::render()
 	SDL_SetTextureColorMod(this->cloudTexture, this->worldColor.r, this->worldColor.g, this->worldColor.b);
 	SDL_SetTextureAlphaMod(this->cloudTexture, this->worldAlpha);
 
-
 	// World render
 	SDL_RenderCopy(Globals::engine->getRenderer(), this->worldTexture, NULL, &r_World);
 	SDL_RenderCopy(Globals::engine->getRenderer(), this->worldTexture, NULL, &r_World2);
@@ -117,6 +116,6 @@ void World::render()
 	if (this->allowClouds)
 	{
 		SDL_RenderCopy(Globals::engine->getRenderer(), this->cloudTexture, NULL, &r_World);
-		SDL_RenderCopy(Globals::engine->getRenderer() , this->cloudTexture, NULL, &r_World2);
+		SDL_RenderCopy(Globals::engine->getRenderer(), this->cloudTexture, NULL, &r_World2);
 	}
 }
