@@ -46,6 +46,7 @@ public:
 	void destroyText();
 	void hide();
 	void createText(const string text, const SDL_Color color = { 150, 150, 150, 255 }, const int maxLength = 0, TTF_Font* custom_font = nullptr);
+	string getPath() const;
 	int getWidth();
 	int getHeight();
 	int getSheetSize();

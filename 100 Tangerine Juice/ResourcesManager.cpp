@@ -67,6 +67,45 @@ void ResourcesManager::destroyTexture(const SDL_Texture* texture)
 	}
 }
 
+LTexture* ResourcesManager::createLTexture(const string path)
+{
+	/*
+		Create a new LTexture - this is a test against the text textures generated going at odd places, not destroying correctly / destroying too early.
+	*/
+
+	for (size_t i = 0; i < this->ltextures.size(); ++i)
+	{
+		if (this->ltextures[i]->getPath() == path)
+		{
+			return this->ltextures[i];
+		}
+	}
+
+	LTexture* newTexture = new LTexture(path);
+	this->ltextures.push_back(newTexture);
+
+	return newTexture;
+}
+
+void ResourcesManager::destroyLTexture(const string path)
+{
+	/*
+		Destroys the texture defined by path
+	*/
+
+	for (size_t i = 0; i < this->ltextures.size(); ++i)
+	{
+		if (this->ltextures[i]->getPath() == path)
+		{
+			delete this->ltextures[i];
+			this->ltextures[i] = nullptr;
+			this->ltextures.erase(this->ltextures.begin() + i);
+
+			break;
+		}
+	}
+}
+
 TTF_Font* ResourcesManager::createFont(const string name, const string path, const int ptSize)
 {
 	/*
@@ -155,6 +194,12 @@ void ResourcesManager::destroy()
 		SDL_DestroyTexture(texture.instance);
 	}
 
+	for (size_t i = 0; i < this->ltextures.size(); ++i)
+	{
+		delete this->ltextures[i];
+		this->ltextures[i] = nullptr;
+	}
+
 	for (const auto& font : this->fonts)
 	{
 		TTF_CloseFont(font.instance);
@@ -171,6 +216,7 @@ void ResourcesManager::destroy()
 	}
 
 	this->textures.clear();
+	this->ltextures.clear();
 	this->fonts.clear();
 	this->musics.clear();
 	this->sfx.clear();

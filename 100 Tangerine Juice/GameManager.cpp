@@ -32,9 +32,10 @@ GameManager::GameManager(Map& map, Players& units)
 
 	this->restart = Globals::UI->createButton("restart_game_debug");
 	this->restart->supplyCallback([]() {
+		GameParams params = LilacClasses::Tangerine->getGameParams();
 		Globals::engine->destroyClass("Tangerine");
-		Globals::engine->createClass("Tangerine", new Tangerine);
-		});
+		Globals::engine->createClass("Tangerine", new Tangerine(params));
+	});
 	this->restart->getTexture().createText("RESTART");
 	this->restart->setPosition({ 5, Globals::engine->getDisplaySettings().wsHeight - this->restart->getTexture().getHeight() });
 

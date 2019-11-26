@@ -43,7 +43,4 @@ void TimerCallbacks::createGame()
 
 void TimerCallbacks::getInGame()
 {
-	Globals::engine->destroyClass("PreGame");
-	MusicManager::fadeOutMusic();
-	Globals::engine->createClass("Tangerine", new Tangerine);
 }

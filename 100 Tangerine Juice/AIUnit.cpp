@@ -1,6 +1,7 @@
 #include "AIUnit.h"
 #include "Globals.h"
 #include "Utils.h"
+#include "DiceThrowComponent.h"
 
 AIUnit::AIUnit()
 {
@@ -17,5 +18,11 @@ void AIUnit::startTurn()
 
 	// Perform move
 	this->setActiveUnit();
-	Globals::timer->createTimer("startTurn", 0.5f, [this]() { this->moveByDiceNb(Utils::randBetween(1, 6)); }, 1);
+
+	if (Globals::engine->hasClass("DiceThrowComponent"))
+	{
+		Globals::engine->destroyClass("DiceThrowComponent");
+	}
+
+	Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(true));
 }

@@ -11,7 +11,7 @@ HUDUnit::HUDUnit(PlayerUnit* unitPtr)
 	this->hudTextureBg.setNewTexture("assets/units/" + this->unitIdentifier + "/_hud.png");
 	this->hudHPAmount.createText("5 / 5 HP", { 235, 235, 235, 255 }, 0, Globals::resources->getFont("bleachFont"));
 	this->hudStarAmount.createText("0 / 200", { 235, 235, 235, 255 }, 0, Globals::resources->getFont("bleachFont"));
-	this->hudPowerAmount.createText("0 / 5", { 255, 0, 208, 255 }, 0, Globals::resources->getFont("bleachFont"));
+	this->hudPowerAmount.createText("0 / 5", { 235, 235, 235, 255 }, 0, Globals::resources->getFont("bleachFont"));
 
 	this->hudPowerEffect.setFixedSize(250);
 	this->hudPowerEffect.setAnimationSpeed(80);
@@ -84,7 +84,7 @@ void HUDUnit::updateCurrentPower()
 	string currentPower = std::to_string(this->unitPointer->getCurrentPower());
 	string maxPower = std::to_string(this->unitPointer->getMaxPower());
 
-	this->hudPowerAmount.createText(currentPower + " / " + maxPower, { 255, 0, 208, 255 }, 0, Globals::resources->getFont("bleachFont"));
+	this->hudPowerAmount.createText(currentPower + " / " + maxPower, { 235, 235, 235, 255 }, 0, Globals::resources->getFont("bleachFont"));
 }
 
 Vector2i& HUDUnit::getPosition()
@@ -111,14 +111,14 @@ void HUDUnit::update()
 	{
 		this->hudTextureBg.setColor({ 100, 100, 100, 255 });
 		this->hudStarAmount.setColor({ 100, 100, 100, 255 });
-		this->hudPowerAmount.setColor({ 100, 0, 100, 255 });
+		this->hudPowerAmount.setColor({ 100, 100, 100, 255 });
 		this->hudHPAmount.setColor({ 100, 100, 100, 255 });
 	}
 	else
 	{
 		this->hudTextureBg.setColor({ 255, 255, 255, 255 });
 		this->hudStarAmount.setColor({ 255, 255, 255, 255 });
-		this->hudPowerAmount.setColor({ 255, 0, 208, 255 });
+		this->hudPowerAmount.setColor({ 255, 255, 255, 255 });
 		this->hudHPAmount.setColor({ 255, 255, 255, 255 });
 	}
 }

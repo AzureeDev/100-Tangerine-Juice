@@ -109,7 +109,7 @@ void PlayerUnit::moveToPanel(int panelId)
 			this->position().y
 	};
 
-	Globals::timer->createTimer("unitExecutePanel", 1, [panelId]() {
+	Globals::timer->createTimer("unitExecutePanel", 0.5f, [panelId]() {
 		LilacClasses::Tangerine->getMap()[panelId]->trigger();
 		}, 1.5f);
 }
@@ -136,7 +136,7 @@ void PlayerUnit::moveByDiceNb(unsigned int diceNb)
 
 	Globals::timer->createTimer("unitExecutePanel", 1, [previousPanel, realMovement]() {
 		LilacClasses::Tangerine->getMap()[previousPanel + realMovement]->trigger();
-		}, 1.5f);
+	}, 1);
 }
 
 bool PlayerUnit::isKO() const
@@ -288,5 +288,5 @@ void PlayerUnit::startTurn()
 
 void PlayerUnit::movement(const int diceRoll)
 {
-	Globals::timer->createTimer("playerUnitMovement", 0.5f, [this, diceRoll]() { this->moveByDiceNb(diceRoll); }, 1);
+	Globals::timer->createTimer("playerUnitMovement", 0.1f, [this, diceRoll]() { this->moveByDiceNb(diceRoll); }, 1);
 }

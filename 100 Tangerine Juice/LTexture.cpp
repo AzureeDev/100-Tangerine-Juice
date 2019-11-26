@@ -100,6 +100,11 @@ void LTexture::createText(const string text, const SDL_Color color, const int ma
 	}
 }
 
+string LTexture::getPath() const
+{
+	return this->texturePath;
+}
+
 int LTexture::getWidth()
 {
 	return this->textureWidth;

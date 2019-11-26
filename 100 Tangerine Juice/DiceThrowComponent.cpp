@@ -1,8 +1,9 @@
 #include "DiceThrowComponent.h"
 #include "Globals.h"
+#include "SFXManager.h"
 #include "Utils.h"
 
-DiceThrowComponent::DiceThrowComponent(const DiceComponentType type)
+DiceThrowComponent::DiceThrowComponent(const bool isAI, const DiceComponentType type)
 {
 	this->componentType = type;
 	this->componentBgContour.setNewTexture("assets/ui/rect_base.png");
@@ -60,6 +61,11 @@ DiceThrowComponent::DiceThrowComponent(const DiceComponentType type)
 	this->componentButton->setAllowSound(false);
 	this->componentButton->supplyCallback([this]() { this->onPress(); });
 
+	if (Globals::gameManager->getLocalUnit()->identifier() != Globals::gameManager->getCurrentTurnUnit()->identifier())
+	{
+		this->componentButton->setEnabled(false);
+	}
+
 	Globals::timer->createTimer("diceTextureRoll", 0.05f, [this]() {
 		vector<string> diceTextures = {
 			"assets/dice/1.png",
@@ -70,8 +76,15 @@ DiceThrowComponent::DiceThrowComponent(const DiceComponentType type)
 			"assets/dice/6.png",
 		};
 
-		this->componentDiceTexture.setNewTexture(diceTextures[rand() % (diceTextures.size() - 1)]);
-		});
+		this->componentDiceTexture.setNewTexture(diceTextures[Utils::randBetween(0, 5)]);
+	});
+
+	if (isAI)
+	{
+		Globals::timer->createTimer("AiAutoClick", 0.1f, [this]() {
+			this->onPress();
+		}, 1);
+	}
 }
 
 DiceThrowComponent::~DiceThrowComponent()
@@ -88,6 +101,8 @@ void DiceThrowComponent::onPress()
 	Globals::timer->removeTimer("diceTextureRoll");
 	this->componentButton->setEnabled(false);
 
+	SFXManager::playSFX("btn_clicked");
+
 	const int diceRoll = Utils::randBetween(1, 6);
 	this->componentDiceTexture.setNewTexture("assets/dice/" + std::to_string(diceRoll) + ".png");
 
@@ -96,7 +111,7 @@ void DiceThrowComponent::onPress()
 		Globals::timer->createTimer("diceThrowCmpntOnPress", 1, [diceRoll]() {
 			Globals::gameManager->getCurrentTurnUnit()->movement(diceRoll);
 			Globals::engine->destroyClass("DiceThrowComponent");
-			}, 1);
+		}, 1);
 	}
 }
 

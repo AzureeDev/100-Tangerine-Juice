@@ -267,6 +267,9 @@ void LilacEngine::init()
 	// Init OverlayManager
 	OverlayManager::init();
 
+	// Init Definitions
+	UnitDefinitions::createDefinitions();
+
 	SDL_Log("Initialized. Starting the main loop...");
 
 	// And initiate our game loop

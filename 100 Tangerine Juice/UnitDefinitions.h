@@ -19,13 +19,15 @@ struct UnitParams
 	string unitId;
 	string unitName;
 	string unitDesc;
-	string unitDefaultPose;
+	string unitDefaultPose = "std";
 	int unitMaxHealth = 5;
 	vector<int> unitStats;
+	int unitStarBonus = 0;
 };
 
 struct UnitDefinitions
 {
+	static void createDefinitions();
 	static vector<UnitParams> def;
 	static UnitParams getParamsById(const string unitIdentifier);
 };

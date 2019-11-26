@@ -152,7 +152,9 @@
     <ClCompile Include="AIUnit.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="DiceThrowComponent.cpp" />
+    <ClCompile Include="DiceThrowComponent.cpp">
+      <Filter>LClasses\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -264,7 +266,9 @@
     <ClInclude Include="AIUnit.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="DiceThrowComponent.h" />
+    <ClInclude Include="DiceThrowComponent.h">
+      <Filter>LClasses\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

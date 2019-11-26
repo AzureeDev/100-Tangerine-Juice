@@ -21,7 +21,7 @@ private:
 	LButton* componentButton = nullptr;
 
 public:
-	DiceThrowComponent(const DiceComponentType type = DiceComponentType::Movement);
+	DiceThrowComponent(const bool isAI = false, const DiceComponentType type = DiceComponentType::Movement);
 	~DiceThrowComponent();
 	void init();
 	void onPress();

@@ -15,9 +15,10 @@
 
 const int MAX_MAP_SIZE = 101;
 
-Tangerine::Tangerine()
+Tangerine::Tangerine(GameParams params)
 {
 	LilacClasses::Tangerine = this;
+	this->gameParams = params;
 }
 
 Tangerine::~Tangerine()
@@ -34,7 +35,7 @@ void Tangerine::init()
 	MusicManager::playMusic("assets/musics/shine.mp3");
 
 	const vector<string> uids = {
-		"sora",
+		this->gameParams.pickedUnit,
 		"suguri",
 		"sham",
 		"saki"
@@ -47,36 +48,43 @@ void Tangerine::init()
 
 	for (size_t i = 0; i < MAX_MAP_SIZE; ++i)
 	{
-		const int randomizedPanel = Utils::randBetween(0, 6);
-		switch (randomizedPanel)
+		if (i > 0 && i < 100)
 		{
-		case 0:
+			const int randomizedPanel = Utils::randBetween(0, 6);
+			switch (randomizedPanel)
+			{
+			case 0:
+				panels.push_back(shared_ptr<Panel>(new Panel()));
+				break;
+
+			case 1:
+				panels.push_back(shared_ptr<PanelEncounter>(new PanelEncounter()));
+				break;
+
+			case 2:
+				panels.push_back(shared_ptr<PanelBonus>(new PanelBonus()));
+				break;
+
+			case 3:
+				panels.push_back(shared_ptr<PanelDrop>(new PanelDrop()));
+				break;
+
+			case 4:
+				panels.push_back(shared_ptr<PanelHeal>(new PanelHeal()));
+				break;
+
+			case 5:
+				panels.push_back(shared_ptr<PanelMove>(new PanelMove()));
+				break;
+
+			case 6:
+				panels.push_back(shared_ptr<PanelPower>(new PanelPower()));
+				break;
+			}
+		}
+		else if (i == 0 || i == 100)
+		{
 			panels.push_back(shared_ptr<Panel>(new Panel()));
-			break;
-
-		case 1:
-			panels.push_back(shared_ptr<PanelEncounter>(new PanelEncounter()));
-			break;
-
-		case 2:
-			panels.push_back(shared_ptr<PanelBonus>(new PanelBonus()));
-			break;
-
-		case 3:
-			panels.push_back(shared_ptr<PanelDrop>(new PanelDrop()));
-			break;
-
-		case 4:
-			panels.push_back(shared_ptr<PanelHeal>(new PanelHeal()));
-			break;
-
-		case 5:
-			panels.push_back(shared_ptr<PanelMove>(new PanelMove()));
-			break;
-
-		case 6:
-			panels.push_back(shared_ptr<PanelPower>(new PanelPower()));
-			break;
 		}
 
 		panels[i]->setIdentifier(i);
@@ -148,6 +156,11 @@ vector<shared_ptr<Panel>>& Tangerine::getMap()
 unique_ptr<GameManager>& Tangerine::getGameManager()
 {
 	return this->gameManager;
+}
+
+GameParams Tangerine::getGameParams() const
+{
+	return this->gameParams;
 }
 
 void Tangerine::update(const float dt)
