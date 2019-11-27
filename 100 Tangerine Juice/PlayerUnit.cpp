@@ -18,7 +18,6 @@ PlayerUnit::PlayerUnit(string unitIdentifier) : Unit(unitIdentifier)
 	this->i_maxPower = unitDefinition.unitStats[static_cast<int>(UnitParams::UnitStatistics::SkillPowerMax)];
 
 	this->hudElement = shared_ptr<HUDUnit>(new HUDUnit(this));
-
 	this->statusMessage.setAlpha(0);
 }
 
@@ -111,7 +110,7 @@ void PlayerUnit::moveToPanel(int panelId)
 
 	Globals::timer->createTimer("unitExecutePanel", 0.5f, [panelId]() {
 		LilacClasses::Tangerine->getMap()[panelId]->trigger();
-		}, 1.5f);
+	}, 1);
 }
 
 void PlayerUnit::moveByDiceNb(unsigned int diceNb)

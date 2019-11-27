@@ -86,7 +86,7 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
 
 	Globals::resources->createFont("bleachFont", "assets/fonts/bleach_fixed.ttf", 24);
-	Globals::resources->createFont("bleachFontMedium", "assets/fonts/bleach_fixed.ttf", 36);
+	Globals::resources->createFont("bleachFontMedium", "assets/fonts/bleach_fixed.ttf", 34);
 	Globals::resources->createFont("bleachFontLarge", "assets/fonts/bleach_fixed.ttf", 54);
 
 	Globals::resources->createFont("qeFont", "assets/fonts/qe.ttf", 24);
@@ -269,6 +269,7 @@ void LilacEngine::init()
 
 	// Init Definitions
 	UnitDefinitions::createDefinitions();
+	SkillDefinitions::createDefinitions();
 
 	SDL_Log("Initialized. Starting the main loop...");
 

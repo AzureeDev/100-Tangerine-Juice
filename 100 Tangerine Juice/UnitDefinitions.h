@@ -1,9 +1,12 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "SkillDefinitions.h"
 
 using std::string;
 using std::vector;
+
+struct SkillData;
 
 struct UnitParams
 {
@@ -22,6 +25,7 @@ struct UnitParams
 	string unitDefaultPose = "std";
 	int unitMaxHealth = 5;
 	vector<int> unitStats;
+	vector<SkillData> unitSkills = {};
 	int unitStarBonus = 0;
 };
 

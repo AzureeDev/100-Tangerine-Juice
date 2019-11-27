@@ -108,7 +108,7 @@ void DiceThrowComponent::onPress()
 
 	if (this->componentType == DiceComponentType::Movement)
 	{
-		Globals::timer->createTimer("diceThrowCmpntOnPress", 1, [diceRoll]() {
+		Globals::timer->createTimer("diceThrowCmpntOnPress", 0.5f, [diceRoll]() {
 			Globals::gameManager->getCurrentTurnUnit()->movement(diceRoll);
 			Globals::engine->destroyClass("DiceThrowComponent");
 		}, 1);

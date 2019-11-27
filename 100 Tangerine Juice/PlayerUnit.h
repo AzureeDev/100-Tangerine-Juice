@@ -3,10 +3,12 @@
 #include <memory>
 #include "Unit.h"
 #include "HUDUnit.h"
+#include "UnitDefinitions.h"
 
 using std::vector, std::make_shared, std::shared_ptr;
 
 class HUDUnit;
+class SkillDefinition;
 
 class PlayerUnit : public Unit
 {

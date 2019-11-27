@@ -115,11 +115,11 @@ void GameManager::nextTurn()
 		return;
 	}
 
-	int delay = 1;
+	float delay = 0.5f;
 
 	if (static_cast<unsigned int>(this->currentPlayerTurn) >= this->units.size())
 	{
-		delay = 2;
+		delay = 1.f;
 	}
 
 	this->callback("startChapter", [this]() {

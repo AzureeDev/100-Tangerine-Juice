@@ -34,52 +34,151 @@ void Tangerine::init()
 	OverlayManager::fadeOut(3);
 	MusicManager::playMusic("assets/musics/shine.mp3");
 
-	const vector<string> uids = {
-		this->gameParams.pickedUnit,
-		"suguri",
-		"sham",
-		"saki"
-	};
+	/* Get unique random bots */
+	vector<string> allUnits = {};
 
+	/* First add all units that are not like the one the player picked */
+	for (const auto& unit : UnitDefinitions::def)
+	{
+		if (unit.unitId != this->gameParams.pickedUnit)
+		{
+			allUnits.push_back(unit.unitId);
+		}
+	}
+
+	Utils::shuffle(allUnits);
+
+	vector<string> uids = { this->gameParams.pickedUnit };
+
+	/* Then loop through the shuffled vector */
+	for (size_t i = 0; i < allUnits.size(); ++i)
+	{
+		uids.push_back(allUnits[i]);
+
+		if (uids.size() == 4)
+		{
+			break;
+		}
+	}
+	
+	/* World definition */
 	world.setNewWorld("assets/worlds/ri_se_sky.png");
 	world.setAllowClouds(true);
 	world.setWorldColor({ 100, 100, 255, 255 });
 	world.setScrollMultiplier(6);
 
+	/* Fair Random definition */
+	int fr_BonusPanels = 20;
+	int fr_DropPanels = 15;
+	int fr_EncounterPanels = 20;
+	int fr_PowerPanels = 15;
+	int fr_MovePanels = 15;
+	int fr_HealPanels = 15;
+
+	vector<int> fairRandomPanels = { fr_EncounterPanels, fr_BonusPanels, fr_DropPanels, fr_HealPanels, fr_MovePanels, fr_PowerPanels };
+
+	/* World generation */
 	for (size_t i = 0; i < MAX_MAP_SIZE; ++i)
 	{
 		if (i > 0 && i < 100)
 		{
-			const int randomizedPanel = Utils::randBetween(0, 6);
-			switch (randomizedPanel)
+			if (this->gameParams.pickedGeneration == GameParams::WorldGeneration::TotalRandom)
 			{
-			case 0:
-				panels.push_back(shared_ptr<Panel>(new Panel()));
-				break;
+				const int randomizedPanel = Utils::randBetween(0, 6);
+				switch (randomizedPanel)
+				{
+				case 0:
+					panels.push_back(shared_ptr<Panel>(new Panel()));
+					break;
 
-			case 1:
-				panels.push_back(shared_ptr<PanelEncounter>(new PanelEncounter()));
-				break;
+				case 1:
+					panels.push_back(shared_ptr<PanelEncounter>(new PanelEncounter()));
+					break;
 
-			case 2:
-				panels.push_back(shared_ptr<PanelBonus>(new PanelBonus()));
-				break;
+				case 2:
+					panels.push_back(shared_ptr<PanelBonus>(new PanelBonus()));
+					break;
 
-			case 3:
-				panels.push_back(shared_ptr<PanelDrop>(new PanelDrop()));
-				break;
+				case 3:
+					panels.push_back(shared_ptr<PanelDrop>(new PanelDrop()));
+					break;
 
-			case 4:
-				panels.push_back(shared_ptr<PanelHeal>(new PanelHeal()));
-				break;
+				case 4:
+					panels.push_back(shared_ptr<PanelHeal>(new PanelHeal()));
+					break;
 
-			case 5:
-				panels.push_back(shared_ptr<PanelMove>(new PanelMove()));
-				break;
+				case 5:
+					panels.push_back(shared_ptr<PanelMove>(new PanelMove()));
+					break;
 
-			case 6:
-				panels.push_back(shared_ptr<PanelPower>(new PanelPower()));
-				break;
+				case 6:
+					panels.push_back(shared_ptr<PanelPower>(new PanelPower()));
+					break;
+				}
+			}
+			else if (this->gameParams.pickedGeneration == GameParams::WorldGeneration::FairRandom)
+			{
+				while (true)
+				{
+					const int randomizedPanel = Utils::randBetween(0, 5);
+
+					if (fairRandomPanels[randomizedPanel] <= 0)
+					{
+						continue;
+					}
+					else
+					{
+						switch (randomizedPanel)
+						{
+						case 0:
+							panels.push_back(shared_ptr<PanelEncounter>(new PanelEncounter()));
+							break;
+
+						case 1:
+							panels.push_back(shared_ptr<PanelBonus>(new PanelBonus()));
+							break;
+
+						case 2:
+							panels.push_back(shared_ptr<PanelDrop>(new PanelDrop()));
+							break;
+
+						case 3:
+							panels.push_back(shared_ptr<PanelHeal>(new PanelHeal()));
+							break;
+
+						case 4:
+							panels.push_back(shared_ptr<PanelMove>(new PanelMove()));
+							break;
+
+						case 5:
+							panels.push_back(shared_ptr<PanelPower>(new PanelPower()));
+							break;
+						}
+
+						fairRandomPanels[randomizedPanel]--;
+
+						break;
+					}
+				}
+			}
+			else if (this->gameParams.pickedGeneration == GameParams::WorldGeneration::Battlefield)
+			{
+				const int randomizedPanel = Utils::randBetween(0, 2);
+
+				switch (randomizedPanel)
+				{
+				case 0:
+					panels.push_back(shared_ptr<PanelHeal>(new PanelHeal()));
+					break;
+
+				case 1:
+					panels.push_back(shared_ptr<PanelEncounter>(new PanelEncounter()));
+					break;
+
+				case 2:
+					panels.push_back(shared_ptr<PanelPower>(new PanelPower()));
+					break;
+				}
 			}
 		}
 		else if (i == 0 || i == 100)
@@ -109,7 +208,8 @@ void Tangerine::init()
 		}
 	}
 
-	for (size_t i = 0; i < 4; ++i)
+	/* Create players */
+	for (size_t i = 0; i < uids.size(); ++i)
 	{
 		/* The player is always the first one, so we assume it is our local player. */
 		if (i == 0)
@@ -133,6 +233,7 @@ void Tangerine::init()
 		units[i]->setFlipped(true);
 	}
 
+	/* Shuffle the player order */
 	Utils::shuffle(units);
 
 	// Reposition of the huds on the right place
@@ -142,8 +243,10 @@ void Tangerine::init()
 		units[i]->hud()->updateHud();
 	}
 
+	/* Unit 0 is not always the local player now, we can then start from there. */
 	units[0]->setActiveUnit();
 
+	/* Then we create the game manager, which handles the game logic. */
 	/* The usage of new here is being able to use lambdas with the TimerManager. */
 	this->gameManager = unique_ptr<GameManager>(new GameManager(panels, units));
 }
