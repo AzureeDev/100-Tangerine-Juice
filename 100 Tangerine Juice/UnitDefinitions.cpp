@@ -56,6 +56,7 @@ void UnitDefinitions::createDefinitions()
 	saki.unitDesc = "Saki is the kind of unit that will want to avoid Encounter panels. She can heal herself by 1 HP at the beginning of her turns, but her battle statistics aren't great.";
 	saki.unitMaxHealth = 4;
 	saki.unitStats = { -1, 0, 1, 5, 0, 3 };
+	saki.unitHealPerTurn = true;
 
 	UnitParams sb;
 	sb.unitId = "sb";

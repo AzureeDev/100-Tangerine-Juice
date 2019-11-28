@@ -1,4 +1,5 @@
 #include "Unit.h"
+#include "Globals.h"
 
 const unsigned int UNIT_SHEET_SIZE = 512;
 
@@ -51,6 +52,8 @@ void Unit::setAnimation(const string newAnimation)
 		return;
 	}
 
+	SDL_Log("Animation changed to %s", newAnimation.c_str());
+
 	this->currentAnimation = newAnimation;
 	this->unitTexture.setNewTexture("assets/units/" + this->unitId + "/" + newAnimation + ".png");
 }
@@ -91,6 +94,18 @@ void Unit::setFlipped(const bool state)
 	this->unitFlipped = state;
 }
 
+void Unit::setStatusMessage(const string message, const SDL_Color color)
+{
+	this->statusMessage.createText(message, color, 0, Globals::resources->getFont("bleachFontMedium"));
+	this->statusMessage.setFade(TextureFadingState::FadeOut);
+	this->statusMessage.setPosition(
+		{
+			this->unitTexture.getPosition().x + (this->unitTexture.getSheetSize() / 2) + 64,
+			this->unitTexture.getPosition().y + (this->unitTexture.getHeight() / 2) - 96
+		}
+	);
+}
+
 void Unit::placeMiddleScreen()
 {
 	this->unitTexture.placeMiddleScreen(true);
@@ -108,6 +123,17 @@ void Unit::render(SDL_Rect camera)
 {
 	//this->unitShadow.render();
 	this->unitTexture.render();
+	this->statusMessage.render();
+
+	if (this->statusMessage.getAlpha() > 0)
+	{
+		this->statusMessage.setPosition(
+			{
+				this->unitTexture.getPosition().x + (this->unitTexture.getSheetSize() / 2) + 64,
+				this->statusMessage.getY() - 2
+			}
+		);
+	}
 
 	if (this->unitDashing)
 	{

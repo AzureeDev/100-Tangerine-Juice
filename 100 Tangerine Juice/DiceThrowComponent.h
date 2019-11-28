@@ -6,7 +6,8 @@
 enum class DiceComponentType {
 	Movement,
 	Bonus,
-	Drop
+	Drop,
+	Recovery
 };
 
 class DiceThrowComponent : public LClass
@@ -16,6 +17,7 @@ private:
 	LTexture componentBgContour;
 	LTexture componentBg;
 	LTexture componentBgText;
+	LTexture componentText;
 	LTexture componentDiceText;
 	LTexture componentDiceTexture;
 	Unit componentUnit;

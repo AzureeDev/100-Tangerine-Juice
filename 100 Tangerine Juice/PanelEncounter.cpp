@@ -10,15 +10,27 @@ PanelEncounter::PanelEncounter()
 
 void PanelEncounter::trigger()
 {
-	Globals::timer->createTimer("powerPanelEffect", .5f, []()
-		{
-			SFXManager::playSFX("powerup");
+	if (Globals::gameManager->getAliveUnitsCount() > 1)
+	{
+		Globals::timer->createTimer("powerPanelEffect", .5f, []()
+			{
+				SFXManager::playSFX("powerup");
 
-			Globals::engine->createClass("BattleComponent", 
-				new BattleComponent(
-					Globals::gameManager->getCurrentTurnUnit(), 
-					Globals::gameManager->getRandomUnitExcluding(Globals::gameManager->getCurrentTurnUnit())
-				));
-		}, 1
-	);
+				if (Globals::engine->hasClass("BattleComponent"))
+				{
+					Globals::engine->destroyClass("BattleComponent");
+				}
+
+				Globals::engine->createClass("BattleComponent",
+					new BattleComponent(
+						Globals::gameManager->getCurrentTurnUnit(),
+						Globals::gameManager->getRandomAliveUnitExcluding(Globals::gameManager->getCurrentTurnUnit())
+					));
+			}, 1
+		);
+	}
+	else
+	{
+		Panel::trigger();
+	}
 }

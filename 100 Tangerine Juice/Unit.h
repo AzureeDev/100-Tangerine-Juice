@@ -13,6 +13,7 @@ protected:
 	string currentAnimation = "std";
 	LTexture unitTexture;
 	LTexture unitShadow;
+	LTexture statusMessage;
 	Vector2i unitPosition = { 0, 0 };
 	bool unitFlipped = false;
 	bool unitDashing = false;
@@ -32,6 +33,7 @@ public:
 	void setY(const int y);
 	void setPosition(const Vector2i pos);
 	void setFlipped(const bool state);
+	void setStatusMessage(const string message, const SDL_Color color = { 255, 255, 255, 0 });
 	void placeMiddleScreen();
 	virtual void render(SDL_Rect camera);
 };

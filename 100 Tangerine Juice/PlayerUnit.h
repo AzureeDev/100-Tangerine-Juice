@@ -19,6 +19,11 @@ public:
 		CustomAnimation
 	};
 
+	enum class UnitDefenseType {
+		Defense,
+		Evasion
+	};
+
 private:
 	Uint8 playerId = 0;
 	shared_ptr<HUDUnit> hudElement = nullptr;
@@ -34,7 +39,9 @@ protected:
 	/* Stats */
 	int s_currentHealth = 5;
 	int s_maxHealth = 5;
+	int s_currentRecovery = 0;
 	vector<int> s_stats = {};
+	vector<int> s_tempStats = { 0, 0, 0, 0, 0, 0 };
 
 	/* Inventory */
 	int i_currentStars = 0;
@@ -76,8 +83,20 @@ public:
 	void addPower(const unsigned int amount);
 	void addStars(const unsigned int amount);
 	void dropStars(const unsigned int amount);
+	void heal(const int amount);
+	int takeDamage(const int attackRoll, const int defenseRoll, const UnitDefenseType defenseType);
+	void onKO();
+	int getCurrentRecovery();
+	void decreaseRecovery();
+	void revive();
+	void onRevived();
 
 	/* Game state related - turn start ect */
 	virtual void startTurn();
 	virtual void movement(const int diceRoll);
+
+	/* Stat retrieve (with boosts) */
+	unsigned getAttackStat() const;
+	unsigned getDefenseStat() const;
+	unsigned getEvasionStat() const;
 };

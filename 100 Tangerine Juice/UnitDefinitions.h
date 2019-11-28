@@ -28,6 +28,7 @@ struct UnitParams
 	vector<SkillData> unitSkills = {};
 	int unitStarBonus = 0;
 	int unitMovementBonus = 0;
+	bool unitHealPerTurn = false;
 };
 
 struct UnitDefinitions

@@ -14,8 +14,9 @@ void PanelBonus::trigger()
 		{
 			SFXManager::playSFX("starget");
 
-			const unsigned base = 15;
-			const unsigned max = 30 + static_cast<unsigned>(LilacClasses::Tangerine->getGameManager()->getCurrentChapter());
+			unsigned unitBonus = Globals::gameManager->getCurrentUnitParams().unitStarBonus;
+			unsigned base = 15 + unitBonus;
+			const unsigned max = 30 + static_cast<unsigned>(LilacClasses::Tangerine->getGameManager()->getCurrentChapter()) + unitBonus;
 			const unsigned starAmount = Utils::randBetween(base, max);
 
 			Globals::gameManager->getCurrentTurnUnit()->addStars(starAmount);

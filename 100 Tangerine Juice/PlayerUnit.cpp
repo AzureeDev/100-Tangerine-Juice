@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "Utils.h"
 #include "DiceThrowComponent.h"
+#include "SFXManager.h"
 
 PlayerUnit::PlayerUnit()
 {
@@ -277,20 +278,143 @@ void PlayerUnit::dropStars(const unsigned int amount)
 	this->hud()->updateHud();
 }
 
+void PlayerUnit::heal(const int amount)
+{
+	if (this->s_currentHealth == this->s_maxHealth)
+	{
+		return;
+	}
+
+	this->s_currentHealth += amount;
+
+	if (this->s_currentHealth > this->s_maxHealth)
+	{
+		this->s_currentHealth = this->s_maxHealth;
+	}
+
+	SFXManager::playSFX("powerup");
+	Globals::gameManager->getCurrentTurnUnit()->setStatusMessage("HEAL\n+ " + std::to_string(amount) + " HP", { 255, 128, 223, 255 });
+
+	this->hud()->updateHud();
+}
+
+int PlayerUnit::takeDamage(const int attackRoll, const int defenseRoll, const UnitDefenseType defenseType)
+{
+	int damageTaken = 0;
+
+	if (defenseType == UnitDefenseType::Defense)
+	{
+		damageTaken += (attackRoll - defenseRoll);
+
+		if (damageTaken <= 1)
+		{
+			damageTaken = 1;
+		}
+	}
+
+	this->s_currentHealth -= damageTaken;
+
+	if (this->s_currentHealth < 0)
+	{
+		this->s_currentHealth = 0;
+	}
+
+	this->hud()->updateHud();
+
+	if (this->isKO())
+	{
+		this->onKO();
+	}
+
+	return damageTaken;
+}
+
+void PlayerUnit::onKO()
+{
+	this->s_currentRecovery = this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Recovery)];
+}
+
+int PlayerUnit::getCurrentRecovery()
+{
+	return this->s_currentRecovery;
+}
+
+void PlayerUnit::decreaseRecovery()
+{
+	this->s_currentRecovery--;
+}
+
+void PlayerUnit::revive()
+{
+	this->s_currentHealth = this->s_maxHealth;
+	this->hud()->updateHud();
+	this->setStatusMessage("REVIVED!", { 255, 255, 255, 255 });
+	this->onRevived();
+}
+
+void PlayerUnit::onRevived()
+{
+	this->s_currentRecovery = 0;
+}
+
 void PlayerUnit::startTurn()
 {
 	SDL_Log("Player actions here");
 	this->setActiveUnit();
 
-	if (Globals::engine->hasClass("DiceThrowComponent"))
+	if (!this->isKO())
 	{
-		Globals::engine->destroyClass("DiceThrowComponent");
-	}
+		if (Globals::gameManager->getCurrentUnitParams().unitHealPerTurn)
+		{
+			this->heal(1);
+		}
 
-	Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent);
+		if (Globals::engine->hasClass("DiceThrowComponent"))
+		{
+			Globals::engine->destroyClass("DiceThrowComponent");
+		}
+
+		Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI()));
+	}
+	else if (this->isKO() && this->s_currentRecovery > 1)
+	{
+		if (this->s_currentRecovery == 0)
+		{
+			this->s_currentRecovery = this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Recovery)];
+		}
+		else
+		{
+			if (Globals::engine->hasClass("DiceThrowComponent"))
+			{
+				Globals::engine->destroyClass("DiceThrowComponent");
+			}
+
+			Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI(), DiceComponentType::Recovery));
+		}
+	}
+	else if (this->isKO() && this->s_currentRecovery <= 1)
+	{
+		this->revive();
+		Globals::gameManager->nextTurn();
+	}
 }
 
 void PlayerUnit::movement(const int diceRoll)
 {
 	Globals::timer->createTimer("playerUnitMovement", 0.1f, [this, diceRoll]() { this->moveByDiceNb(diceRoll); }, 1);
+}
+
+unsigned PlayerUnit::getAttackStat() const
+{
+	return this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Attack)] + this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Attack)];
+}
+
+unsigned PlayerUnit::getDefenseStat() const
+{
+	return this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Defense)] + this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Defense)];
+}
+
+unsigned PlayerUnit::getEvasionStat() const
+{
+	return this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Evasion)] + this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Evasion)];
 }

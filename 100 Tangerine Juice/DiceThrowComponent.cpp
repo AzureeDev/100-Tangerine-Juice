@@ -23,14 +23,9 @@ DiceThrowComponent::DiceThrowComponent(const bool isAI, const DiceComponentType 
 		bgText = "MOVEMENT  MOVEMENT  MOVEMENT";
 		break;
 
-	case DiceComponentType::Bonus:
+	case DiceComponentType::Recovery:
 		bgColor = { 255, 235, 0, 255 };
-		bgText = "BONUS  BONUS  BONUS";
-		break;
-
-	case DiceComponentType::Drop:
-		bgColor = { 52, 146, 235, 255 };
-		bgText = "DROP  DROP  DROP";
+		bgText = "RECOVERY  RECOVERY  RECOVERY";
 		break;
 	}
 
@@ -65,6 +60,7 @@ DiceThrowComponent::DiceThrowComponent(const bool isAI, const DiceComponentType 
 
 	this->componentButton = Globals::UI->createButton("diceThrowComponentBtn");
 	this->componentButton->getTexture().setSize(Globals::engine->getDisplaySettings().wsWidth, Globals::engine->getDisplaySettings().wsHeight);
+	this->componentButton->setVisible(false);
 	this->componentButton->setAllowSound(false);
 	this->componentButton->supplyCallback([this]() { this->onPress(); });
 
@@ -86,6 +82,18 @@ DiceThrowComponent::DiceThrowComponent(const bool isAI, const DiceComponentType 
 		this->componentDiceTexture.setNewTexture(diceTextures[Utils::randBetween(0, 5)]);
 	});
 
+	if (type == DiceComponentType::Recovery)
+	{
+		int recoveryNumber = Globals::gameManager->getCurrentTurnUnit()->getCurrentRecovery() > 6 ? 6 : Globals::gameManager->getCurrentTurnUnit()->getCurrentRecovery();
+		this->componentText.createText("Roll " + std::to_string(recoveryNumber) + " or more to revive!", { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+		this->componentText.setPosition(
+			{
+				this->componentDiceTexture.getX(),
+				this->componentDiceTexture.getY() - 64
+			}
+		);
+	}
+
 	if (isAI)
 	{
 		Globals::timer->createTimer("AiAutoClick", 0.1f, [this]() {
@@ -97,8 +105,10 @@ DiceThrowComponent::DiceThrowComponent(const bool isAI, const DiceComponentType 
 DiceThrowComponent::~DiceThrowComponent()
 {
 	Globals::UI->destroyButton("diceThrowComponentBtn");
+	this->componentButton = nullptr;
 	this->componentDiceText.destroyText();
 	this->componentBgText.destroyText();
+	this->componentText.destroyText();
 }
 
 void DiceThrowComponent::init()
@@ -114,16 +124,38 @@ void DiceThrowComponent::onPress()
 	int diceRoll = Utils::randBetween(1, 6);
 	this->componentDiceTexture.setNewTexture("assets/dice/" + std::to_string(diceRoll) + ".png");
 
-	diceRoll += Globals::gameManager->getCurrentUnitParams().unitMovementBonus;
-	this->componentDiceText.createText(std::to_string(diceRoll), { 225, 225, 225, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
-	this->componentDiceText.setFade(TextureFadingState::FadeIn, 3);
-
 	if (this->componentType == DiceComponentType::Movement)
 	{
+		diceRoll += Globals::gameManager->getCurrentUnitParams().unitMovementBonus;
+		this->componentDiceText.createText(std::to_string(diceRoll), { 225, 225, 225, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+		this->componentDiceText.setFade(TextureFadingState::FadeIn, 3);
+
+		if (this->componentType == DiceComponentType::Movement)
+		{
+			Globals::timer->createTimer("diceThrowCmpntOnPress", 0.5f, [diceRoll]() {
+				Globals::gameManager->getCurrentTurnUnit()->movement(diceRoll);
+				Globals::engine->destroyClass("DiceThrowComponent");
+				}, 1);
+		}
+	}
+	else if (this->componentType == DiceComponentType::Recovery)
+	{
 		Globals::timer->createTimer("diceThrowCmpntOnPress", 0.5f, [diceRoll]() {
-			Globals::gameManager->getCurrentTurnUnit()->movement(diceRoll);
+			
+			if (diceRoll >= Globals::gameManager->getCurrentTurnUnit()->getCurrentRecovery())
+			{
+				Globals::gameManager->getCurrentTurnUnit()->revive();
+			}
+			else
+			{
+				Globals::gameManager->getCurrentTurnUnit()->setStatusMessage("FAILED TO REVIVE", { 255, 0, 0, 255 });
+				Globals::gameManager->getCurrentTurnUnit()->decreaseRecovery();
+			}
+			
+			Globals::gameManager->nextTurn();
 			Globals::engine->destroyClass("DiceThrowComponent");
 		}, 1);
+
 	}
 }
 
@@ -132,6 +164,7 @@ void DiceThrowComponent::update(const float dt)
 	this->componentBgContour.render();
 	this->componentBg.render();
 	this->componentBgText.render();
+	this->componentText.render();
 	this->componentUnit.render(Globals::engine->getCamera());
 	this->componentDiceTexture.render();
 	this->componentDiceText.render();

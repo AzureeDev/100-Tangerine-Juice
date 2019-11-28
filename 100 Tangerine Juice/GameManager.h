@@ -40,9 +40,11 @@ public:
 	void createHudMessage(const string msg, const float duration = 3.0f);
 	shared_ptr<PlayerUnit> getCurrentTurnUnit();
 	shared_ptr<PlayerUnit> getRandomUnitExcluding(const shared_ptr<PlayerUnit> exclusion);
+	shared_ptr<PlayerUnit> getRandomAliveUnitExcluding(const shared_ptr<PlayerUnit> exclusion);
 	UnitParams getCurrentUnitParams();
 	int getCurrentChapter() const;
 	shared_ptr<PlayerUnit> getLocalUnit();
+	unsigned getAliveUnitsCount() const;
 	void nextTurn();
 	void gameEnded();
 	bool isStandingOnPanel(const int panelId) const;

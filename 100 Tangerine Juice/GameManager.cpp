@@ -110,6 +110,28 @@ shared_ptr<PlayerUnit> GameManager::getRandomUnitExcluding(const shared_ptr<Play
 	return nullptr;
 }
 
+shared_ptr<PlayerUnit> GameManager::getRandomAliveUnitExcluding(const shared_ptr<PlayerUnit> exclusion)
+{
+	const string excludedUnitIdentifier = exclusion->identifier();
+	vector<shared_ptr<PlayerUnit>> shuffledUnits = this->units;
+	Utils::shuffle(shuffledUnits);
+
+	while (true)
+	{
+		for (auto& unit : shuffledUnits)
+		{
+			if (unit->identifier() != excludedUnitIdentifier && !unit->isKO())
+			{
+				return unit;
+			}
+		}
+	}
+
+	SDL_Log("GameManager::getRandomUnitExcluding : Something went awfully wrong...");
+
+	return nullptr;
+}
+
 UnitParams GameManager::getCurrentUnitParams()
 {
 	return UnitDefinitions::getParamsById(this->getCurrentTurnUnit()->identifier());
@@ -135,6 +157,21 @@ shared_ptr<PlayerUnit> GameManager::getLocalUnit()
 	return this->units[0];
 }
 
+unsigned GameManager::getAliveUnitsCount() const
+{
+	unsigned amount = 0;
+
+	for (const auto& unit : this->units)
+	{
+		if (!unit->isKO())
+		{
+			amount++;
+		}
+	}
+
+	return amount;
+}
+
 void GameManager::nextTurn()
 {
 	if (this->isStandingOnPanel(this->map.size() - 1))
@@ -143,11 +180,11 @@ void GameManager::nextTurn()
 		return;
 	}
 
-	float delay = 0.5f;
+	float delay = 1.f;
 
 	if (static_cast<unsigned int>(this->currentPlayerTurn) >= this->units.size())
 	{
-		delay = 1.f;
+		delay = 2.f;
 	}
 
 	this->callback("startChapter", [this]() {
