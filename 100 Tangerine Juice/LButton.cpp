@@ -224,11 +224,6 @@ void LButton::setAllowAnimation(const bool state)
 
 void LButton::render()
 {
-	if (this == nullptr)
-	{
-		return;
-	}
-
 	if (this->buttonVisible)
 	{
 		if (this->isMouseInside())
@@ -262,7 +257,7 @@ void LButton::render()
 
 		this->buttonTexture.render();
 
-		if (!this->buttonTextStr.empty())
+		if (this->buttonTextStr != "")
 		{
 			this->buttonText.render();
 		}

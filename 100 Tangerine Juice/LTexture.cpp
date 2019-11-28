@@ -70,10 +70,7 @@ void LTexture::createText(const string text, const SDL_Color color, const int ma
 {
 	if (this->texture != nullptr)
 	{
-		SDL_DestroyTexture(this->texture);
-		this->texture = nullptr;
-		this->textureWidth = 0;
-		this->textureHeight = 0;
+		this->destroyText();
 	}
 
 	if (custom_font == nullptr)
@@ -315,7 +312,7 @@ void LTexture::setNewTexture(const string path)
 	}
 }
 
-void LTexture::setFade(const TextureFadingState state)
+void LTexture::setFade(const TextureFadingState state, const int multiplier)
 {
 	if (state != TextureFadingState::Idle)
 	{
@@ -334,6 +331,7 @@ void LTexture::setFade(const TextureFadingState state)
 	}
 
 	this->textureFadeState = state;
+	this->textureFadingMultiplier = multiplier;
 }
 
 void LTexture::setScrollable(const bool state, const int multiplier)
@@ -439,7 +437,7 @@ void LTexture::render(SDL_Rect cameraRect)
 		switch (this->textureFadeState)
 		{
 		case TextureFadingState::FadeIn:
-			Utils::clamp<Uint8>(this->textureColor.a += 5, 0, 255);
+			Utils::clamp<Uint8>(this->textureColor.a += (5 * this->textureFadingMultiplier), 0, 255);
 			SDL_SetTextureAlphaMod(this->texture, this->getAlpha());
 
 			if (this->textureColor.a >= this->textureBaseColor.a)
@@ -449,7 +447,7 @@ void LTexture::render(SDL_Rect cameraRect)
 			break;
 
 		case TextureFadingState::FadeOut:
-			Utils::clamp<Uint8>(this->textureColor.a -= 5, 0, 255);
+			Utils::clamp<Uint8>(this->textureColor.a -= (5 * this->textureFadingMultiplier), 0, 255);
 			SDL_SetTextureAlphaMod(this->texture, this->getAlpha());
 
 			if (this->textureColor.a <= 0)

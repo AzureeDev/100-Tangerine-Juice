@@ -26,3 +26,8 @@ void AIUnit::startTurn()
 
 	Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(true));
 }
+
+bool AIUnit::isAI() const
+{
+	return true;
+}

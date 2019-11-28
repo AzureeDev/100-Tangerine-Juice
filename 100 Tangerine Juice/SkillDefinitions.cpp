@@ -30,7 +30,7 @@ void SkillDefinitions::createDefinitions()
 	///////////////////////////////////////////////////////
 	SkillData speedup;
 	speedup.skillIdentifier = "speedup";
-	speedup.skillName = "Speeding Up";
+	speedup.skillName = "Acceleration";
 	speedup.skillDescription = "Gain +2 Evasion for this battle, and -1 Defense.";
 	speedup.skillOwner = "suguri";
 	speedup.skillIconPath = "assets/skills/skl_speedup.png";

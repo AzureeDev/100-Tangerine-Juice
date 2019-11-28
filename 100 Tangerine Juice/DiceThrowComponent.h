@@ -16,6 +16,7 @@ private:
 	LTexture componentBgContour;
 	LTexture componentBg;
 	LTexture componentBgText;
+	LTexture componentDiceText;
 	LTexture componentDiceTexture;
 	Unit componentUnit;
 	LButton* componentButton = nullptr;

@@ -39,6 +39,8 @@ public:
 	void initGame();
 	void createHudMessage(const string msg, const float duration = 3.0f);
 	shared_ptr<PlayerUnit> getCurrentTurnUnit();
+	shared_ptr<PlayerUnit> getRandomUnitExcluding(const shared_ptr<PlayerUnit> exclusion);
+	UnitParams getCurrentUnitParams();
 	int getCurrentChapter() const;
 	shared_ptr<PlayerUnit> getLocalUnit();
 	void nextTurn();

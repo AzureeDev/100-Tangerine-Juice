@@ -183,6 +183,12 @@ Mix_Chunk* ResourcesManager::createSFX(const string path)
 	return sfx;
 }
 
+int ResourcesManager::getResourcesAmount() const
+{
+	size_t amount = this->ltextures.size() + this->textures.size() + this->sfx.size() + this->musics.size() + this->fonts.size();
+	return static_cast<int>(amount);
+}
+
 void ResourcesManager::destroy()
 {
 	/*

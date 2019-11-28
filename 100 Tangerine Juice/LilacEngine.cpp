@@ -87,8 +87,9 @@ void LilacEngine::initBaseResources()
 
 	Globals::resources->createFont("bleachFont", "assets/fonts/bleach_fixed.ttf", 24);
 	Globals::resources->createFont("bleachFontMedium", "assets/fonts/bleach_fixed.ttf", 34);
+	Globals::resources->createFont("bleachFontX", "assets/fonts/bleach_fixed.ttf", 44);
 	Globals::resources->createFont("bleachFontLarge", "assets/fonts/bleach_fixed.ttf", 54);
-
+	
 	Globals::resources->createFont("qeFont", "assets/fonts/qe.ttf", 24);
 
 	this->cursor.setNewTexture("assets/ui/cursor.png");
@@ -200,6 +201,10 @@ void LilacEngine::update()
 
 		OverlayManager::update(deltaTime);
 
+		// Debug
+		this->DEBUG.createText("CLASSES CREATED: " + std::to_string(this->lilacClasses.size()) + "\nRESOURCES LOADED: " + std::to_string(Globals::resources->getResourcesAmount()), { 255, 255, 255, 255 });
+		this->DEBUG.setPosition(10, 10);
+		this->DEBUG.render();
 		SDL_RenderPresent(this->renderer);
 	}
 }
@@ -261,15 +266,15 @@ void LilacEngine::init()
 	// Init base resources
 	this->initBaseResources();
 
+	// Init Definitions
+	UnitDefinitions::createDefinitions();
+	SkillDefinitions::createDefinitions();
+
 	// Init the base classes
 	this->initBaseClasses();
 
 	// Init OverlayManager
 	OverlayManager::init();
-
-	// Init Definitions
-	UnitDefinitions::createDefinitions();
-	SkillDefinitions::createDefinitions();
 
 	SDL_Log("Initialized. Starting the main loop...");
 

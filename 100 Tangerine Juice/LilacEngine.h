@@ -15,7 +15,7 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.54.0";
+	string engineVersion = "1.55.0";
 	string mainMenuMessage = "Welcome to 100% Tangerine Juice! Hope you will enjoy your time here. ~";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
@@ -25,6 +25,7 @@ private:
 	DisplaySettings displaySettings = {};
 	vector<LilacClass> lilacClasses = {};
 	LTexture cursor;
+	LTexture DEBUG;
 	float timer = 0.0f;
 	bool running = true;
 

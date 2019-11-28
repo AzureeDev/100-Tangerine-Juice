@@ -21,7 +21,7 @@ public:
 
 private:
 	Uint8 playerId = 0;
-	shared_ptr<HUDUnit> hudElement;
+	shared_ptr<HUDUnit> hudElement = nullptr;
 	Vector2i initialPosition = { 0, 0 };
 	Vector2i destinationPosition = { 0, 0 };
 	UnitStates currentState = UnitStates::Idle;
@@ -60,6 +60,7 @@ public:
 	void moveTo(const Vector2i& destination);
 	void moveToPanel(int panelId);
 	void moveByDiceNb(unsigned int diceNb);
+	virtual bool isAI() const;
 	bool isKO() const;
 	virtual void render(SDL_Rect cameraRect);
 	int getCurrentHealth() const;

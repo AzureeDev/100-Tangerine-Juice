@@ -86,6 +86,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <PreprocessorDefinitions>TANGERINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AIUnit.cpp" />
+    <ClCompile Include="BattleComponent.cpp" />
     <ClCompile Include="ButtonCallbacks.cpp" />
     <ClCompile Include="DiceThrowComponent.cpp" />
     <ClCompile Include="GameIntro.cpp" />
@@ -178,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIUnit.h" />
+    <ClInclude Include="BattleComponent.h" />
     <ClInclude Include="ButtonCallbacks.h" />
     <ClInclude Include="DiceThrowComponent.h" />
     <ClInclude Include="GameIntro.h" />

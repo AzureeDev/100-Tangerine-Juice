@@ -49,6 +49,13 @@ DiceThrowComponent::DiceThrowComponent(const bool isAI, const DiceComponentType 
 	this->componentDiceTexture.placeMiddleScreen();
 	this->componentDiceTexture.setX(this->componentDiceTexture.getX() + 64);
 
+	this->componentDiceText.setPosition(
+		{
+			this->componentDiceTexture.getX() - 64,
+			this->componentDiceTexture.top().y + 8
+		}
+	);
+
 	this->componentBgText.setPosition(
 		{
 			0,
@@ -90,6 +97,8 @@ DiceThrowComponent::DiceThrowComponent(const bool isAI, const DiceComponentType 
 DiceThrowComponent::~DiceThrowComponent()
 {
 	Globals::UI->destroyButton("diceThrowComponentBtn");
+	this->componentDiceText.destroyText();
+	this->componentBgText.destroyText();
 }
 
 void DiceThrowComponent::init()
@@ -100,11 +109,14 @@ void DiceThrowComponent::onPress()
 {
 	Globals::timer->removeTimer("diceTextureRoll");
 	this->componentButton->setEnabled(false);
-
 	SFXManager::playSFX("btn_clicked");
 
-	const int diceRoll = Utils::randBetween(1, 6);
+	int diceRoll = Utils::randBetween(1, 6);
 	this->componentDiceTexture.setNewTexture("assets/dice/" + std::to_string(diceRoll) + ".png");
+
+	diceRoll += Globals::gameManager->getCurrentUnitParams().unitMovementBonus;
+	this->componentDiceText.createText(std::to_string(diceRoll), { 225, 225, 225, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+	this->componentDiceText.setFade(TextureFadingState::FadeIn, 3);
 
 	if (this->componentType == DiceComponentType::Movement)
 	{
@@ -122,5 +134,6 @@ void DiceThrowComponent::update(const float dt)
 	this->componentBgText.render();
 	this->componentUnit.render(Globals::engine->getCamera());
 	this->componentDiceTexture.render();
+	this->componentDiceText.render();
 	this->componentButton->render();
 }

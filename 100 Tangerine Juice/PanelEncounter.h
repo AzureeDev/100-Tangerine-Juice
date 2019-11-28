@@ -4,4 +4,5 @@ class PanelEncounter : public Panel
 {
 public:
 	PanelEncounter();
+	virtual void trigger();
 };

@@ -138,6 +138,11 @@ void PlayerUnit::moveByDiceNb(unsigned int diceNb)
 	}, 1);
 }
 
+bool PlayerUnit::isAI() const
+{
+	return false;
+}
+
 bool PlayerUnit::isKO() const
 {
 	return this->s_currentHealth <= 0;

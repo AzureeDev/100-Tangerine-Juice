@@ -39,5 +39,6 @@ public:
 	TTF_Font* getFont(const string name); // Simple getter so we don't ship a path everytime
 	Mix_Music* createMusic(const string path);
 	Mix_Chunk* createSFX(const string path);
+	int getResourcesAmount() const;
 	void destroy();
 };

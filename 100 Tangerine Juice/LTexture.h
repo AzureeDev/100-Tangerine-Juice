@@ -23,6 +23,7 @@ private:
 	SDL_Color textureColor = { 255, 255, 255, 255 };
 	SDL_Color textureHighlightColor = { 255, 255, 255, 255 }; // Used by LButton
 	TextureFadingState textureFadeState = TextureFadingState::Idle;
+	int textureFadingMultiplier = 1;
 	int textureWidth = 0;
 	int textureHeight = 0;
 	int fixedSizeSheet = 0;
@@ -79,7 +80,7 @@ public:
 	void setAnimationCount(const unsigned int animCount);
 	void setAnimationSpeed(const unsigned int animSpeed);
 	void setNewTexture(const string path);
-	void setFade(const TextureFadingState state);
+	void setFade(const TextureFadingState state, const int multiplier = 1);
 	void setScrollable(const bool state, const int multiplier = 1);
 	void reverseScroll(const bool state);
 	void placeMiddleScreen(const bool useSheetSize = false);

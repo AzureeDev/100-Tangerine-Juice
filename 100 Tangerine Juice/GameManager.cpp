@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "SFXManager.h"
 #include "MusicManager.h"
+#include "Utils.h"
 
 void GameManager::callback(const string id, const function<void()> clbk, const float timer, const int repeat)
 {
@@ -85,6 +86,33 @@ shared_ptr<PlayerUnit> GameManager::getCurrentTurnUnit()
 	SDL_Log("GameManager::getCurrentTurnUnit() - Tried to get an ID out of the vector bounds: %d . Return unit 0", this->currentPlayerTurn);
 
 	return this->units[0];
+}
+
+shared_ptr<PlayerUnit> GameManager::getRandomUnitExcluding(const shared_ptr<PlayerUnit> exclusion)
+{
+	const string excludedUnitIdentifier = exclusion->identifier();
+	vector<shared_ptr<PlayerUnit>> shuffledUnits = this->units;
+	Utils::shuffle(shuffledUnits);
+
+	while (true)
+	{
+		for (auto& unit : shuffledUnits)
+		{
+			if (unit->identifier() != excludedUnitIdentifier)
+			{
+				return unit;
+			}
+		}
+	}
+
+	SDL_Log("GameManager::getRandomUnitExcluding : Something went awfully wrong...");
+
+	return nullptr;
+}
+
+UnitParams GameManager::getCurrentUnitParams()
+{
+	return UnitDefinitions::getParamsById(this->getCurrentTurnUnit()->identifier());
 }
 
 int GameManager::getCurrentChapter() const
