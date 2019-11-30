@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "Utils.h"
 #include "DiceThrowComponent.h"
+#include "UseSkillComponent.h"
 #include "SFXManager.h"
 
 PlayerUnit::PlayerUnit()
@@ -18,6 +19,8 @@ PlayerUnit::PlayerUnit(string unitIdentifier) : Unit(unitIdentifier)
 	this->i_currentPower = unitDefinition.unitStats[static_cast<int>(UnitParams::UnitStatistics::SkillPowerStart)];
 	this->i_maxPower = unitDefinition.unitStats[static_cast<int>(UnitParams::UnitStatistics::SkillPowerMax)];
 
+	this->unitSkills = SkillDefinitions::getUnitSkills(this->identifier());
+
 	this->hudElement = shared_ptr<HUDUnit>(new HUDUnit(this));
 	this->statusMessage.setAlpha(0);
 }
@@ -29,6 +32,18 @@ PlayerUnit::~PlayerUnit()
 shared_ptr<HUDUnit> PlayerUnit::hud()
 {
 	return this->hudElement;
+}
+
+void PlayerUnit::destroyTurnButtons()
+{
+	this->moveBtn->disable();
+	this->skillBtn->disable();
+}
+
+void PlayerUnit::activateTurnButtons()
+{
+	this->moveBtn->activate();
+	this->skillBtn->activate();
 }
 
 void PlayerUnit::updateHudPosition(const int id)
@@ -156,6 +171,8 @@ void PlayerUnit::render(SDL_Rect cameraRect)
 	this->unitTexture.render(cameraRect);
 	this->statusMessage.render(cameraRect);
 	this->hudElement->update();
+	this->moveBtn->render();
+	this->skillBtn->render();
 
 	if (this->position() != this->destinationPosition)
 	{
@@ -183,6 +200,11 @@ void PlayerUnit::render(SDL_Rect cameraRect)
 			}
 		);
 	}
+}
+
+string PlayerUnit::getName()
+{
+	return UnitDefinitions::getParamsById(this->identifier()).unitName;
 }
 
 int PlayerUnit::getCurrentHealth() const
@@ -242,6 +264,18 @@ void PlayerUnit::playTempAnimation(const string animation, const float duration)
 	);
 }
 
+void PlayerUnit::beginMovementRoll()
+{
+	this->destroyTurnButtons();
+
+	if (Globals::engine->hasClass("DiceThrowComponent"))
+	{
+		Globals::engine->destroyClass("DiceThrowComponent");
+	}
+
+	Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI()));
+}
+
 void PlayerUnit::addPower(const unsigned int amount)
 {
 	this->i_currentPower += amount;
@@ -249,6 +283,18 @@ void PlayerUnit::addPower(const unsigned int amount)
 	if (this->i_currentPower >= this->i_maxPower)
 	{
 		this->i_currentPower = this->i_maxPower;
+	}
+
+	this->hud()->updateHud();
+}
+
+void PlayerUnit::removePower(const unsigned int amount)
+{
+	this->i_currentPower -= amount;
+
+	if (this->i_currentPower < 0)
+	{
+		this->i_currentPower = 0;
 	}
 
 	this->hud()->updateHud();
@@ -332,6 +378,9 @@ int PlayerUnit::takeDamage(const int attackRoll, const int defenseRoll, const Un
 void PlayerUnit::onKO()
 {
 	this->s_currentRecovery = this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Recovery)];
+
+	/* Skill remove on death */
+	this->unitSkills.clear();
 }
 
 int PlayerUnit::getCurrentRecovery()
@@ -357,24 +406,128 @@ void PlayerUnit::onRevived()
 	this->s_currentRecovery = 0;
 }
 
+void PlayerUnit::createSkillEffect(const ActiveSkill activeSkillData)
+{
+	for (auto& skill : this->currentSkills)
+	{
+		if (activeSkillData.skillIdentifier == skill.skillIdentifier)
+		{
+			skill.skillDuration = activeSkillData.skillDuration;
+			skill.skillStack++;
+
+			return;
+		}
+	}
+
+	this->currentSkills.push_back(activeSkillData);
+}
+
+bool PlayerUnit::hasSkillEffect(const string skillIdentifier)
+{
+	for (auto& skill : this->currentSkills)
+	{
+		if (skillIdentifier == skill.skillIdentifier)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+int PlayerUnit::getCurrentStackForEffect(const string skillIdentifier)
+{
+	for (auto& skill : this->currentSkills)
+	{
+		if (skillIdentifier == skill.skillIdentifier)
+		{
+			return skill.skillStack;
+		}
+	}
+
+	return 0;
+}
+
+void PlayerUnit::updateSkillEffect()
+{
+	for (size_t i = 0; i < this->currentSkills.size(); ++i)
+	{
+		this->currentSkills[i].skillDuration--;
+
+		if (this->currentSkills[i].skillDuration == 0)
+		{
+			this->currentSkills.erase(this->currentSkills.begin() + i);
+		}
+	}
+}
+
+void PlayerUnit::onTurnStart()
+{
+	/* Skill effect on turn start */
+
+	auto hasSkill = [this](string skillIdentifier) {
+		if (this->hasSkillEffect(skillIdentifier))
+		{
+			return true;
+		}
+
+		return false;
+	};
+
+	if (hasSkill("hyper_fallingstars"))
+	{
+		int starsMin, starsMax;
+		starsMin = 3 * this->getCurrentStackForEffect("hyper_fallingstars");
+		starsMax = 6 * this->getCurrentStackForEffect("hyper_fallingstars");
+		int starsGained = Utils::randBetween(3, 6);
+		this->addStars(starsGained);
+	}
+}
+
 void PlayerUnit::startTurn()
 {
 	SDL_Log("Player actions here");
 	this->setActiveUnit();
+	this->updateSkillEffect();
 
 	if (!this->isKO())
 	{
+		this->onTurnStart();
+
 		if (Globals::gameManager->getCurrentUnitParams().unitHealPerTurn)
 		{
 			this->heal(1);
 		}
 
-		if (Globals::engine->hasClass("DiceThrowComponent"))
-		{
-			Globals::engine->destroyClass("DiceThrowComponent");
-		}
+		this->moveBtn = Globals::UI->createButton("moveBtn", "assets/ui/ig/moveBtn.png");
+		this->moveBtn->setPosition(
+			{
+				(Globals::engine->getDisplaySettings().wsWidth / 2) - (this->moveBtn->getTexture().getWidth() / 2),
+				(Globals::engine->getDisplaySettings().wsHeight / 2) - (this->moveBtn->getTexture().getHeight() / 2),
 
-		Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI()));
+			}
+		);
+		this->moveBtn->supplyCallback([this]() 
+			{ 
+				this->beginMovementRoll();
+			}
+		);
+
+		this->skillBtn = Globals::UI->createButton("skillBtn", "assets/ui/ig/skillBtn.png");
+		this->skillBtn->setPosition(
+			{
+				this->moveBtn->getX(),
+				this->moveBtn->getY() + this->skillBtn->getTexture().getHeight() + 16,
+				
+
+			}
+		);
+		this->skillBtn->supplyCallback([this]()
+			{
+				Globals::engine->createClass("UseSkillComponent", new UseSkillComponent(UseSkillComponent::GameState::OutBattle));
+				this->destroyTurnButtons();
+			}
+		);
 	}
 	else if (this->isKO() && this->s_currentRecovery > 1)
 	{
@@ -417,4 +570,9 @@ unsigned PlayerUnit::getDefenseStat() const
 unsigned PlayerUnit::getEvasionStat() const
 {
 	return this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Evasion)] + this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Evasion)];
+}
+
+vector<SkillData> PlayerUnit::getSkills() const
+{
+	return this->unitSkills;
 }

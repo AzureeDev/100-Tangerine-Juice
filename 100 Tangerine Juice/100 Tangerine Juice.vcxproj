@@ -175,6 +175,7 @@
     <ClCompile Include="Unit.cpp" />
     <ClCompile Include="UnitCardComponent.cpp" />
     <ClCompile Include="UnitDefinitions.cpp" />
+    <ClCompile Include="UseSkillComponent.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -215,6 +216,7 @@
     <ClInclude Include="Unit.h" />
     <ClInclude Include="UnitCardComponent.h" />
     <ClInclude Include="UnitDefinitions.h" />
+    <ClInclude Include="UseSkillComponent.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="World.h" />

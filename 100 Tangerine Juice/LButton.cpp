@@ -36,6 +36,18 @@ string LButton::getId()
 	return this->buttonId;
 }
 
+void LButton::disable()
+{
+	this->setVisible(false);
+	this->setEnabled(false);
+}
+
+void LButton::activate()
+{
+	this->setVisible(true);
+	this->setEnabled(true);
+}
+
 bool LButton::isMouseInside()
 {
 	bool inside = true;
@@ -224,13 +236,19 @@ void LButton::setAllowAnimation(const bool state)
 
 void LButton::render()
 {
+	/* If the button is destroyed... */
+	if (this == nullptr)
+	{
+		return;
+	}
+
 	if (this->buttonVisible)
 	{
 		if (this->isMouseInside())
 		{
 			if (this->buttonEnabled && this->buttonVisible)
 			{
-				this->buttonTexture.setColorNoAlpha(this->buttonHighlightColor);
+				this->buttonTexture.setColor(this->buttonHighlightColor);
 
 				if (!this->playedSoundHighlight && this->allowSound)
 				{

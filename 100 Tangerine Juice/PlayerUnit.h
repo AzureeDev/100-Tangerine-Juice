@@ -4,11 +4,13 @@
 #include "Unit.h"
 #include "HUDUnit.h"
 #include "UnitDefinitions.h"
+#include "LButton.h"
 
 using std::vector, std::make_shared, std::shared_ptr;
 
 class HUDUnit;
 class SkillDefinition;
+struct SkillData;
 
 class PlayerUnit : public Unit
 {
@@ -24,6 +26,12 @@ public:
 		Evasion
 	};
 
+	struct ActiveSkill {
+		string skillIdentifier;
+		int skillDuration = 0;
+		int skillStack = 0;
+	};
+
 private:
 	Uint8 playerId = 0;
 	shared_ptr<HUDUnit> hudElement = nullptr;
@@ -34,6 +42,10 @@ private:
 	bool active = false;
 	float timer = 0.0f;
 	LTexture statusMessage;
+
+	/* Begin turn buttons */
+	LButton* moveBtn = nullptr;
+	LButton* skillBtn = nullptr;
 
 protected:
 	/* Stats */
@@ -50,12 +62,18 @@ protected:
 
 	/* Current panel standing on */
 	int currentPanel = 0;
+	
+	/* All skills */
+	vector<SkillData> unitSkills = {};
+	vector<ActiveSkill> currentSkills = {};
 
 public:
 	PlayerUnit();
 	PlayerUnit(string unitIdentifier);
 	~PlayerUnit();
 	shared_ptr<HUDUnit> hud();
+	void destroyTurnButtons();
+	void activateTurnButtons();
 	void updateHudPosition(const int id);
 	void setInitialPosition(const Vector2i& pos);
 	void setActiveUnit();
@@ -70,6 +88,7 @@ public:
 	virtual bool isAI() const;
 	bool isKO() const;
 	virtual void render(SDL_Rect cameraRect);
+	string getName();
 	int getCurrentHealth() const;
 	int getMaxHealth() const;
 	vector<int> getStats() const;
@@ -80,7 +99,9 @@ public:
 	bool isLocalUnit() const;
 	bool isActive() const;
 	void playTempAnimation(const string animation, const float duration = 1.f);
+	void beginMovementRoll();
 	void addPower(const unsigned int amount);
+	void removePower(const unsigned int amount);
 	void addStars(const unsigned int amount);
 	void dropStars(const unsigned int amount);
 	void heal(const int amount);
@@ -90,6 +111,11 @@ public:
 	void decreaseRecovery();
 	void revive();
 	void onRevived();
+	void createSkillEffect(const ActiveSkill activeSkillData);
+	bool hasSkillEffect(const string skillIdentifier);
+	int getCurrentStackForEffect(const string skillIdentifier);
+	void updateSkillEffect();
+	void onTurnStart();
 
 	/* Game state related - turn start ect */
 	virtual void startTurn();
@@ -99,4 +125,7 @@ public:
 	unsigned getAttackStat() const;
 	unsigned getDefenseStat() const;
 	unsigned getEvasionStat() const;
+
+	/* Skill data */
+	vector<SkillData> getSkills() const;
 };

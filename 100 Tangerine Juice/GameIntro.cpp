@@ -23,7 +23,7 @@ GameIntro::~GameIntro()
 void GameIntro::init()
 {
 #ifdef TANGERINE_DEBUG
-	Globals::engine->createClass("Tangerine", new Tangerine({ "sora", "ri_se_sky", GameParams::WorldGeneration::Battlefield }));
+	Globals::engine->createClass("Tangerine", new Tangerine({ "suguri", "ri_se_sky", GameParams::WorldGeneration::Battlefield }));
 	Globals::engine->destroyClass("GameIntro");
 #else
 	this->introUnit = Unit("sora", "swordplay");

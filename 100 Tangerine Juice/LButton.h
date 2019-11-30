@@ -44,6 +44,8 @@ public:
 	LButton(const string id, const string btnTexturePath);
 	LTexture& getTexture();
 	string getId();
+	void disable();
+	void activate();
 	bool isMouseInside();
 	bool isEnabled();
 	void supplyCallback(std::function<void()> clbk);

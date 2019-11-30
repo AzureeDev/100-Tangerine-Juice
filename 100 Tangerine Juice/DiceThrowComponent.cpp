@@ -119,7 +119,7 @@ void DiceThrowComponent::onPress()
 {
 	Globals::timer->removeTimer("diceTextureRoll");
 	this->componentButton->setEnabled(false);
-	SFXManager::playSFX("btn_clicked");
+	SFXManager::playSFX("dice_boing");
 
 	int diceRoll = Utils::randBetween(1, 6);
 	this->componentDiceTexture.setNewTexture("assets/dice/" + std::to_string(diceRoll) + ".png");
@@ -127,6 +127,12 @@ void DiceThrowComponent::onPress()
 	if (this->componentType == DiceComponentType::Movement)
 	{
 		diceRoll += Globals::gameManager->getCurrentUnitParams().unitMovementBonus;
+
+		if (Globals::gameManager->getCurrentTurnUnit()->hasSkillEffect("dash"))
+		{
+			diceRoll += 3;
+		}
+
 		this->componentDiceText.createText(std::to_string(diceRoll), { 225, 225, 225, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
 		this->componentDiceText.setFade(TextureFadingState::FadeIn, 3);
 
@@ -146,8 +152,14 @@ void DiceThrowComponent::onPress()
 			{
 				Globals::gameManager->getCurrentTurnUnit()->revive();
 			}
+			else if (diceRoll == 6)
+			{
+				/* Star Breaker's 8 Rec fix */
+				Globals::gameManager->getCurrentTurnUnit()->revive();
+			}
 			else
 			{
+				SFXManager::playSFX("bad");
 				Globals::gameManager->getCurrentTurnUnit()->setStatusMessage("FAILED TO REVIVE", { 255, 0, 0, 255 });
 				Globals::gameManager->getCurrentTurnUnit()->decreaseRecovery();
 			}

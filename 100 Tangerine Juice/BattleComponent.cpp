@@ -33,6 +33,9 @@ void BattleComponent::init()
 	this->componentBg.setColor({ 200, 0, 0, 255 }, true);
 	this->componentBg.setSize(Globals::engine->getDisplaySettings().wsWidth, 300);
 	this->componentBg.placeMiddleScreen();
+	this->componentIcon.setNewTexture("assets/ui/ig/battleIcon.png");
+	this->componentIcon.placeMiddleScreen();
+	this->componentIcon.setY(this->componentBgContour.getY() - (this->componentIcon.getHeight() / 2));
 
 	this->battleAttackerUnit = Unit(this->battleAttacker->identifier());
 	this->battleDefenderUnit = Unit(this->battleDefender->identifier());
@@ -58,8 +61,7 @@ void BattleComponent::init()
 		this->battleStartBtn->setHighlightColor({ 255, 255, 255, 255 });
 		this->battleStartBtn->supplyCallback([this]() 
 			{ 
-				this->battleStartBtn->setEnabled(false);
-				this->battleStartBtn->setVisible(false);
+				this->battleStartBtn->disable();
 
 				Globals::timer->createTimer("battleStartShortDelay", 0.5f, [this]() 
 					{
@@ -149,6 +151,10 @@ void BattleComponent::beginDefense(int attackRoll)
 	Globals::timer->createTimer("delayOutcome", 1, [this, attackRoll, defenderRoll]() { this->attackOutcome(attackRoll, defenderRoll); }, 1);
 }
 
+void BattleComponent::beginEvasion(int attackRoll)
+{
+}
+
 void BattleComponent::attackOutcome(int attackRoll, int defenseRoll)
 {
 	PlayerUnit* damageTaker = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
@@ -157,7 +163,15 @@ void BattleComponent::attackOutcome(int attackRoll, int defenseRoll)
 
 	if (dmgAmount > 0)
 	{
-		SFXManager::playSFX("dmg");
+		if (dmgAmount >= 3)
+		{
+			SFXManager::playSFX("dmg");
+		}
+		else
+		{
+			SFXManager::playSFX("dmg_light");
+		}
+		
 		damageTakerUnit.setAnimation("dmg");
 		damageTakerUnit.setStatusMessage("DAMAGE TAKEN\n- " + std::to_string(dmgAmount) + " HP");
 	}
@@ -212,6 +226,7 @@ void BattleComponent::update(const float dt)
 {
 	this->componentBgContour.render();
 	this->componentBg.render();
+	this->componentIcon.render();
 	this->battleAttackerUnit.render({});
 	this->battleDefenderUnit.render({});
 

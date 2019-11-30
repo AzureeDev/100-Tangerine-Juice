@@ -178,7 +178,7 @@ void LTexture::resetBaseColor()
 		this->textureBaseColor.r,
 		this->textureBaseColor.g,
 		this->textureBaseColor.b,
-		static_cast<Uint8>(this->getAlpha())
+		this->textureBaseColor.a
 	};
 }
 

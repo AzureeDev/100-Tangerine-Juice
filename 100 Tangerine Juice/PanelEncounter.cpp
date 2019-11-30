@@ -12,9 +12,9 @@ void PanelEncounter::trigger()
 {
 	if (Globals::gameManager->getAliveUnitsCount() > 1)
 	{
-		Globals::timer->createTimer("powerPanelEffect", .5f, []()
+		Globals::timer->createTimer("encounterPanelEffect", .5f, []()
 			{
-				SFXManager::playSFX("powerup");
+				SFXManager::playSFX("battle_start");
 
 				if (Globals::engine->hasClass("BattleComponent"))
 				{

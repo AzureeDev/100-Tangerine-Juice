@@ -156,6 +156,7 @@
       <Filter>LClasses\Components</Filter>
     </ClCompile>
     <ClCompile Include="BattleComponent.cpp" />
+    <ClCompile Include="UseSkillComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -271,6 +272,7 @@
       <Filter>LClasses\Components</Filter>
     </ClInclude>
     <ClInclude Include="BattleComponent.h" />
+    <ClInclude Include="UseSkillComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

@@ -18,6 +18,7 @@ void AIUnit::startTurn()
 
 	// Perform move
 	this->setActiveUnit();
+	this->updateSkillEffect();
 
 	if (!this->isKO())
 	{

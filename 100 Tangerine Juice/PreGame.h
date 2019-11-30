@@ -19,7 +19,7 @@ struct GameParams {
 
 	string pickedUnit = "";
 	string pickedWorld = "ri_se_sky";
-	WorldGeneration pickedGeneration = WorldGeneration::TotalRandom;
+	WorldGeneration pickedGeneration = WorldGeneration::FairRandom;
 };
 
 class PreGame : public LClass

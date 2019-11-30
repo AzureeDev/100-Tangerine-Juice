@@ -88,7 +88,7 @@ void PreGame::init()
 	startGame = Globals::UI->createButton("startTangerine", "assets/ui/ig/gameStartBtn.png");
 	startGame->setEnabled(false);
 	startGame->getTexture().setColor({ 255, 255, 255, 100 }, true);
-	startGame->setHighlightColor({ 171, 199, 209 });
+	startGame->setHighlightColor({ 171, 199, 209, 255 });
 	startGame->supplyCallback([this]()
 		{
 			this->onGameStart();

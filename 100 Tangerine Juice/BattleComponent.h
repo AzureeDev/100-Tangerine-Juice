@@ -29,6 +29,7 @@ private:
 	/* LTextures */
 	LTexture componentBgContour;
 	LTexture componentBg;
+	LTexture componentIcon;
 	LTexture attackerDice;
 	LTexture attackerDiceNumber;
 	LTexture defenderDice;
@@ -52,6 +53,7 @@ public:
 	void battleStart();
 	void beginAttack();
 	void beginDefense(int attackRoll);
+	void beginEvasion(int attackRoll);
 	void attackOutcome(int attackRoll, int defenseRoll);
 	void battleEnded();
 	void hideDices();

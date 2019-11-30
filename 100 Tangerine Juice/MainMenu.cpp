@@ -168,7 +168,7 @@ void MainMenu::calculateButtonPosition()
 
 		mainMenuButtons[i].instance->setTextColor({ 20, 20, 20, 255 });
 		mainMenuButtons[i].instance->getTexture().setColor({ 255, 255, 255, 255 }, true);
-		mainMenuButtons[i].instance->setHighlightColor({ 171, 199, 209 });
+		mainMenuButtons[i].instance->setHighlightColor({ 171, 199, 209, 255 });
 		mainMenuButtons[i].instance->setAllowAnimation(true);
 	}
 }

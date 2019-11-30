@@ -29,6 +29,9 @@ private:
 	LTexture messageBg;
 	LTexture messageText;
 
+	/* Ending bg */
+	LTexture endingFade;
+
 	/* Callback execution */
 	void callback(const string id, const function<void()> clbk, const float timer, const int repeat = 1);
 	void removeCallback(const string id);
@@ -48,5 +51,6 @@ public:
 	void nextTurn();
 	void gameEnded();
 	bool isStandingOnPanel(const int panelId) const;
+	void useSkill(const string skillIdentifier);
 	void update(const float dt);
 };

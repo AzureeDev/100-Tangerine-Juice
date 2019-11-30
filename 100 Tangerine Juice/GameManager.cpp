@@ -215,6 +215,9 @@ void GameManager::gameEnded()
 	MusicManager::fadeOutMusic(1000);
 	SFXManager::playSFX("victory");
 
+	/*this->endingFade.setNewTexture("assets/ui/ig/endFade.png");
+	this->endingFade.setFade(TextureFadingState::FadeIn);*/
+
 	/*
 		Game ending code here...
 	*/
@@ -233,9 +236,28 @@ bool GameManager::isStandingOnPanel(const int panelId) const
 	return false;
 }
 
+void GameManager::useSkill(const string skillIdentifier)
+{
+	SFXManager::playSFX("skill_activation");
+	this->getCurrentTurnUnit()->playTempAnimation("aggressive", 2.f);
+	this->createHudMessage(this->getCurrentTurnUnit()->getName() + " is using the skill " + SkillDefinitions::getSkillData(skillIdentifier).skillName);
+
+	/* Executing the skill */
+	Globals::timer->createTimer("delayExecuteSkill", 2.0f, [this, skillIdentifier]() 
+		{
+			SFXManager::playSFX("powerup");
+			this->getCurrentTurnUnit()->removePower(SkillDefinitions::getSkillData(skillIdentifier).skillCost);
+			SkillDefinitions::getSkillData(skillIdentifier).skillCallback(this->getCurrentTurnUnit(), nullptr); 
+		}, 1
+	);
+
+	Globals::timer->createTimer("delayPostSkill", 3.0f, [this]() { this->getCurrentTurnUnit()->beginMovementRoll(); }, 1);
+}
+
 void GameManager::update(const float dt)
 {
 	this->messageBg.render();
 	this->messageText.render();
 	this->restart->render();
+	this->endingFade.render();
 }
