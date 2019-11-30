@@ -21,7 +21,7 @@ UseSkillComponent::~UseSkillComponent()
 void UseSkillComponent::init()
 {
 	componentBg.setNewTexture("assets/ui/rect_base.png");
-	componentBg.setColor({ 0, 0, 0, 175 }, true);
+	componentBg.setColor({ 0, 0, 0, 230 }, true);
 	componentBg.setSize(1200, 128 * 3);
 	componentBg.placeMiddleScreen();
 
@@ -42,7 +42,7 @@ void UseSkillComponent::init()
 		}
 	);
 
-	componentTotalPwrAmount.createText(std::to_string(Globals::gameManager->getCurrentTurnUnit()->getCurrentPower()), { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+	componentTotalPwrAmount.createText(std::to_string(Globals::gameManager->getLocalUnit()->getCurrentPower()), { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
 	componentTotalPwrAmount.setPosition(
 		{
 			componentTotalPwrIcon.getX() + componentTotalPwrIcon.getWidth() + 32,
@@ -55,7 +55,7 @@ void UseSkillComponent::init()
 
 void UseSkillComponent::generateSkillButtons()
 {
-	vector<SkillData> skillData = Globals::gameManager->getCurrentTurnUnit()->getSkills();
+	vector<SkillData> skillData = Globals::gameManager->getLocalUnit()->getSkills();
 
 	for (size_t i = 0; i < skillData.size(); ++i)
 	{
@@ -106,8 +106,8 @@ void UseSkillComponent::generateSkillButtons()
 		else
 		{
 			skillBtn->setPosition(
-				{ 
-					skillButtons[i - 1].skillBtn->getX(), 
+				{
+					skillButtons[i - 1].skillBtn->getX(),
 					skillButtons[i - 1].skillBtn->getY() + skillButtons[i - 1].skillBtn->getTexture().getHeight() + 32
 				}
 			);
@@ -155,7 +155,7 @@ void UseSkillComponent::generateSkillButtons()
 
 void UseSkillComponent::checkSkillAvailability(shared_ptr<LTexture>& skillNamePtr, shared_ptr<LTexture>& skillDescPtr, shared_ptr<LButton>& skillBtnPtr, SkillData& skillData)
 {
-	const int currentPower = Globals::gameManager->getCurrentTurnUnit()->getCurrentPower();
+	const int currentPower = Globals::gameManager->getLocalUnit()->getCurrentPower();
 
 	if (skillData.skillUsableInsideBattle && skillData.skillUsableOutsideBattle)
 	{
@@ -187,13 +187,30 @@ void UseSkillComponent::checkSkillAvailability(shared_ptr<LTexture>& skillNamePt
 void UseSkillComponent::useSkill(string skillIdentifier)
 {
 	SDL_Log("Using the skill %s", skillIdentifier.c_str());
-	Globals::gameManager->useSkill(skillIdentifier);
+
+	if (this->componentGameState == GameState::OutBattle)
+	{
+		Globals::gameManager->useSkill(skillIdentifier);
+	}
+	else
+	{
+		/* Use Battle Skill Here */
+	}
+	
 	Globals::engine->destroyClass("UseSkillComponent");
 }
 
 void UseSkillComponent::destroyComponent()
 {
-	Globals::gameManager->getCurrentTurnUnit()->activateTurnButtons();
+	if (this->componentGameState == GameState::OutBattle)
+	{
+		Globals::gameManager->getLocalUnit()->activateTurnButtons();
+	}
+	else
+	{
+		Globals::currentBattleInstance->setButtonVisibility(true);
+	}
+	
 	Globals::engine->destroyClass("UseSkillComponent");
 }
 

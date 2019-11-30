@@ -10,12 +10,20 @@ using std::string, std::vector, std::function, std::shared_ptr;
 class PlayerUnit;
 struct UnitParams;
 
+enum class SkillType {
+	Normal,
+	Offensive,
+	Defensive,
+	Boost
+};
+
 struct SkillData {
 	string skillIdentifier;
 	string skillName;
 	string skillDescription;
 	string skillOwner;
 	string skillIconPath;
+	SkillType skillType = SkillType::Normal;
 	function<void(shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)> skillCallback;
 	int skillCost = 1;
 	bool skillUsableOutsideBattle = true;

@@ -8,6 +8,7 @@
 #include "LClass.h"
 #include "TimerManager.h"
 #include "GameManager.h"
+#include "BattleComponent.h"
 
 using std::unique_ptr;
 
@@ -24,6 +25,7 @@ struct Globals
 	static unique_ptr<LClass> classEngine;
 	static unique_ptr<TimerManager> timer;
 	static GameManager* gameManager;
+	static BattleComponent* currentBattleInstance;
 };
 
 /* LilacClasses */

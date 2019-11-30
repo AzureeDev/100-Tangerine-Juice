@@ -6,6 +6,15 @@
 class UnitCardComponent : public LClass
 {
 private:
+	/* Struct to render a skill */
+	struct Skill {
+		string skillIcon = "";
+		string skillName = "";
+		string skillDesc = "";
+		int skillCost = 0;
+		vector<shared_ptr<LTexture>> skillTextures = {};
+	};
+
 	UnitParams unitParams;
 
 	LTexture unitCardBg;
@@ -31,10 +40,12 @@ private:
 
 	// Skills
 	LTexture unitSkillTitle;
+	vector<Skill> unitSkills = {};
 
 public:
 	UnitCardComponent(const UnitParams params);
 	void init();
 	UnitParams getParams();
+	void createSkills();
 	void update(const float dt);
 };

@@ -87,7 +87,6 @@ public:
 	void moveByDiceNb(unsigned int diceNb);
 	virtual bool isAI() const;
 	bool isKO() const;
-	virtual void render(SDL_Rect cameraRect);
 	string getName();
 	int getCurrentHealth() const;
 	int getMaxHealth() const;
@@ -128,4 +127,7 @@ public:
 
 	/* Skill data */
 	vector<SkillData> getSkills() const;
+
+	/* Final Render */
+	virtual void render(SDL_Rect cameraRect);
 };

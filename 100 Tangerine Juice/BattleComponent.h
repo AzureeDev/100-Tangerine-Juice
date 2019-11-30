@@ -29,6 +29,7 @@ private:
 	/* LTextures */
 	LTexture componentBgContour;
 	LTexture componentBg;
+	LTexture componentStatBg;
 	LTexture componentIcon;
 	LTexture attackerDice;
 	LTexture attackerDiceNumber;
@@ -44,17 +45,21 @@ private:
 
 	/* Buttons */
 	LButton* battleStartBtn = nullptr;
-	vector<LButton*> battlePlayerSkills = {};
+	LButton* battleSkillBtn = nullptr;
+	LButton* battleDefendBtn = nullptr;
+	LButton* battleEvasionBtn = nullptr;
 
 public:
 	BattleComponent(shared_ptr<PlayerUnit> attacker, shared_ptr<PlayerUnit> defender);
 	~BattleComponent();
 	void init();
+	void setButtonVisibility(const bool enabled);
 	void battleStart();
 	void beginAttack();
 	void beginDefense(int attackRoll);
 	void beginEvasion(int attackRoll);
-	void attackOutcome(int attackRoll, int defenseRoll);
+	void aiDecideAction(int attackRoll);
+	void attackOutcome(int attackRoll, int defenseRoll, bool isEvasion = false);
 	void battleEnded();
 	void hideDices();
 	void update(const float dt);

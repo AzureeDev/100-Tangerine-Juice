@@ -92,13 +92,84 @@ void UnitCardComponent::init()
 	unitPwrAmount.setPosition({ unitRecAmount.getX(), unitRecAmount.bottom().y });
 
 	// SKILL TITLE
-	unitSkillTitle.createText("Skills (W.I.P.)", { 225, 225, 225, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+	unitSkillTitle.createText("Skills", { 225, 225, 225, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
 	unitSkillTitle.setPosition(unitStatsTitle.getX(), unit.texture().bottom().y - 64);
+
+	this->createSkills();
 }
 
 UnitParams UnitCardComponent::getParams()
 {
 	return this->unitParams;
+}
+
+void UnitCardComponent::createSkills()
+{
+	this->unitSkills.clear();
+	auto params = this->getParams();
+
+	for (size_t i = 0; i < params.unitSkills.size(); ++i)
+	{
+		Skill skillDef;
+		skillDef.skillName = params.unitSkills[i].skillName;
+		skillDef.skillDesc = params.unitSkills[i].skillDescription;
+		skillDef.skillIcon = params.unitSkills[i].skillIconPath;
+		skillDef.skillCost = params.unitSkills[i].skillCost;
+
+		shared_ptr<LTexture> textureSkillName = shared_ptr<LTexture>(new LTexture);
+		textureSkillName->createText(skillDef.skillName, { 255, 255, 255, 255 });
+		shared_ptr<LTexture> textureSkillDesc = shared_ptr<LTexture>(new LTexture);
+		textureSkillDesc->createText(skillDef.skillDesc, { 160, 160, 160, 255 }, 600, Globals::resources->getFont("defaultFontSmall"));
+		shared_ptr<LTexture> textureSkillIcon = shared_ptr<LTexture>(new LTexture(skillDef.skillIcon));
+		shared_ptr<LTexture> textureSkillCostIcon = shared_ptr<LTexture>(new LTexture("assets/ui/stats/pwr.png"));
+		shared_ptr<LTexture> textureSkillCost = shared_ptr<LTexture>(new LTexture);
+		textureSkillCost->createText(std::to_string(skillDef.skillCost), { 255, 255, 255, 255 });
+
+		/* Base pos on the skill icon */
+		textureSkillIcon->setPosition(
+			{
+				unitSkillTitle.getX(),
+				unitSkillTitle.bottom().y + (16 * 1 + static_cast<int>(i)) + (32 * static_cast<int>(i)) + ((textureSkillIcon->getHeight() * static_cast<int>(i)))
+			}
+		);
+
+		textureSkillName->setPosition(
+			{
+				textureSkillIcon->getX() + textureSkillIcon->getWidth() + 16,
+				textureSkillIcon->top().y + 8
+			}
+		);
+
+		textureSkillCostIcon->setPosition(
+			{
+				textureSkillName->getX() + textureSkillName->getWidth() + 16,
+				textureSkillName->getY()
+			}
+		);
+
+		textureSkillCost->setPosition(
+			{
+				textureSkillCostIcon->getX() + textureSkillCostIcon->getWidth() + 16,
+				textureSkillName->getY()
+			}
+		);
+
+		textureSkillDesc->setPosition(
+			{
+				textureSkillName->getX(),
+				textureSkillName->bottom().y + 5
+			}
+		);
+
+		skillDef.skillTextures.push_back(textureSkillName);
+		skillDef.skillTextures.push_back(textureSkillDesc);
+		skillDef.skillTextures.push_back(textureSkillIcon);
+		skillDef.skillTextures.push_back(textureSkillCostIcon);
+		skillDef.skillTextures.push_back(textureSkillCost);
+
+		this->unitSkills.push_back(skillDef);
+	}
+	
 }
 
 void UnitCardComponent::update(const float dt)
@@ -126,6 +197,13 @@ void UnitCardComponent::update(const float dt)
 
 	/* Skills */
 	unitSkillTitle.render();
+	for (auto& unitSkill : this->unitSkills)
+	{
+		for (auto& unitSkillTexture : unitSkill.skillTextures)
+		{
+			unitSkillTexture->render();
+		}
+	}
 
 	/* Effects on LTextures */
 

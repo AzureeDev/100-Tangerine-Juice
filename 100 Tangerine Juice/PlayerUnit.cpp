@@ -164,44 +164,6 @@ bool PlayerUnit::isKO() const
 	return this->s_currentHealth <= 0;
 }
 
-void PlayerUnit::render(SDL_Rect cameraRect)
-{
-	this->timer += Globals::engine->GLOBAL_DELTA_TIME;
-
-	this->unitTexture.render(cameraRect);
-	this->statusMessage.render(cameraRect);
-	this->hudElement->update();
-	this->moveBtn->render();
-	this->skillBtn->render();
-
-	if (this->position() != this->destinationPosition)
-	{
-		this->setPosition(this->initialPosition.lerp(this->destinationPosition, timer));
-		this->setAnimation("fwd");
-		this->currentState = UnitStates::Moving;
-	}
-	else if (this->position() == this->destinationPosition && !this->isKO() && this->currentState != UnitStates::CustomAnimation)
-	{
-		this->setAnimation("std");
-		this->currentState = UnitStates::Idle;
-	}
-	else if (this->isKO())
-	{
-		this->setAnimation("dmg");
-		this->currentState = UnitStates::Idle;
-	}
-
-	if (this->statusMessage.getAlpha() > 0)
-	{
-		this->statusMessage.setPosition(
-			{
-				this->unitTexture.getPosition().x + (this->unitTexture.getSheetSize() / 2) + 64,
-				this->statusMessage.getY() - 2
-			}
-		);
-	}
-}
-
 string PlayerUnit::getName()
 {
 	return UnitDefinitions::getParamsById(this->identifier()).unitName;
@@ -357,6 +319,17 @@ int PlayerUnit::takeDamage(const int attackRoll, const int defenseRoll, const Un
 			damageTaken = 1;
 		}
 	}
+	else if (defenseType == UnitDefenseType::Evasion)
+	{
+		if (defenseRoll > attackRoll)
+		{
+			damageTaken = 0;
+		}
+		else
+		{
+			damageTaken += attackRoll;
+		}
+	}
 
 	this->s_currentHealth -= damageTaken;
 
@@ -380,7 +353,7 @@ void PlayerUnit::onKO()
 	this->s_currentRecovery = this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Recovery)];
 
 	/* Skill remove on death */
-	this->unitSkills.clear();
+	this->currentSkills.clear();
 }
 
 int PlayerUnit::getCurrentRecovery()
@@ -479,7 +452,8 @@ void PlayerUnit::onTurnStart()
 		int starsMin, starsMax;
 		starsMin = 3 * this->getCurrentStackForEffect("hyper_fallingstars");
 		starsMax = 6 * this->getCurrentStackForEffect("hyper_fallingstars");
-		int starsGained = Utils::randBetween(3, 6);
+		int starsGained = Utils::randBetween(starsMin, starsMax);
+		this->setStatusMessage("REVIVAL OF STARS\n+ " + std::to_string(starsGained) + " STARS", { 255, 255, 0, 255 });
 		this->addStars(starsGained);
 	}
 }
@@ -499,35 +473,48 @@ void PlayerUnit::startTurn()
 			this->heal(1);
 		}
 
-		this->moveBtn = Globals::UI->createButton("moveBtn", "assets/ui/ig/moveBtn.png");
-		this->moveBtn->setPosition(
-			{
-				(Globals::engine->getDisplaySettings().wsWidth / 2) - (this->moveBtn->getTexture().getWidth() / 2),
-				(Globals::engine->getDisplaySettings().wsHeight / 2) - (this->moveBtn->getTexture().getHeight() / 2),
+		if (!this->isAI())
+		{
+			this->moveBtn = Globals::UI->createButton("moveBtn", "assets/ui/ig/moveBtn.png");
+			this->moveBtn->setPosition(
+				{
+					(Globals::engine->getDisplaySettings().wsWidth / 2) - (this->moveBtn->getTexture().getWidth() / 2),
+					(Globals::engine->getDisplaySettings().wsHeight / 2) - (this->moveBtn->getTexture().getHeight() / 2),
 
-			}
-		);
-		this->moveBtn->supplyCallback([this]() 
-			{ 
-				this->beginMovementRoll();
-			}
-		);
+				}
+			);
+			this->moveBtn->supplyCallback([this]()
+				{
+					this->beginMovementRoll();
+				}
+			);
 
-		this->skillBtn = Globals::UI->createButton("skillBtn", "assets/ui/ig/skillBtn.png");
-		this->skillBtn->setPosition(
-			{
-				this->moveBtn->getX(),
-				this->moveBtn->getY() + this->skillBtn->getTexture().getHeight() + 16,
-				
+			this->skillBtn = Globals::UI->createButton("skillBtn", "assets/ui/ig/skillBtn.png");
+			this->skillBtn->setPosition(
+				{
+					this->moveBtn->getX(),
+					this->moveBtn->getY() + this->skillBtn->getTexture().getHeight() + 16,
 
-			}
-		);
-		this->skillBtn->supplyCallback([this]()
+
+				}
+			);
+			this->skillBtn->supplyCallback([this]()
+				{
+					Globals::engine->createClass("UseSkillComponent", new UseSkillComponent(UseSkillComponent::GameState::OutBattle));
+					this->destroyTurnButtons();
+				}
+			);
+		}
+		else
+		{
+			/* AI Code */
+			if (Globals::engine->hasClass("DiceThrowComponent"))
 			{
-				Globals::engine->createClass("UseSkillComponent", new UseSkillComponent(UseSkillComponent::GameState::OutBattle));
-				this->destroyTurnButtons();
+				Globals::engine->destroyClass("DiceThrowComponent");
 			}
-		);
+
+			Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI()));
+		}
 	}
 	else if (this->isKO() && this->s_currentRecovery > 1)
 	{
@@ -575,4 +562,61 @@ unsigned PlayerUnit::getEvasionStat() const
 vector<SkillData> PlayerUnit::getSkills() const
 {
 	return this->unitSkills;
+}
+
+void PlayerUnit::render(SDL_Rect cameraRect)
+{
+	this->timer += Globals::engine->GLOBAL_DELTA_TIME;
+
+	this->unitTexture.render(cameraRect);
+	this->statusMessage.render(cameraRect);
+	this->hudElement->update();
+	this->moveBtn->render();
+	this->skillBtn->render();
+
+	/*
+		Skill effect render
+	*/
+
+	for (size_t i = 0; i < this->currentSkills.size(); ++i)
+	{
+		auto skillData = SkillDefinitions::getSkillData(this->currentSkills[i].skillIdentifier);
+		shared_ptr<LTexture> skillIcon = shared_ptr<LTexture>(new LTexture(skillData.skillIconPath));
+
+		skillIcon->setPosition(
+			{
+				this->position().x + (this->texture().getSheetSize() / 2) - (skillIcon->getWidth() / 2),
+				this->position().y + 64 - (skillIcon->getHeight() * static_cast<int>(i))
+			}
+		);
+
+		skillIcon->render(cameraRect);
+	}
+
+	if (this->position() != this->destinationPosition)
+	{
+		this->setPosition(this->initialPosition.lerp(this->destinationPosition, timer));
+		this->setAnimation("fwd");
+		this->currentState = UnitStates::Moving;
+	}
+	else if (this->position() == this->destinationPosition && !this->isKO() && this->currentState != UnitStates::CustomAnimation)
+	{
+		this->setAnimation("std");
+		this->currentState = UnitStates::Idle;
+	}
+	else if (this->isKO())
+	{
+		this->setAnimation("dmg");
+		this->currentState = UnitStates::Idle;
+	}
+
+	if (this->statusMessage.getAlpha() > 0)
+	{
+		this->statusMessage.setPosition(
+			{
+				this->unitTexture.getPosition().x + (this->unitTexture.getSheetSize() / 2) + 64,
+				this->statusMessage.getY() - 2
+			}
+		);
+	}
 }

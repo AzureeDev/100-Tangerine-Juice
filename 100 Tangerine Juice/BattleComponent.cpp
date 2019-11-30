@@ -2,11 +2,13 @@
 #include "Globals.h"
 #include "Utils.h"
 #include "SFXManager.h"
+#include "UseSkillComponent.h"
 
 BattleComponent::BattleComponent(shared_ptr<PlayerUnit> attacker, shared_ptr<PlayerUnit> defender)
 {
 	this->battleAttacker = attacker.get();
 	this->battleDefender = defender.get();
+	Globals::currentBattleInstance = this;
 }
 
 BattleComponent::~BattleComponent()
@@ -18,6 +20,24 @@ BattleComponent::~BattleComponent()
 	{
 		Globals::UI->destroyButton("battleStart");
 		this->battleStartBtn = nullptr;
+	}
+
+	if (this->battleSkillBtn != nullptr)
+	{
+		Globals::UI->destroyButton("battleSkillBtn");
+		this->battleSkillBtn = nullptr;
+	}
+
+	if (this->battleDefendBtn != nullptr)
+	{
+		Globals::UI->destroyButton("battleDefendBtn");
+		this->battleDefendBtn = nullptr;
+	}
+
+	if (this->battleEvasionBtn != nullptr)
+	{
+		Globals::UI->destroyButton("battleEvasionBtn");
+		this->battleEvasionBtn = nullptr;
 	}
 }
 
@@ -33,6 +53,10 @@ void BattleComponent::init()
 	this->componentBg.setColor({ 200, 0, 0, 255 }, true);
 	this->componentBg.setSize(Globals::engine->getDisplaySettings().wsWidth, 300);
 	this->componentBg.placeMiddleScreen();
+	this->componentStatBg.setNewTexture("assets/ui/rect_base.png");
+	this->componentStatBg.setColor({ 10, 10, 10, 225 }, true);
+	this->componentStatBg.setSize(Globals::engine->getDisplaySettings().wsWidth, 64);
+	this->componentStatBg.setPosition({ 0, this->componentBgContour.bottom().y });
 	this->componentIcon.setNewTexture("assets/ui/ig/battleIcon.png");
 	this->componentIcon.placeMiddleScreen();
 	this->componentIcon.setY(this->componentBgContour.getY() - (this->componentIcon.getHeight() / 2));
@@ -61,7 +85,7 @@ void BattleComponent::init()
 		this->battleStartBtn->setHighlightColor({ 255, 255, 255, 255 });
 		this->battleStartBtn->supplyCallback([this]() 
 			{ 
-				this->battleStartBtn->disable();
+				this->setButtonVisibility(false);
 
 				Globals::timer->createTimer("battleStartShortDelay", 0.5f, [this]() 
 					{
@@ -77,6 +101,24 @@ void BattleComponent::init()
 				(Globals::engine->getDisplaySettings().wsHeight / 2 - this->battleStartBtn->getTexture().getHeight() / 2) - 64
 			}
 		);
+
+		this->battleSkillBtn = Globals::UI->createButton("battleSkillBtn", "assets/ui/ig/skillBtn.png");
+		this->battleSkillBtn->getTexture().setColor({ 150, 150, 150, 255 }, true);
+		this->battleSkillBtn->setHighlightColor({ 255, 255, 255, 255 });
+
+		this->battleSkillBtn->supplyCallback([this]()
+			{
+				this->setButtonVisibility(false);
+				Globals::engine->createClass("UseSkillComponent", new UseSkillComponent(UseSkillComponent::GameState::InBattle));
+			}
+		);
+
+		this->battleSkillBtn->setPosition(
+			{
+				this->battleStartBtn->getX(),
+				this->battleStartBtn->getY() + this->battleStartBtn->getTexture().getHeight() + 16
+			}
+		);
 	}
 	else
 	{
@@ -89,6 +131,20 @@ void BattleComponent::init()
 	}
 }
 
+void BattleComponent::setButtonVisibility(const bool enabled)
+{
+	if (enabled)
+	{
+		this->battleStartBtn->activate();
+		this->battleSkillBtn->activate();
+	}
+	else
+	{
+		this->battleStartBtn->disable();
+		this->battleSkillBtn->disable();
+	}
+}
+
 void BattleComponent::battleStart()
 {
 	this->beginAttack();
@@ -96,8 +152,10 @@ void BattleComponent::battleStart()
 
 void BattleComponent::beginAttack()
 {
-	PlayerUnit* damageDealer = this->currentTurn % 2 == 0 ? this->battleAttacker : this->battleDefender ;
+	PlayerUnit* damageDealer = this->currentTurn % 2 == 0 ? this->battleAttacker : this->battleDefender;
+	PlayerUnit* defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
 	Unit& damageDealerUnit = this->currentTurn % 2 == 0 ? this->battleAttackerUnit : this->battleDefenderUnit;
+	Unit& defenderUnit = this->currentTurn % 2 == 0 ? this->battleDefenderUnit : this->battleAttackerUnit;
 	LTexture& damageDealerDice = this->currentTurn % 2 == 0 ? this->attackerDice : this->defenderDice;
 	LTexture& damageDealerDiceNumber = this->currentTurn % 2 == 0 ? this->attackerDiceNumber : this->defenderDiceNumber;
 
@@ -120,7 +178,48 @@ void BattleComponent::beginAttack()
 	SDL_Log("Attacker atk: %d", attackRoll);
 
 	/* If AI, decide auto, or else put the buttons over there, if the defender is the player. */
-	Globals::timer->createTimer("delayDefense", 1, [this, attackRoll]() { this->beginDefense(attackRoll); }, 1);
+
+	if (defender->isAI())
+	{
+		this->aiDecideAction(attackRoll);
+	}
+	else
+	{
+		this->battleDefendBtn = Globals::UI->createButton("battleDefendBtn", "assets/ui/battle/defend.png");
+		this->battleEvasionBtn = Globals::UI->createButton("battleEvasionBtn", "assets/ui/battle/evade.png");
+
+		this->battleDefendBtn->setPosition(
+			{
+				defenderUnit.position().x + (defenderUnit.texture().getSheetSize() / 2) - (this->battleDefendBtn->getTexture().getWidth() / 2) - 128,
+				defenderUnit.position().y + 64,
+			}
+		);
+
+		this->battleEvasionBtn->setPosition(
+			{
+				defenderUnit.position().x + (defenderUnit.texture().getSheetSize() / 2) - (this->battleEvasionBtn->getTexture().getWidth() / 2) + 128,
+				defenderUnit.position().y + 64,
+			}
+		);
+
+		this->battleDefendBtn->supplyCallback([this, attackRoll]()
+			{
+				this->battleDefendBtn->disable();
+				this->battleEvasionBtn->disable();
+
+				Globals::timer->createTimer("delayPlayerAction", 0.5f, [this, attackRoll]() { this->beginDefense(attackRoll); }, 1);
+			}
+		);
+
+		this->battleEvasionBtn->supplyCallback([this, attackRoll]()
+			{
+				this->battleDefendBtn->disable();
+				this->battleEvasionBtn->disable();
+
+				Globals::timer->createTimer("delayPlayerAction", 0.5f, [this, attackRoll]() { this->beginEvasion(attackRoll); }, 1);
+			}
+		);
+	}
 }
 
 void BattleComponent::beginDefense(int attackRoll)
@@ -131,6 +230,7 @@ void BattleComponent::beginDefense(int attackRoll)
 	LTexture& defenderDiceNumber = this->currentTurn % 2 == 0 ? this->defenderDiceNumber : this->attackerDiceNumber;
 
 	defenderUnit.setAnimation("aggressive");
+	defenderUnit.setStatusMessage("DEFENDING", { 175, 255, 175, 255 });
 	SFXManager::playSFX("attack");
 
 	int defenderRoll = Utils::randBetween(1, 6);
@@ -153,13 +253,84 @@ void BattleComponent::beginDefense(int attackRoll)
 
 void BattleComponent::beginEvasion(int attackRoll)
 {
+	PlayerUnit* defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	Unit& defenderUnit = this->currentTurn % 2 == 0 ? this->battleDefenderUnit : this->battleAttackerUnit;
+	LTexture& defenderDice = this->currentTurn % 2 == 0 ? this->defenderDice : this->attackerDice;
+	LTexture& defenderDiceNumber = this->currentTurn % 2 == 0 ? this->defenderDiceNumber : this->attackerDiceNumber;
+
+	defenderUnit.setAnimation("aggressive");
+	defenderUnit.setStatusMessage("EVADING", { 175, 175, 255, 255 });
+	SFXManager::playSFX("attack");
+
+	int defenderRoll = Utils::randBetween(1, 6);
+	defenderDice.setNewTexture("assets/dice/" + std::to_string(defenderRoll) + ".png");
+	defenderRoll += defender->getEvasionStat();
+	defenderRoll = defenderRoll < 1 ? 1 : defenderRoll;
+
+	defenderDiceNumber.createText(std::to_string(defenderRoll), { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+	defenderDiceNumber.setPosition(
+		{
+			defenderDice.getX() + (defenderDice.getWidth() / 2) - (defenderDiceNumber.getWidth() / 2),
+			defenderDice.top().y - 64
+		}
+	);
+
+	SDL_Log("Defender eva: %d", defenderRoll);
+
+	Globals::timer->createTimer("delayOutcome", 1, [this, attackRoll, defenderRoll]() { this->attackOutcome(attackRoll, defenderRoll, true); }, 1);
 }
 
-void BattleComponent::attackOutcome(int attackRoll, int defenseRoll)
+void BattleComponent::aiDecideAction(int attackRoll)
+{
+	PlayerUnit* defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	int currentEvasion = defender->getEvasionStat();
+
+	if (attackRoll == 1)
+	{
+		Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginEvasion(attackRoll); }, 1);
+		return;
+	}
+
+	if (defender->getCurrentHealth() == 1)
+	{
+		Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginEvasion(attackRoll); }, 1);
+		return;
+	}
+
+	if (attackRoll < currentEvasion)
+	{
+		Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginEvasion(attackRoll); }, 1);
+		return;
+	}
+
+	if (rand() % 100 < 50)
+	{
+		if (attackRoll <= currentEvasion)
+		{
+			Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginEvasion(attackRoll); }, 1);
+			return;
+		}
+	}
+
+	if (rand() % 100 < 75)
+	{
+		if (attackRoll - currentEvasion < 3)
+		{
+			Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginEvasion(attackRoll); }, 1);
+			return;
+		}
+	}
+
+	Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginDefense(attackRoll); }, 1);
+}
+
+void BattleComponent::attackOutcome(int attackRoll, int defenseRoll, bool isEvasion)
 {
 	PlayerUnit* damageTaker = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
 	Unit& damageTakerUnit = this->currentTurn % 2 == 0 ? this->battleDefenderUnit : this->battleAttackerUnit;
-	int dmgAmount = damageTaker->takeDamage(attackRoll, defenseRoll, PlayerUnit::UnitDefenseType::Defense);
+	PlayerUnit::UnitDefenseType defenseType = isEvasion ? PlayerUnit::UnitDefenseType::Evasion : PlayerUnit::UnitDefenseType::Defense;
+
+	int dmgAmount = damageTaker->takeDamage(attackRoll, defenseRoll, defenseType);
 
 	if (dmgAmount > 0)
 	{
@@ -173,7 +344,13 @@ void BattleComponent::attackOutcome(int attackRoll, int defenseRoll)
 		}
 		
 		damageTakerUnit.setAnimation("dmg");
-		damageTakerUnit.setStatusMessage("DAMAGE TAKEN\n- " + std::to_string(dmgAmount) + " HP");
+		damageTakerUnit.setStatusMessage("DAMAGE\n- " + std::to_string(dmgAmount) + " HP", { 25, 0, 0, 255 });
+	}
+	else
+	{
+		SFXManager::playSFX("evade");
+		damageTakerUnit.setAnimation("std");
+		damageTakerUnit.setStatusMessage("EVADED", { 175, 175, 255, 255 });
 	}
 
 	if (!damageTaker->isKO())
@@ -226,6 +403,7 @@ void BattleComponent::update(const float dt)
 {
 	this->componentBgContour.render();
 	this->componentBg.render();
+	this->componentStatBg.render();
 	this->componentIcon.render();
 	this->battleAttackerUnit.render({});
 	this->battleDefenderUnit.render({});
@@ -238,5 +416,20 @@ void BattleComponent::update(const float dt)
 	if (this->battleStartBtn != nullptr)
 	{
 		this->battleStartBtn->render();
+	}
+
+	if (this->battleSkillBtn != nullptr)
+	{
+		this->battleSkillBtn->render();
+	}
+
+	if (this->battleEvasionBtn != nullptr)
+	{
+		this->battleEvasionBtn->render();
+	}
+
+	if (this->battleDefendBtn != nullptr)
+	{
+		this->battleDefendBtn->render();
 	}
 }

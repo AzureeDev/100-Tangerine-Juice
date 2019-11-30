@@ -15,7 +15,7 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.57.0";
+	string engineVersion = "1.58.0";
 	string mainMenuMessage = "Welcome to 100% Tangerine Juice! Hope you will enjoy your time here. ~";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;

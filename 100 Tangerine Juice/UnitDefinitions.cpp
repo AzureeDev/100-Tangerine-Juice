@@ -45,9 +45,9 @@ void UnitDefinitions::createDefinitions()
 	UnitParams tsih;
 	tsih.unitId = "tsih";
 	tsih.unitName = "Tsih";
-	tsih.unitDesc = "Tsih has the unique ability to have a bonus of 1 on her movement roll. Her skills are about survivability.";
+	tsih.unitDesc = "Tsih has the unique ability to have a bonus of 1 on her movement roll, but can use only one unique skill.";
 	tsih.unitMaxHealth = 4;
-	tsih.unitStats = { 0, 0, 2, 6, 2, 6 };
+	tsih.unitStats = { 0, 0, 2, 6, 0, 4 };
 	tsih.unitMovementBonus = 1;
 
 	UnitParams saki;

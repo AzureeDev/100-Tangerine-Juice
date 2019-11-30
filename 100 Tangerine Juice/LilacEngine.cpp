@@ -39,7 +39,7 @@ void LilacEngine::createWindow()
 
 	// Create the window
 	this->window = SDL_CreateWindow(
-		"PROJECT ZERO",
+		"100% Tangerine Juice",
 		this->displaySettings.w / 2 - workspaceWidth / 2,
 		this->displaySettings.h / 2 - workspaceHeight / 2,
 		workspaceWidth,

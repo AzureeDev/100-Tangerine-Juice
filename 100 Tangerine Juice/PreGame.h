@@ -53,7 +53,7 @@ private:
 	vector<UnitPick> unitPickButtons = {};
 	vector<WorldGenPick> worldGenPickButtons = {};
 	GameParams gameParameters = {};
-	vector<Skill> unitSkills;
+	vector<Skill> unitSkills = {};
 
 	/* Top bar */
 	LTexture topBar;

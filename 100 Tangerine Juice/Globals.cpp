@@ -15,6 +15,7 @@ unique_ptr<LClass> Globals::classEngine = nullptr;
 unique_ptr<UIManager> Globals::UI = nullptr;
 unique_ptr<TimerManager> Globals::timer = nullptr;
 GameManager* Globals::gameManager = nullptr;
+BattleComponent* Globals::currentBattleInstance = nullptr;
 
 /*
 	LilacClasses
