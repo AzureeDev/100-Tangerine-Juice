@@ -155,8 +155,12 @@
     <ClCompile Include="DiceThrowComponent.cpp">
       <Filter>LClasses\Components</Filter>
     </ClCompile>
-    <ClCompile Include="BattleComponent.cpp" />
-    <ClCompile Include="UseSkillComponent.cpp" />
+    <ClCompile Include="BattleComponent.cpp">
+      <Filter>LClasses\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="UseSkillComponent.cpp">
+      <Filter>LClasses\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -271,8 +275,12 @@
     <ClInclude Include="DiceThrowComponent.h">
       <Filter>LClasses\Components</Filter>
     </ClInclude>
-    <ClInclude Include="BattleComponent.h" />
-    <ClInclude Include="UseSkillComponent.h" />
+    <ClInclude Include="BattleComponent.h">
+      <Filter>LClasses\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="UseSkillComponent.h">
+      <Filter>LClasses\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

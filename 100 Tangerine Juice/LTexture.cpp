@@ -347,8 +347,8 @@ void LTexture::reverseScroll(const bool state)
 
 void LTexture::placeMiddleScreen(const bool useSheetSize)
 {
-	int screenWidth = Globals::engine->getDisplaySettings().w;
-	int screenHeight = Globals::engine->getDisplaySettings().h;
+	int screenWidth = Globals::engine->getDisplaySettings().wsWidth;
+	int screenHeight = Globals::engine->getDisplaySettings().wsHeight;
 
 	if (!useSheetSize)
 	{

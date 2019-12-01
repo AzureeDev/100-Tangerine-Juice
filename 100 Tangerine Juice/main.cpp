@@ -10,8 +10,7 @@ int main(int argc, char* argv[])
 	LilacEngine gameEngine;
 	gameEngine.init();
 
-	// Quit
-	gameEngine.exit();
+	// After Quit
 	std::cout << "Program ended." << std::endl;
 	return 0;
 }

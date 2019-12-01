@@ -374,6 +374,8 @@ void LilacEngine::exit()
 		On quit, quit all SDL modules and extra classes that need a cleanup
 	*/
 
+	SDL_Log("Quitting");
+
 	this->running = false;
 
 	this->destroyClasses();

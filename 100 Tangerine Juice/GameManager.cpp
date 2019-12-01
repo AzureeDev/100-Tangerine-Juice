@@ -31,6 +31,16 @@ GameManager::GameManager(Map& map, Players& units)
 	this->messageBg.setColor({ 0, 0, 0, 125 }, true);
 	this->messageBg.setSize(Globals::engine->getDisplaySettings().wsWidth, 32 * 2);
 
+	this->mainMenu = Globals::UI->createButton("back_main_menu");
+	this->mainMenu->supplyCallback([]()
+		{
+			Globals::engine->createClass("MainMenu", new MainMenu);
+			Globals::engine->destroyClass("Tangerine");
+		}
+	);
+	this->mainMenu->getTexture().createText("MAIN MENU");
+	this->mainMenu->setPosition({ 5, Globals::engine->getDisplaySettings().wsHeight - this->mainMenu->getTexture().getHeight() });
+
 	this->restart = Globals::UI->createButton("restart_game_debug");
 	this->restart->supplyCallback([]() {
 		GameParams params = LilacClasses::Tangerine->getGameParams();
@@ -38,7 +48,7 @@ GameManager::GameManager(Map& map, Players& units)
 		Globals::engine->createClass("Tangerine", new Tangerine(params));
 	});
 	this->restart->getTexture().createText("RESTART");
-	this->restart->setPosition({ 5, Globals::engine->getDisplaySettings().wsHeight - this->restart->getTexture().getHeight() });
+	this->restart->setPosition({ this->mainMenu->getX() + this->mainMenu->getTexture().getWidth() + 32, Globals::engine->getDisplaySettings().wsHeight - this->restart->getTexture().getHeight() });
 
 	this->initGame();
 }
@@ -259,5 +269,6 @@ void GameManager::update(const float dt)
 	this->messageBg.render();
 	this->messageText.render();
 	this->restart->render();
+	this->mainMenu->render();
 	this->endingFade.render();
 }

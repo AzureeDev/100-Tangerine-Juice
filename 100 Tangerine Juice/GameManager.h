@@ -15,11 +15,12 @@ typedef vector<shared_ptr<PlayerUnit>> Players;
 class GameManager
 {
 private:
-	vector<shared_ptr<Panel>> map;
-	vector<shared_ptr<PlayerUnit>> units;
+	vector<shared_ptr<Panel>> map = {};
+	vector<shared_ptr<PlayerUnit>> units = {};
 
 	/* Debug */
-	LButton* restart;
+	LButton* restart = nullptr;
+	LButton* mainMenu = nullptr;
 
 	/* Game variables */
 	int currentChapter = 0;
