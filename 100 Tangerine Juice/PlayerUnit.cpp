@@ -544,17 +544,17 @@ void PlayerUnit::movement(const int diceRoll)
 	Globals::timer->createTimer("playerUnitMovement", 0.1f, [this, diceRoll]() { this->moveByDiceNb(diceRoll); }, 1);
 }
 
-unsigned PlayerUnit::getAttackStat() const
+int PlayerUnit::getAttackStat() const
 {
 	return this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Attack)] + this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Attack)];
 }
 
-unsigned PlayerUnit::getDefenseStat() const
+int PlayerUnit::getDefenseStat() const
 {
 	return this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Defense)] + this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Defense)];
 }
 
-unsigned PlayerUnit::getEvasionStat() const
+int PlayerUnit::getEvasionStat() const
 {
 	return this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Evasion)] + this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Evasion)];
 }

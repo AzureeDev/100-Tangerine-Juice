@@ -121,9 +121,9 @@ public:
 	virtual void movement(const int diceRoll);
 
 	/* Stat retrieve (with boosts) */
-	unsigned getAttackStat() const;
-	unsigned getDefenseStat() const;
-	unsigned getEvasionStat() const;
+	int getAttackStat() const;
+	int getDefenseStat() const;
+	int getEvasionStat() const;
 
 	/* Skill data */
 	vector<SkillData> getSkills() const;

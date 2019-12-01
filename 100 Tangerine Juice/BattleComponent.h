@@ -36,6 +36,10 @@ private:
 	LTexture defenderDice;
 	LTexture defenderDiceNumber;
 
+	/* Unit statistics rendering */
+	vector<shared_ptr<LTexture>> attackerStats = {};
+	vector<shared_ptr<LTexture>> defenderStats = {};
+
 	/* Battle State */
 	enum class BattleState {
 		PreBattle,
@@ -49,11 +53,24 @@ private:
 	LButton* battleDefendBtn = nullptr;
 	LButton* battleEvasionBtn = nullptr;
 
+	/* Enum for the component text */
+	enum class UnitVectorStat
+	{
+		HealthBackground = 0,
+		CurrentHealth = 1,
+		MaxHealth = 2,
+		Attack = 4,
+		Defense = 6,
+		Evasion = 8
+	};
+
 public:
 	BattleComponent(shared_ptr<PlayerUnit> attacker, shared_ptr<PlayerUnit> defender);
 	~BattleComponent();
 	void init();
 	void setButtonVisibility(const bool enabled);
+	void createUnitStats();
+	void updateUnitStats();
 	void battleStart();
 	void beginAttack();
 	void beginDefense(int attackRoll);

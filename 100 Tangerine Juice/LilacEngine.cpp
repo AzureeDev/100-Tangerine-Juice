@@ -83,6 +83,7 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("defaultFont", "assets/fonts/sofia.otf", 24);
 	Globals::resources->createFont("defaultFont27", "assets/fonts/sofia.otf", 27);
 	Globals::resources->createFont("defaultFont32", "assets/fonts/sofia.otf", 32);
+	Globals::resources->createFont("defaultFont36", "assets/fonts/sofia.otf", 36);
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
 
 	Globals::resources->createFont("bleachFont", "assets/fonts/bleach_fixed.ttf", 24);

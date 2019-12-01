@@ -4,6 +4,15 @@
 #include "SFXManager.h"
 #include "UseSkillComponent.h"
 
+const auto colorStat = [](const int statistic) {
+	if (statistic < 0)
+	{
+		return SDL_Color({ 255, 125, 125, 255 });
+	}
+
+	return SDL_Color({ 255, 255, 255, 255 });
+};
+
 BattleComponent::BattleComponent(shared_ptr<PlayerUnit> attacker, shared_ptr<PlayerUnit> defender)
 {
 	this->battleAttacker = attacker.get();
@@ -54,7 +63,7 @@ void BattleComponent::init()
 	this->componentBg.setSize(Globals::engine->getDisplaySettings().wsWidth, 300);
 	this->componentBg.placeMiddleScreen();
 	this->componentStatBg.setNewTexture("assets/ui/rect_base.png");
-	this->componentStatBg.setColor({ 10, 10, 10, 225 }, true);
+	this->componentStatBg.setColor({ 10, 10, 10, 235 }, true);
 	this->componentStatBg.setSize(Globals::engine->getDisplaySettings().wsWidth, 64);
 	this->componentStatBg.setPosition({ 0, this->componentBgContour.bottom().y });
 	this->componentIcon.setNewTexture("assets/ui/ig/battleIcon.png");
@@ -77,6 +86,8 @@ void BattleComponent::init()
 	this->defenderDice.placeMiddleScreen();
 	this->defenderDice.setX(this->defenderDice.getX() + 64 * 3);
 	this->defenderDice.setY(this->defenderDice.getY() + 64);
+
+	this->createUnitStats();
 
 	if (!this->battleAttacker->isAI() || !this->battleDefender->isAI())
 	{
@@ -145,8 +156,131 @@ void BattleComponent::setButtonVisibility(const bool enabled)
 	}
 }
 
+void BattleComponent::createUnitStats()
+{
+	/* Definition */
+	shared_ptr<LTexture> healthBg = shared_ptr<LTexture>(new LTexture("assets/ui/battle/healthBg.png"));
+	shared_ptr<LTexture> healthBg2 = shared_ptr<LTexture>(new LTexture("assets/ui/battle/healthBg.png"));
+	shared_ptr<LTexture> attackIcon = shared_ptr<LTexture>(new LTexture("assets/ui/stats/attack.png"));
+	shared_ptr<LTexture> attackIcon2 = shared_ptr<LTexture>(new LTexture("assets/ui/stats/attack.png"));
+	shared_ptr<LTexture> defenseIcon = shared_ptr<LTexture>(new LTexture("assets/ui/stats/defense.png"));
+	shared_ptr<LTexture> defenseIcon2 = shared_ptr<LTexture>(new LTexture("assets/ui/stats/defense.png"));
+	shared_ptr<LTexture> evasionIcon = shared_ptr<LTexture>(new LTexture("assets/ui/stats/evasion.png"));
+	shared_ptr<LTexture> evasionIcon2 = shared_ptr<LTexture>(new LTexture("assets/ui/stats/evasion.png"));
+
+	shared_ptr<LTexture> attackerCurrentHealth = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> attackerMaxHealth = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> attackerAttack = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> attackerDefense = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> attackerEvasion = shared_ptr<LTexture>(new LTexture);
+
+	shared_ptr<LTexture> defenderCurrentHealth = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> defenderMaxHealth = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> defenderAttack = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> defenderDefense = shared_ptr<LTexture>(new LTexture);
+	shared_ptr<LTexture> defenderEvasion = shared_ptr<LTexture>(new LTexture);
+
+	attackerCurrentHealth->createText(std::to_string(this->battleAttacker->getCurrentHealth()), { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+	attackerMaxHealth->createText(std::to_string(this->battleAttacker->getMaxHealth()), { 220, 220, 220, 255 }, 0, Globals::resources->getFont("defaultFont"));
+	attackerAttack->createText(std::to_string(this->battleAttacker->getAttackStat()), colorStat(this->battleAttacker->getAttackStat()), 0, Globals::resources->getFont("defaultFont36"));
+	attackerDefense->createText(std::to_string(this->battleAttacker->getDefenseStat()), colorStat(this->battleAttacker->getDefenseStat()), 0, Globals::resources->getFont("defaultFont36"));
+	attackerEvasion->createText(std::to_string(this->battleAttacker->getEvasionStat()), colorStat(this->battleAttacker->getEvasionStat()), 0, Globals::resources->getFont("defaultFont36"));
+
+	defenderCurrentHealth->createText(std::to_string(this->battleDefender->getCurrentHealth()), { 235, 235, 235, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+	defenderMaxHealth->createText(std::to_string(this->battleDefender->getMaxHealth()), { 235, 235, 235, 255 }, 0, Globals::resources->getFont("defaultFont"));
+	defenderAttack->createText(std::to_string(this->battleDefender->getAttackStat()), colorStat(this->battleDefender->getAttackStat()), 0, Globals::resources->getFont("defaultFont36"));
+	defenderDefense->createText(std::to_string(this->battleDefender->getDefenseStat()), colorStat(this->battleDefender->getDefenseStat()), 0, Globals::resources->getFont("defaultFont36"));
+	defenderEvasion->createText(std::to_string(this->battleDefender->getEvasionStat()), colorStat(this->battleDefender->getEvasionStat()), 0, Globals::resources->getFont("defaultFont36"));
+
+	/* Position */
+	healthBg->setPosition({ this->battleAttackerUnit.position().x - healthBg->getWidth() + 68, this->battleAttackerUnit.position().y + this->battleAttackerUnit.texture().getHeight() - (healthBg->getHeight() * 2) });
+	attackerCurrentHealth->setPosition({ healthBg->getX() + 60 - attackerCurrentHealth->getWidth() / 2, healthBg->getY() + 60 - attackerCurrentHealth->getHeight() / 2 });
+	attackerMaxHealth->setPosition({ healthBg->getX() + 121 - attackerMaxHealth->getWidth() / 2, healthBg->getY() + 84 - attackerMaxHealth->getHeight() / 2 });
+	attackIcon->setPosition({ this->battleAttackerUnit.position().x + 128, this->componentStatBg.getPosition().y + (this->componentStatBg.getHeight() / 2) - (attackIcon->getHeight() / 2) });
+	attackerAttack->setPosition({ attackIcon->getX() + attackIcon->getWidth() + 8, attackIcon->getY() });
+	defenseIcon->setPosition({ this->battleAttackerUnit.position().x + (this->battleAttackerUnit.texture().getSheetSize() / 2) - defenseIcon->getWidth(), attackIcon->getY() });
+	attackerDefense->setPosition({ defenseIcon->getX() + defenseIcon->getWidth() + 8, defenseIcon->getY() });
+	evasionIcon->setPosition({ this->battleAttackerUnit.position().x + (this->battleAttackerUnit.texture().getSheetSize()) - 192, attackIcon->getY() });
+	attackerEvasion->setPosition({ evasionIcon->getX() + evasionIcon->getWidth() + 8, evasionIcon->getY() });
+
+	healthBg2->setPosition({ this->battleDefenderUnit.position().x + this->battleDefenderUnit.texture().getSheetSize() - 92, this->battleDefenderUnit.position().y + this->battleDefenderUnit.texture().getHeight() - (healthBg2->getHeight() * 2) });
+	defenderCurrentHealth->setPosition({ healthBg2->getX() + 60 - defenderCurrentHealth->getWidth() / 2, healthBg2->getY() + 60 - defenderCurrentHealth->getHeight() / 2 });
+	defenderMaxHealth->setPosition({ healthBg2->getX() + 121 - defenderMaxHealth->getWidth() / 2, healthBg2->getY() + 84 - defenderMaxHealth->getHeight() / 2 });
+	attackIcon2->setPosition({ this->battleDefenderUnit.position().x + 128, this->componentStatBg.getPosition().y + (this->componentStatBg.getHeight() / 2) - (attackIcon->getHeight() / 2) });
+	defenderAttack->setPosition({ attackIcon2->getX() + attackIcon2->getWidth() + 8, attackIcon2->getY() });
+	defenseIcon2->setPosition({ this->battleDefenderUnit.position().x + (this->battleDefenderUnit.texture().getSheetSize() / 2) - defenseIcon->getWidth(), attackIcon->getY() });
+	defenderDefense->setPosition({ defenseIcon2->getX() + defenseIcon2->getWidth() + 8, defenseIcon2->getY() });
+	evasionIcon2->setPosition({ this->battleDefenderUnit.position().x + (this->battleDefenderUnit.texture().getSheetSize()) - 192, attackIcon->getY() });
+	defenderEvasion->setPosition({ evasionIcon2->getX() + evasionIcon2->getWidth() + 8, evasionIcon2->getY() });
+
+	/* Insertion */
+	this->attackerStats = {
+		healthBg,
+		attackerCurrentHealth,
+		attackerMaxHealth,
+		attackIcon,
+		attackerAttack,
+		defenseIcon,
+		attackerDefense,
+		evasionIcon,
+		attackerEvasion
+	};
+
+	this->defenderStats = {
+		healthBg2,
+		defenderCurrentHealth,
+		defenderMaxHealth,
+		attackIcon2,
+		defenderAttack,
+		defenseIcon2,
+		defenderDefense,
+		evasionIcon2,
+		defenderEvasion
+	};
+}
+
+void BattleComponent::updateUnitStats()
+{
+	/* Update on stat change, or damage taken */
+	const int attackerAttack = this->battleAttacker->getAttackStat();
+	const int attackerDefense = this->battleAttacker->getDefenseStat();
+	const int attackerEvasion = this->battleAttacker->getEvasionStat();
+	const int attackerCurrentHP = this->battleAttacker->getCurrentHealth();
+
+	const int defenderAttack = this->battleDefender->getAttackStat();
+	const int defenderDefense = this->battleDefender->getDefenseStat();
+	const int defenderEvasion = this->battleDefender->getEvasionStat();
+	const int defenderCurrentHP = this->battleDefender->getCurrentHealth();
+
+	this->attackerStats[static_cast<int>(UnitVectorStat::Attack)]->createText(std::to_string(attackerAttack), colorStat(attackerAttack), 0, Globals::resources->getFont("defaultFont36"));
+	this->attackerStats[static_cast<int>(UnitVectorStat::Defense)]->createText(std::to_string(attackerDefense), colorStat(attackerDefense), 0, Globals::resources->getFont("defaultFont36"));
+	this->attackerStats[static_cast<int>(UnitVectorStat::Evasion)]->createText(std::to_string(attackerEvasion), colorStat(attackerEvasion), 0, Globals::resources->getFont("defaultFont36"));
+	this->attackerStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->createText(std::to_string(attackerCurrentHP), { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+
+	this->defenderStats[static_cast<int>(UnitVectorStat::Attack)]->createText(std::to_string(defenderAttack), colorStat(defenderAttack), 0, Globals::resources->getFont("defaultFont36"));
+	this->defenderStats[static_cast<int>(UnitVectorStat::Defense)]->createText(std::to_string(defenderDefense), colorStat(defenderDefense), 0, Globals::resources->getFont("defaultFont36"));
+	this->defenderStats[static_cast<int>(UnitVectorStat::Evasion)]->createText(std::to_string(defenderEvasion), colorStat(defenderEvasion), 0, Globals::resources->getFont("defaultFont36"));
+	this->defenderStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->createText(std::to_string(defenderCurrentHP), { 255, 255, 255, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));
+
+	/* Little reposition for the health only as it's position is on the middle */
+	this->attackerStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->setPosition(
+		{ 
+			this->attackerStats[static_cast<int>(UnitVectorStat::HealthBackground)]->getX() + 60 - this->attackerStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->getWidth() / 2,
+			this->attackerStats[static_cast<int>(UnitVectorStat::HealthBackground)]->getY() + 60 - this->attackerStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->getHeight() / 2
+		}
+	);
+
+	this->defenderStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->setPosition(
+		{
+			this->defenderStats[static_cast<int>(UnitVectorStat::HealthBackground)]->getX() + 60 - this->defenderStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->getWidth() / 2,
+			this->defenderStats[static_cast<int>(UnitVectorStat::HealthBackground)]->getY() + 60 - this->defenderStats[static_cast<int>(UnitVectorStat::CurrentHealth)]->getHeight() / 2
+		}
+	);
+}
+
 void BattleComponent::battleStart()
 {
+	this->updateUnitStats();
 	this->beginAttack();
 }
 
@@ -331,6 +465,7 @@ void BattleComponent::attackOutcome(int attackRoll, int defenseRoll, bool isEvas
 	PlayerUnit::UnitDefenseType defenseType = isEvasion ? PlayerUnit::UnitDefenseType::Evasion : PlayerUnit::UnitDefenseType::Defense;
 
 	int dmgAmount = damageTaker->takeDamage(attackRoll, defenseRoll, defenseType);
+	this->updateUnitStats();
 
 	if (dmgAmount > 0)
 	{
@@ -404,6 +539,17 @@ void BattleComponent::update(const float dt)
 	this->componentBgContour.render();
 	this->componentBg.render();
 	this->componentStatBg.render();
+
+	for (const auto& ltexture : this->attackerStats)
+	{
+		ltexture->render();
+	}
+
+	for (const auto& ltexture : this->defenderStats)
+	{
+		ltexture->render();
+	}
+
 	this->componentIcon.render();
 	this->battleAttackerUnit.render({});
 	this->battleDefenderUnit.render({});
