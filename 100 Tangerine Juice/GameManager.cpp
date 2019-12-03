@@ -170,9 +170,12 @@ shared_ptr<PlayerUnit> GameManager::getRandomAliveUnitExcluding(const shared_ptr
 	{
 		for (auto& unit : shuffledUnits)
 		{
-			if (unit->identifier() != excludedUnitIdentifier && !unit->isKO())
+			if (!unit->hasSkillEffect("stealth"))
 			{
-				return unit;
+				if (unit->identifier() != excludedUnitIdentifier && !unit->isKO())
+				{
+					return unit;
+				}
 			}
 		}
 	}
@@ -227,7 +230,8 @@ unsigned GameManager::getAliveUnitsCount() const
 
 	for (const auto& unit : this->units)
 	{
-		if (!unit->isKO())
+		// Stealth Mode count as a fake death
+		if (!unit->isKO() && !unit->hasSkillEffect("stealth"))
 		{
 			amount++;
 		}
@@ -238,8 +242,8 @@ unsigned GameManager::getAliveUnitsCount() const
 
 void GameManager::nextTurn()
 {
-	Discord::setState(std::to_string(this->getLocalUnit()->getUnitPanelId()) + " / 100 Panels");
-	Discord::setDetails(std::to_string(this->getLocalUnit()->getCurrentStars()) + " / 200 Stars");
+	Discord::setState("Currently Playing");
+	Discord::setDetails(std::to_string(this->getLocalUnit()->getUnitPanelId()) + " / 100 Panels" + " | " + std::to_string(this->getLocalUnit()->getCurrentStars()) + " / 200 Stars");
 
 	if (this->isStandingOnPanel(this->map.size() - 1))
 	{

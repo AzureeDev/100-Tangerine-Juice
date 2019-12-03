@@ -18,7 +18,7 @@ void UnitDefinitions::createDefinitions()
 	sora.unitName = "Sora";
 	sora.unitDesc = "Sora is a balanced unit. Her skills often rely on boosting her own stats rather than speeding through to the end of the Road.";
 	sora.unitMaxHealth = 5;
-	sora.unitStats = { 1, 0, 1, 5, 2, 5 };
+	sora.unitStats = { 1, 0, 1, 5, 2, 4 };
 
 	UnitParams sora_m;
 	sora_m.unitId = "sora_m";
@@ -32,20 +32,20 @@ void UnitDefinitions::createDefinitions()
 	hime.unitName = "Hime";
 	hime.unitDesc = "Hime has the same passive as Suguri, which means she gather more stars from Bonus panels. Her battle stats are lowered though, making her less effective in battles.";
 	hime.unitMaxHealth = 5;
-	hime.unitStats = { 1, -1, 0, 5, 4, 4 };
+	hime.unitStats = { 1, -1, 0, 5, 2, 4 };
 	hime.unitStarBonus = 10;
 
 	UnitParams sham;
 	sham.unitId = "sham";
 	sham.unitName = "Sham";
-	sham.unitDesc = "Sham is more focused on defensive aspects in order to survive longer. She won't make miracles in terms of attack power though.";
+	sham.unitDesc = "Sham is more focused on defensive aspects in order to survive against powerful hits (or extremely lucky rolls), but she won't make miracles in terms of attack power.";
 	sham.unitMaxHealth = 4;
-	sham.unitStats = { -1, 2, 0, 6, 1, 3 };
+	sham.unitStats = { -1, 2, 0, 5, 1, 3 };
 
 	UnitParams tsih;
 	tsih.unitId = "tsih";
 	tsih.unitName = "Tsih";
-	tsih.unitDesc = "Tsih has the unique ability to have a bonus of 1 on her movement roll, but can use only one unique skill.";
+	tsih.unitDesc = "Tsih has the unique ability to have a bonus of 1 on her movement roll, but can use only one unique skill which allows her to entirely bypass battles.";
 	tsih.unitMaxHealth = 4;
 	tsih.unitStats = { 0, 0, 2, 6, 2, 4 };
 	tsih.unitMovementBonus = 1;
@@ -53,7 +53,7 @@ void UnitDefinitions::createDefinitions()
 	UnitParams saki;
 	saki.unitId = "saki";
 	saki.unitName = "Saki";
-	saki.unitDesc = "Saki is the kind of unit that will want to avoid Encounter panels. She can heal herself by 1 HP at the beginning of her turns, but her battle statistics aren't great.";
+	saki.unitDesc = "Saki is the kind of unit that will want to avoid Encounter panels. She can heal herself by 1 HP at the beginning of her turns at the cost of poor battle skills.";
 	saki.unitMaxHealth = 4;
 	saki.unitStats = { -1, 0, 1, 5, 1, 3 };
 	saki.unitHealPerTurn = true;
@@ -61,9 +61,10 @@ void UnitDefinitions::createDefinitions()
 	UnitParams sb;
 	sb.unitId = "sb";
 	sb.unitName = "Star Breaker";
-	sb.unitDesc = "Star Breaker is focused on pure damage. Her insane stats allows her to put down any other unit easily, but her wins won't make other units lose stars.";
+	sb.unitDesc = "Star Breaker is focused on pure damage. Her insane stats allows her to put down any other unit easily, but she cannot win by gathering stars, as collecting them is impossible for her.";
 	sb.unitMaxHealth = 5;
-	sb.unitStats = { 2, 0, -1, 8, 2, 8 };
+	sb.unitStats = { 2, 0, -1, 8, 2, 7 };
+	sb.unitCanGatherStars = false;
 
 	UnitDefinitions::def.push_back(suguri);
 	UnitDefinitions::def.push_back(sora);

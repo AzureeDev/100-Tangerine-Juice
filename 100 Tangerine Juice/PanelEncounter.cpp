@@ -10,7 +10,7 @@ PanelEncounter::PanelEncounter()
 
 void PanelEncounter::trigger()
 {
-	if (Globals::gameManager->getAliveUnitsCount() > 1)
+	if (Globals::gameManager->getAliveUnitsCount() > 1 && !Globals::gameManager->getCurrentTurnUnit()->hasSkillEffect("stealth"))
 	{
 		Globals::timer->createTimer("encounterPanelEffect", .5f, []()
 			{

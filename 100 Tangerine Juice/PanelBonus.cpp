@@ -10,7 +10,14 @@ PanelBonus::PanelBonus()
 
 void PanelBonus::trigger()
 {
-	Globals::timer->createTimer("powerPanelEffect", .5f, []()
+	/* Can't gather stars ? */
+	if (!UnitDefinitions::getParamsById(Globals::gameManager->getCurrentTurnUnit()->identifier()).unitCanGatherStars)
+	{
+		Panel::trigger();
+		return;
+	}
+
+	Globals::timer->createTimer("bonusPanelEffect", .5f, []()
 		{
 			SFXManager::playSFX("starget");
 

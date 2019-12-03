@@ -544,9 +544,8 @@ void PlayerUnit::startTurn()
 			this->moveBtn = Globals::UI->createButton("moveBtn", "assets/ui/ig/moveBtn.png");
 			this->moveBtn->setPosition(
 				{
-					(Globals::engine->getDisplaySettings().wsWidth / 2) - (this->moveBtn->getTexture().getWidth() / 2),
+					(Globals::engine->getDisplaySettings().wsWidth / 2) - (this->moveBtn->getTexture().getWidth() / 2) - 256,
 					(Globals::engine->getDisplaySettings().wsHeight / 2) - (this->moveBtn->getTexture().getHeight() / 2),
-
 				}
 			);
 			this->moveBtn->supplyCallback([this]()
@@ -558,10 +557,8 @@ void PlayerUnit::startTurn()
 			this->skillBtn = Globals::UI->createButton("skillBtn", "assets/ui/ig/skillBtn.png");
 			this->skillBtn->setPosition(
 				{
-					this->moveBtn->getX(),
-					this->moveBtn->getY() + this->skillBtn->getTexture().getHeight() + 16,
-
-
+					(Globals::engine->getDisplaySettings().wsWidth / 2) - (this->moveBtn->getTexture().getWidth() / 2) + 256,
+					this->moveBtn->getY(),
 				}
 			);
 			this->skillBtn->supplyCallback([this]()
@@ -642,9 +639,18 @@ void PlayerUnit::movement(const int diceRoll)
 bool PlayerUnit::aiCheckUsableSkills()
 {
 	int currentPower = this->getCurrentPower();
-	int skillChance = 30;
+	int skillChance = 25;
 
-	for (const auto& skill : this->unitSkills)
+	vector<SkillData> sortedSkills = this->unitSkills;
+
+	/* Sort by skill cost, higher cost first */
+	std::sort(sortedSkills.begin(), sortedSkills.end(), [](SkillData a, SkillData b) 
+		{
+			return a.skillCost > b.skillCost;
+		}
+	);
+
+	for (const auto& skill : sortedSkills)
 	{
 		// Little randomness
 		if (rand() % 100 < (skillChance + (5 * skill.skillCost)))

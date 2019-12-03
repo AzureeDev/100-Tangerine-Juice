@@ -1,6 +1,8 @@
 #include "SkillDefinitions.h"
 #include "Utils.h"
 #include "Globals.h"
+#include "OverlayManager.h"
+#include "MusicManager.h"
 
 vector<SkillData> SkillDefinitions::def = {};
 
@@ -168,7 +170,7 @@ void SkillDefinitions::createDefinitions()
 	SkillData extraspecs;
 	extraspecs.skillIdentifier = "extraspecs";
 	extraspecs.skillName = "Extraordinary Specs";
-	extraspecs.skillDescription = "For 1 entire chapter: Always roll 6.";
+	extraspecs.skillDescription = "For 1 chapter: Always roll 6.";
 	extraspecs.skillOwner = "sora";
 	extraspecs.skillIconPath = "assets/skills/skl_hyper_extraspecs.png";
 	extraspecs.skillType = SkillType::Boost;
@@ -183,7 +185,7 @@ void SkillDefinitions::createDefinitions()
 			}
 		);
 	};
-	extraspecs.skillCost = 5;
+	extraspecs.skillCost = 4;
 
 	///////////////////////////////////////////////////////
 	/*
@@ -351,7 +353,7 @@ void SkillDefinitions::createDefinitions()
 	extend.skillName = "Extend";
 	extend.skillDescription = "Stock the following effect: If you are KO'd, you will automatically revive on your next turn.";
 	extend.skillOwner = "sham";
-	extend.skillIconPath = "assets/skills/skl_placeholder.png";
+	extend.skillIconPath = "assets/skills/skl_extend.png";
 	extend.skillRemoveOnDeath = false;
 	extend.skillType = SkillType::Boost;
 	extend.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
@@ -420,11 +422,24 @@ void SkillDefinitions::createDefinitions()
 	sbbomb.skillName = "SB Bomb";
 	sbbomb.skillDescription = "A random unit will take 1 to 3 damage.";
 	sbbomb.skillOwner = "sb";
-	sbbomb.skillIconPath = "assets/skills/skl_placeholder.png";
+	sbbomb.skillIconPath = "assets/skills/skl_sbbomb.png";
 	sbbomb.skillType = SkillType::Offensive;
+	sbbomb.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
+	{
+		if (Globals::gameManager->getAliveUnitsCount() <= 1)
+		{
+			return false;
+		}
+
+		return true;
+	};
 	sbbomb.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
+		const shared_ptr<PlayerUnit> randomUnit = Globals::gameManager->getRandomAliveUnitExcluding(unit);
+		randomUnit->setActiveUnit();
+		randomUnit->takeTerrainDamage(Utils::randBetween(1, 3));
 
+		Globals::timer->createTimer("delayCameraBackToUnit", 1, [unit, randomUnit]() { randomUnit->setInactiveUnit(); unit->setActiveUnit();  }, 1);
 	};
 	sbbomb.skillCost = 3;
 
@@ -439,11 +454,21 @@ void SkillDefinitions::createDefinitions()
 	mutilation.skillName = "Mutilation";
 	mutilation.skillDescription = "For 2 chapters: Pay 1 HP to gain 2 Attack.";
 	mutilation.skillOwner = "sb";
-	mutilation.skillIconPath = "assets/skills/skl_placeholder.png";
+	mutilation.skillIconPath = "assets/skills/skl_mutilation.png";
 	mutilation.skillType = SkillType::Offensive;
 	mutilation.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
+		unit->takeTerrainDamage(1);
+		unit->setStatusMessage("MUTILATION", { 255, 0, 125, 255 });
+		unit->createSkillEffect(
+			{
+				"mutilation",
+				2,
+				1
+			}
+		);
 
+		unit->updateTempStats(2, 0, 0);
 	};
 	mutilation.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
 	{
@@ -459,6 +484,10 @@ void SkillDefinitions::createDefinitions()
 
 		return true;
 	};
+	mutilation.skillEffectEnded = [](shared_ptr<PlayerUnit> unit)
+	{
+		unit->updateTempStats(-2, 0, 0);
+	};
 	mutilation.skillCost = 4;
 
 	///////////////////////////////////////////////////////
@@ -472,13 +501,30 @@ void SkillDefinitions::createDefinitions()
 	grandfinale.skillName = "Grand Finale";
 	grandfinale.skillDescription = "All the other units will be KO'd instantly.";
 	grandfinale.skillOwner = "sb";
-	grandfinale.skillIconPath = "assets/skills/skl_placeholder.png";
+	grandfinale.skillIconPath = "assets/skills/skl_grandfinale.png";
 	grandfinale.skillType = SkillType::Offensive;
 	grandfinale.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
+		OverlayManager::fadeIn(12);
+		MusicManager::fadeOutMusic(500);
 
+		Globals::timer->createTimer("grandFinaleDelay", 1, [unit]()
+			{
+				MusicManager::playMusic("assets/musics/finale.mp3");
+				LilacClasses::Tangerine->getWorld().setWorldColor({ 255, 0, 0, 255 });
+				OverlayManager::fadeOut(12);
+
+				for (const auto& killedUnit : Globals::gameManager->getUnits())
+				{
+					if (killedUnit->identifier() != unit->identifier())
+					{
+						killedUnit->takeTerrainDamage(666);
+					}
+				}
+			}
+		, 1);
 	};
-	grandfinale.skillCost = 8;
+	grandfinale.skillCost = 7;
 
 	///////////////////////////////////////////////////////
 	/*
@@ -491,11 +537,23 @@ void SkillDefinitions::createDefinitions()
 	stealth.skillName = "Stealth Mode";
 	stealth.skillDescription = "For 3 chapters, Encounter panels won't do any effect when you land on them, and other units cannot challenge you.";
 	stealth.skillOwner = "tsih";
-	stealth.skillIconPath = "assets/skills/skl_placeholder.png";
+	stealth.skillIconPath = "assets/skills/skl_ghost.png";
 	stealth.skillType = SkillType::Boost;
 	stealth.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-
+		unit->texture().setColor({ 115, 240, 255, 255 }, true);
+		unit->setStatusMessage("STEALTH MODE", { 115, 240, 255, 255 });
+		unit->createSkillEffect(
+			{
+				"stealth",
+				3,
+				1
+			}
+		);
+	};
+	stealth.skillEffectEnded = [](shared_ptr<PlayerUnit> unit)
+	{
+		unit->texture().setColor({ 255, 255, 255, 255 }, true);
 	};
 	stealth.skillCost = 4;
 
@@ -510,7 +568,7 @@ void SkillDefinitions::createDefinitions()
 	starsgift.skillName = "Stars Gift";
 	starsgift.skillDescription = "Gain 10 to 25 stars.";
 	starsgift.skillOwner = "saki";
-	starsgift.skillIconPath = "assets/skills/skl_placeholder.png";
+	starsgift.skillIconPath = "assets/skills/skl_stargift.png";
 	starsgift.skillType = SkillType::Boost;
 	starsgift.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
@@ -528,10 +586,10 @@ void SkillDefinitions::createDefinitions()
 	///////////////////////////////////////////////////////
 	SkillData cookie;
 	cookie.skillIdentifier = "cookie";
-	cookie.skillName = "Cookie Time!";
-	cookie.skillDescription = "All units, excepted yourself, will be healed by 1 HP. Each unit affected will pay you back 10 stars.";
+	cookie.skillName = "Saki's Cookie";
+	cookie.skillDescription = "All units, excepted yourself, will be healed by 1 HP, unless they are full HP. KO'd units will be revived with 1 HP. You will get 10 stars for each affected unit.";
 	cookie.skillOwner = "saki";
-	cookie.skillIconPath = "assets/skills/skl_placeholder.png";
+	cookie.skillIconPath = "assets/skills/skl_cookie.png";
 	cookie.skillType = SkillType::Boost;
 	cookie.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{

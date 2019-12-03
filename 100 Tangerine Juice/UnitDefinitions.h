@@ -29,6 +29,7 @@ struct UnitParams
 	int unitStarBonus = 0;
 	int unitMovementBonus = 0;
 	bool unitHealPerTurn = false;
+	bool unitCanGatherStars = true;
 };
 
 struct UnitDefinitions

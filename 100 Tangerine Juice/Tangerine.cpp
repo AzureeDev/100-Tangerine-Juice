@@ -296,3 +296,8 @@ void Tangerine::update(const float dt)
 		units[(units.size() - 1) - i]->render(Globals::engine->getCamera());
 	}
 }
+
+World& Tangerine::getWorld()
+{
+	return this->world;
+}

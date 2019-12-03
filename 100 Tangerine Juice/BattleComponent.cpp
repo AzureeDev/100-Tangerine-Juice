@@ -169,7 +169,7 @@ void BattleComponent::createUnitStats()
 	defenderEvasion->createText(std::to_string(this->battleDefender->getEvasionStat()), colorStat(this->battleDefender->getEvasionStat()), 0, Globals::resources->getFont("defaultFont36"));
 
 	/* Position */
-	healthBg->setPosition({ this->battleAttackerUnit.position().x - healthBg->getWidth() + 68, this->battleAttackerUnit.position().y + this->battleAttackerUnit.texture().getHeight() - (healthBg->getHeight() * 2) });
+	healthBg->setPosition({ this->battleAttackerUnit.position().x - healthBg->getWidth() + 128, this->battleAttackerUnit.position().y + this->battleAttackerUnit.texture().getHeight() - (healthBg->getHeight() * 2) });
 	attackerCurrentHealth->setPosition({ healthBg->getX() + 60 - attackerCurrentHealth->getWidth() / 2, healthBg->getY() + 60 - attackerCurrentHealth->getHeight() / 2 });
 	attackerMaxHealth->setPosition({ healthBg->getX() + 121 - attackerMaxHealth->getWidth() / 2, healthBg->getY() + 84 - attackerMaxHealth->getHeight() / 2 });
 	attackIcon->setPosition({ this->battleAttackerUnit.position().x + 128, this->componentStatBg.getPosition().y + (this->componentStatBg.getHeight() / 2) - (attackIcon->getHeight() / 2) });
@@ -179,7 +179,7 @@ void BattleComponent::createUnitStats()
 	evasionIcon->setPosition({ this->battleAttackerUnit.position().x + (this->battleAttackerUnit.texture().getSheetSize()) - 192, attackIcon->getY() });
 	attackerEvasion->setPosition({ evasionIcon->getX() + evasionIcon->getWidth() + 8, evasionIcon->getY() });
 
-	healthBg2->setPosition({ this->battleDefenderUnit.position().x + this->battleDefenderUnit.texture().getSheetSize() - 92, this->battleDefenderUnit.position().y + this->battleDefenderUnit.texture().getHeight() - (healthBg2->getHeight() * 2) });
+	healthBg2->setPosition({ this->battleDefenderUnit.position().x + this->battleDefenderUnit.texture().getSheetSize() - 192, this->battleDefenderUnit.position().y + this->battleDefenderUnit.texture().getHeight() - (healthBg2->getHeight() * 2) });
 	defenderCurrentHealth->setPosition({ healthBg2->getX() + 60 - defenderCurrentHealth->getWidth() / 2, healthBg2->getY() + 60 - defenderCurrentHealth->getHeight() / 2 });
 	defenderMaxHealth->setPosition({ healthBg2->getX() + 121 - defenderMaxHealth->getWidth() / 2, healthBg2->getY() + 84 - defenderMaxHealth->getHeight() / 2 });
 	attackIcon2->setPosition({ this->battleDefenderUnit.position().x + 128, this->componentStatBg.getPosition().y + (this->componentStatBg.getHeight() / 2) - (attackIcon->getHeight() / 2) });

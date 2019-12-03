@@ -31,4 +31,5 @@ public:
 	unique_ptr<GameManager>& getGameManager();
 	GameParams getGameParams() const;
 	void update(const float dt);
+	World& getWorld();
 };
