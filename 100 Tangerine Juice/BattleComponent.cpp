@@ -15,8 +15,8 @@ const auto colorStat = [](const int statistic) {
 
 BattleComponent::BattleComponent(shared_ptr<PlayerUnit> attacker, shared_ptr<PlayerUnit> defender)
 {
-	this->battleAttacker = attacker.get();
-	this->battleDefender = defender.get();
+	this->battleAttacker = attacker;
+	this->battleDefender = defender;
 	Globals::currentBattleInstance = this;
 }
 
@@ -29,12 +29,6 @@ BattleComponent::~BattleComponent()
 	{
 		Globals::UI->destroyButton("battleStart");
 		this->battleStartBtn = nullptr;
-	}
-
-	if (this->battleSkillBtn != nullptr)
-	{
-		Globals::UI->destroyButton("battleSkillBtn");
-		this->battleSkillBtn = nullptr;
 	}
 
 	if (this->battleDefendBtn != nullptr)
@@ -91,6 +85,8 @@ void BattleComponent::init()
 
 	if (!this->battleAttacker->isAI() || !this->battleDefender->isAI())
 	{
+		Globals::engine->flashApplication();
+
 		this->battleStartBtn = Globals::UI->createButton("battleStart", "assets/ui/ig/battleStartBtn.png");
 		this->battleStartBtn->getTexture().setColor({ 150, 150, 150, 255 }, true);
 		this->battleStartBtn->setHighlightColor({ 255, 255, 255, 255 });
@@ -112,24 +108,6 @@ void BattleComponent::init()
 				(Globals::engine->getDisplaySettings().wsHeight / 2 - this->battleStartBtn->getTexture().getHeight() / 2) - 64
 			}
 		);
-
-		this->battleSkillBtn = Globals::UI->createButton("battleSkillBtn", "assets/ui/ig/skillBtn.png");
-		this->battleSkillBtn->getTexture().setColor({ 150, 150, 150, 255 }, true);
-		this->battleSkillBtn->setHighlightColor({ 255, 255, 255, 255 });
-
-		this->battleSkillBtn->supplyCallback([this]()
-			{
-				this->setButtonVisibility(false);
-				Globals::engine->createClass("UseSkillComponent", new UseSkillComponent(UseSkillComponent::GameState::InBattle));
-			}
-		);
-
-		this->battleSkillBtn->setPosition(
-			{
-				this->battleStartBtn->getX(),
-				this->battleStartBtn->getY() + this->battleStartBtn->getTexture().getHeight() + 16
-			}
-		);
 	}
 	else
 	{
@@ -147,12 +125,10 @@ void BattleComponent::setButtonVisibility(const bool enabled)
 	if (enabled)
 	{
 		this->battleStartBtn->activate();
-		this->battleSkillBtn->activate();
 	}
 	else
 	{
 		this->battleStartBtn->disable();
-		this->battleSkillBtn->disable();
 	}
 }
 
@@ -286,8 +262,8 @@ void BattleComponent::battleStart()
 
 void BattleComponent::beginAttack()
 {
-	PlayerUnit* damageDealer = this->currentTurn % 2 == 0 ? this->battleAttacker : this->battleDefender;
-	PlayerUnit* defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	shared_ptr<PlayerUnit> damageDealer = this->currentTurn % 2 == 0 ? this->battleAttacker : this->battleDefender;
+	shared_ptr<PlayerUnit> defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
 	Unit& damageDealerUnit = this->currentTurn % 2 == 0 ? this->battleAttackerUnit : this->battleDefenderUnit;
 	Unit& defenderUnit = this->currentTurn % 2 == 0 ? this->battleDefenderUnit : this->battleAttackerUnit;
 	LTexture& damageDealerDice = this->currentTurn % 2 == 0 ? this->attackerDice : this->defenderDice;
@@ -297,6 +273,17 @@ void BattleComponent::beginAttack()
 	SFXManager::playSFX("attack");
 
 	int attackRoll = Utils::randBetween(1, 6);
+
+	if (damageDealer->hasSkillEffect("deltafield"))
+	{
+		attackRoll = 1;
+	}
+
+	if (damageDealer->hasSkillEffect("extraspecs"))
+	{
+		attackRoll = 6;
+	}
+
 	damageDealerDice.setNewTexture("assets/dice/" + std::to_string(attackRoll) + ".png");
 	attackRoll += damageDealer->getAttackStat();
 	attackRoll = attackRoll < 1 ? 1 : attackRoll;
@@ -358,7 +345,7 @@ void BattleComponent::beginAttack()
 
 void BattleComponent::beginDefense(int attackRoll)
 {
-	PlayerUnit* defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	shared_ptr<PlayerUnit> defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
 	Unit& defenderUnit = this->currentTurn % 2 == 0 ? this->battleDefenderUnit : this->battleAttackerUnit;
 	LTexture& defenderDice = this->currentTurn % 2 == 0 ? this->defenderDice : this->attackerDice;
 	LTexture& defenderDiceNumber = this->currentTurn % 2 == 0 ? this->defenderDiceNumber : this->attackerDiceNumber;
@@ -368,6 +355,17 @@ void BattleComponent::beginDefense(int attackRoll)
 	SFXManager::playSFX("attack");
 
 	int defenderRoll = Utils::randBetween(1, 6);
+
+	if (defender->hasSkillEffect("deltafield"))
+	{
+		defenderRoll = 1;
+	}
+
+	if (defender->hasSkillEffect("extraspecs"))
+	{
+		defenderRoll = 6;
+	}
+
 	defenderDice.setNewTexture("assets/dice/" + std::to_string(defenderRoll) + ".png");
 	defenderRoll += defender->getDefenseStat();
 	defenderRoll = defenderRoll < 1 ? 1 : defenderRoll;
@@ -387,7 +385,7 @@ void BattleComponent::beginDefense(int attackRoll)
 
 void BattleComponent::beginEvasion(int attackRoll)
 {
-	PlayerUnit* defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	shared_ptr<PlayerUnit> defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
 	Unit& defenderUnit = this->currentTurn % 2 == 0 ? this->battleDefenderUnit : this->battleAttackerUnit;
 	LTexture& defenderDice = this->currentTurn % 2 == 0 ? this->defenderDice : this->attackerDice;
 	LTexture& defenderDiceNumber = this->currentTurn % 2 == 0 ? this->defenderDiceNumber : this->attackerDiceNumber;
@@ -397,6 +395,17 @@ void BattleComponent::beginEvasion(int attackRoll)
 	SFXManager::playSFX("attack");
 
 	int defenderRoll = Utils::randBetween(1, 6);
+
+	if (defender->hasSkillEffect("deltafield"))
+	{
+		defenderRoll = 1;
+	}
+
+	if (defender->hasSkillEffect("extraspecs"))
+	{
+		defenderRoll = 6;
+	}
+
 	defenderDice.setNewTexture("assets/dice/" + std::to_string(defenderRoll) + ".png");
 	defenderRoll += defender->getEvasionStat();
 	defenderRoll = defenderRoll < 1 ? 1 : defenderRoll;
@@ -416,7 +425,7 @@ void BattleComponent::beginEvasion(int attackRoll)
 
 void BattleComponent::aiDecideAction(int attackRoll)
 {
-	PlayerUnit* defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	shared_ptr<PlayerUnit> defender = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
 	int currentEvasion = defender->getEvasionStat();
 
 	if (attackRoll == 1)
@@ -428,6 +437,17 @@ void BattleComponent::aiDecideAction(int attackRoll)
 	if (defender->getCurrentHealth() == 1)
 	{
 		Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginEvasion(attackRoll); }, 1);
+		return;
+	}
+
+	if (defender->hasSkillEffect("extraspecs"))
+	{
+		currentEvasion += 6;
+	}
+
+	if (defender->hasSkillEffect("deltafield"))
+	{
+		Globals::timer->createTimer("delayAIAction", 1, [this, attackRoll]() { this->beginDefense(attackRoll); }, 1);
 		return;
 	}
 
@@ -446,7 +466,7 @@ void BattleComponent::aiDecideAction(int attackRoll)
 		}
 	}
 
-	if (rand() % 100 < 75)
+	if (rand() % 100 < 90)
 	{
 		if (attackRoll - currentEvasion < 3)
 		{
@@ -460,8 +480,10 @@ void BattleComponent::aiDecideAction(int attackRoll)
 
 void BattleComponent::attackOutcome(int attackRoll, int defenseRoll, bool isEvasion)
 {
-	PlayerUnit* damageTaker = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	shared_ptr<PlayerUnit> damageTaker = this->currentTurn % 2 == 0 ? this->battleDefender : this->battleAttacker;
+	shared_ptr<PlayerUnit> damageDealer = this->currentTurn % 2 == 0 ? this->battleAttacker : this->battleDefender;
 	Unit& damageTakerUnit = this->currentTurn % 2 == 0 ? this->battleDefenderUnit : this->battleAttackerUnit;
+	Unit& damageDealerUnit = this->currentTurn % 2 == 0 ? this->battleAttackerUnit : this->battleDefenderUnit;
 	PlayerUnit::UnitDefenseType defenseType = isEvasion ? PlayerUnit::UnitDefenseType::Evasion : PlayerUnit::UnitDefenseType::Defense;
 
 	int dmgAmount = damageTaker->takeDamage(attackRoll, defenseRoll, defenseType);
@@ -515,6 +537,23 @@ void BattleComponent::attackOutcome(int attackRoll, int defenseRoll, bool isEvas
 	}
 	else
 	{
+		float baseDelay = 0.75f;
+
+		if (damageDealer->hasSkillEffect("fairbattle"))
+		{
+			SFXManager::playSFX("starget");
+
+			const int starSteal = damageTaker->getCurrentStars() / 2;
+			damageDealer->addStars(starSteal);
+			damageTaker->dropStars(starSteal);
+
+			damageDealerUnit.setStatusMessage("RANSOM\n+ " + std::to_string(starSteal) + " STARS", { 135, 0, 0, 255 });
+			damageTakerUnit.setStatusMessage("RANSOM\n- " + std::to_string(starSteal) + " STARS", { 60, 0, 0, 255 });
+			damageTakerUnit.setAnimation("dmg");
+
+			baseDelay += 0.75f;
+		}
+
 		Globals::timer->createTimer("delayEndBattle", 0.75f, [this]() { this->battleEnded(); }, 1);
 	}
 }
@@ -562,11 +601,6 @@ void BattleComponent::update(const float dt)
 	if (this->battleStartBtn != nullptr)
 	{
 		this->battleStartBtn->render();
-	}
-
-	if (this->battleSkillBtn != nullptr)
-	{
-		this->battleSkillBtn->render();
 	}
 
 	if (this->battleEvasionBtn != nullptr)

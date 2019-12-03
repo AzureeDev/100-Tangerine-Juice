@@ -17,7 +17,6 @@ Unit::Unit(const string unitIdentifier, const string defaultAnimation)
 	this->currentAnimation = defaultAnimation;
 	this->unitTexture.setFixedSize(UNIT_SHEET_SIZE);
 	this->unitTexture.setNewTexture("assets/units/" + this->unitId + "/" + this->unitAnimation + ".png");
-	this->unitShadow.setNewTexture("assets/units/shared/shadow.png");
 }
 
 string Unit::identifier()
@@ -52,6 +51,14 @@ void Unit::setAnimation(const string newAnimation)
 		return;
 	}
 
+	for (const auto& cosmetics : this->currentCosmetics.identifiers)
+	{
+		if (cosmetics.second != "")
+		{
+			this->applyCosmetic(cosmetics.second, cosmetics.first);
+		}
+	}
+
 	SDL_Log("Animation changed to %s", newAnimation.c_str());
 
 	this->currentAnimation = newAnimation;
@@ -68,30 +75,44 @@ void Unit::setX(const int x)
 {
 	this->unitTexture.setX(x);
 	this->unitPosition.x = x;
+
+	for (const auto& cosmetic : this->currentCosmetics.textures)
+	{
+		cosmetic.second->setX(x);
+	}
 }
 
 void Unit::setY(const int y)
 {
 	this->unitTexture.setY(y);
 	this->unitPosition.y = y;
+
+	for (const auto& cosmetic : this->currentCosmetics.textures)
+	{
+		cosmetic.second->setY(y);
+	}
 }
 
 void Unit::setPosition(const Vector2i pos)
 {
 	this->unitPosition = pos;
 	this->unitTexture.setPosition(pos);
-	this->unitShadow.setPosition(
-		{
-			pos.x + (this->unitTexture.getSheetSize() / 2) - (this->unitShadow.getWidth() / 2),
-			pos.y + this->unitTexture.getHeight() - this->unitShadow.getHeight() - 96
-		}
-	);
+
+	for (const auto& cosmetic : this->currentCosmetics.textures)
+	{
+		cosmetic.second->setPosition(pos);
+	}
 }
 
 void Unit::setFlipped(const bool state)
 {
 	this->unitTexture.setTextureFlip(state);
 	this->unitFlipped = state;
+
+	for (const auto& cosmetic : this->currentCosmetics.textures)
+	{
+		cosmetic.second->setTextureFlip(state);
+	}
 }
 
 void Unit::setStatusMessage(const string message, const SDL_Color color)
@@ -106,23 +127,53 @@ void Unit::setStatusMessage(const string message, const SDL_Color color)
 	);
 }
 
+void Unit::setFade(const TextureFadingState state, const int mult)
+{
+	this->unitTexture.setFade(state, mult);
+
+	for (const auto& cosmetic : this->currentCosmetics.textures)
+	{
+		cosmetic.second->setFade(state, mult);
+	}
+}
+
 void Unit::placeMiddleScreen()
 {
 	this->unitTexture.placeMiddleScreen(true);
-	this->unitShadow.setPosition(
-		{
-			this->unitTexture.getX() + (this->unitTexture.getSheetSize() / 2) - (this->unitShadow.getWidth() / 2),
-			this->unitTexture.getY() + this->unitTexture.getHeight() - this->unitShadow.getHeight() - 96
-		}
-	);
+
+	for (const auto& cosmetic : this->currentCosmetics.textures)
+	{
+		cosmetic.second->placeMiddleScreen(true);
+	}
 
 	this->unitPosition = this->unitTexture.getPosition();
 }
 
+void Unit::applyCosmetic(const string cosmeticIdentifier, const string type)
+{
+	this->currentCosmetics.identifiers[type] = cosmeticIdentifier;
+	const string cosmeticPath = "assets/units/" + this->identifier() + "/cosmetics/" + type + "/" + cosmeticIdentifier + "/" + this->currentAnimation + ".png";
+
+	if (this->currentCosmetics.textures.count(type) == 0)
+	{
+		this->currentCosmetics.textures.insert({ type, unique_ptr<LTexture>(new LTexture) });
+	}
+		
+	this->currentCosmetics.textures.find(type)->second->setFixedSize(UNIT_SHEET_SIZE);
+	this->currentCosmetics.textures.find(type)->second->setNewTexture(cosmeticPath);
+	this->currentCosmetics.textures.find(type)->second->setPosition(this->position());
+	this->currentCosmetics.textures.find(type)->second->setTextureFlip(this->unitFlipped);
+}
+
 void Unit::render(SDL_Rect camera)
 {
-	//this->unitShadow.render();
 	this->unitTexture.render();
+	
+	for (const auto& cosmetic : this->currentCosmetics.textures)
+	{
+		cosmetic.second->render();
+	}
+
 	this->statusMessage.render();
 
 	if (this->statusMessage.getAlpha() > 0)

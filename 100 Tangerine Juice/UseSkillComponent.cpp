@@ -1,9 +1,8 @@
 #include "UseSkillComponent.h"
 #include "Globals.h"
 
-UseSkillComponent::UseSkillComponent(const GameState currentState)
+UseSkillComponent::UseSkillComponent()
 {
-	componentGameState = currentState;
 }
 
 UseSkillComponent::~UseSkillComponent()
@@ -155,62 +154,43 @@ void UseSkillComponent::generateSkillButtons()
 
 void UseSkillComponent::checkSkillAvailability(shared_ptr<LTexture>& skillNamePtr, shared_ptr<LTexture>& skillDescPtr, shared_ptr<LButton>& skillBtnPtr, SkillData& skillData)
 {
+	/*
+		Enables the button if it can be used.
+	*/
+
 	const int currentPower = Globals::gameManager->getLocalUnit()->getCurrentPower();
 
-	if (skillData.skillUsableInsideBattle && skillData.skillUsableOutsideBattle)
+	if (currentPower < skillData.skillCost)
 	{
-		if (currentPower < skillData.skillCost)
-		{
-			skillNamePtr->setColor({ 255, 0, 0, 255 }, true);
-			skillDescPtr->setColor({ 200, 0, 0, 255 }, true);
-			skillBtnPtr->setEnabled(false);
-		}
-
-		return;
-	}
-
-	if (skillData.skillUsableOutsideBattle && this->componentGameState != GameState::OutBattle || currentPower < skillData.skillCost)
-	{
-		skillNamePtr->setColor({ 255, 0, 0, 255 }, true);
-		skillDescPtr->setColor({ 200, 0, 0, 255 }, true);
+		skillNamePtr->setColor({ 255, 100, 100, 255 }, true);
+		skillDescPtr->setColor({ 200, 50, 50, 255 }, true);
 		skillBtnPtr->setEnabled(false);
 	}
 
-	if (skillData.skillUsableInsideBattle && this->componentGameState != GameState::InBattle || currentPower < skillData.skillCost)
+	if (!skillData.skillConditionFunction(Globals::gameManager->getLocalUnit()))
 	{
-		skillNamePtr->setColor({ 255, 0, 0, 255 }, true);
-		skillDescPtr->setColor({ 200, 0, 0, 255 }, true);
+		skillNamePtr->setColor({ 255, 100, 100, 255 }, true);
+		skillDescPtr->setColor({ 200, 50, 50, 255 }, true);
 		skillBtnPtr->setEnabled(false);
 	}
 }
 
 void UseSkillComponent::useSkill(string skillIdentifier)
 {
+	/*
+		Post successful press on a skill button
+	*/
+
 	SDL_Log("Using the skill %s", skillIdentifier.c_str());
 
-	if (this->componentGameState == GameState::OutBattle)
-	{
-		Globals::gameManager->useSkill(skillIdentifier);
-	}
-	else
-	{
-		/* Use Battle Skill Here */
-	}
-	
+
+	Globals::gameManager->useSkill(skillIdentifier);
 	Globals::engine->destroyClass("UseSkillComponent");
 }
 
 void UseSkillComponent::destroyComponent()
 {
-	if (this->componentGameState == GameState::OutBattle)
-	{
-		Globals::gameManager->getLocalUnit()->activateTurnButtons();
-	}
-	else
-	{
-		Globals::currentBattleInstance->setButtonVisibility(true);
-	}
-	
+	Globals::gameManager->getLocalUnit()->activateTurnButtons();
 	Globals::engine->destroyClass("UseSkillComponent");
 }
 

@@ -3,6 +3,8 @@
 #include "SFXManager.h"
 #include "MusicManager.h"
 #include "Utils.h"
+#include "Discord.h"
+#include "PreGame.h"
 
 void GameManager::callback(const string id, const function<void()> clbk, const float timer, const int repeat)
 {
@@ -50,12 +52,45 @@ GameManager::GameManager(Map& map, Players& units)
 	this->restart->getTexture().createText("RESTART");
 	this->restart->setPosition({ this->mainMenu->getX() + this->mainMenu->getTexture().getWidth() + 32, Globals::engine->getDisplaySettings().wsHeight - this->restart->getTexture().getHeight() });
 
+	string worldGenPresence = "";
+	string worldGenPresenceText = "";
+	
+	switch (LilacClasses::Tangerine->getGameParams().pickedGeneration)
+	{
+	case GameParams::WorldGeneration::TotalRandom:
+		worldGenPresence = "totalrandom";
+		worldGenPresenceText = "Total Random Generation";
+		break;
+
+	case GameParams::WorldGeneration::FairRandom:
+		worldGenPresence = "fairrandom";
+		worldGenPresenceText = "Fair Random Generation";
+		break;
+
+	case GameParams::WorldGeneration::Battlefield:
+		worldGenPresence = "battlefield";
+		worldGenPresenceText = "Battlefield Generation";
+		break;
+	}
+
+	Discord::setRichPresence(
+		{
+			"Playing",
+			"",
+			this->getLocalUnit()->identifier(),
+			"Playing as " + this->getLocalUnit()->getName(),
+			worldGenPresence,
+			worldGenPresenceText
+		}
+	);
+
 	this->initGame();
 }
 
 GameManager::~GameManager()
 {
 	Globals::UI->destroyButton("restart_game_debug");
+	Globals::UI->destroyButton("back_main_menu");
 }
 
 void GameManager::initGame()
@@ -84,6 +119,11 @@ void GameManager::createHudMessage(const string msg, const float duration)
 		this->messageBg.setFade(TextureFadingState::FadeOut);
 		this->messageText.destroyText();
 		}, duration);
+}
+
+vector<shared_ptr<PlayerUnit>> GameManager::getUnits()
+{
+	return this->units;
 }
 
 shared_ptr<PlayerUnit> GameManager::getCurrentTurnUnit()
@@ -167,6 +207,20 @@ shared_ptr<PlayerUnit> GameManager::getLocalUnit()
 	return this->units[0];
 }
 
+shared_ptr<PlayerUnit> GameManager::getUnitByIdentifier(const string identifier)
+{
+	for (const auto& unit : this->units)
+	{
+		if (unit->identifier() == identifier)
+		{
+			return unit;
+		}
+	}
+
+	SDL_Log("GameManager::getUnitByIdentifier - Couldn't find any unit with the identifier %s", identifier.c_str());
+	return nullptr;
+}
+
 unsigned GameManager::getAliveUnitsCount() const
 {
 	unsigned amount = 0;
@@ -184,6 +238,9 @@ unsigned GameManager::getAliveUnitsCount() const
 
 void GameManager::nextTurn()
 {
+	Discord::setState(std::to_string(this->getLocalUnit()->getUnitPanelId()) + " / 100 Panels");
+	Discord::setDetails(std::to_string(this->getLocalUnit()->getCurrentStars()) + " / 200 Stars");
+
 	if (this->isStandingOnPanel(this->map.size() - 1))
 	{
 		this->gameEnded();
@@ -191,11 +248,6 @@ void GameManager::nextTurn()
 	}
 
 	float delay = 1.f;
-
-	if (static_cast<unsigned int>(this->currentPlayerTurn) >= this->units.size())
-	{
-		delay = 2.f;
-	}
 
 	this->callback("startChapter", [this]() {
 		// Old unit
@@ -257,7 +309,7 @@ void GameManager::useSkill(const string skillIdentifier)
 		{
 			SFXManager::playSFX("powerup");
 			this->getCurrentTurnUnit()->removePower(SkillDefinitions::getSkillData(skillIdentifier).skillCost);
-			SkillDefinitions::getSkillData(skillIdentifier).skillCallback(this->getCurrentTurnUnit(), nullptr); 
+			SkillDefinitions::getSkillData(skillIdentifier).skillCallback(this->getCurrentTurnUnit()); 
 		}, 1
 	);
 

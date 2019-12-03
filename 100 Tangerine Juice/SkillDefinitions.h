@@ -23,11 +23,12 @@ struct SkillData {
 	string skillDescription;
 	string skillOwner;
 	string skillIconPath;
+	bool skillRemoveOnDeath = true;
 	SkillType skillType = SkillType::Normal;
-	function<void(shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)> skillCallback;
+	function<void(shared_ptr<PlayerUnit> unit)> skillCallback;
+	function<bool(shared_ptr<PlayerUnit> unit)> skillConditionFunction = [](shared_ptr<PlayerUnit> unit) { return true; };
+	function<void(shared_ptr<PlayerUnit> unit)> skillEffectEnded = [](shared_ptr<PlayerUnit> unit) {};
 	int skillCost = 1;
-	bool skillUsableOutsideBattle = true;
-	bool skillUsableInsideBattle = false;
 };
 
 struct SkillDefinitions

@@ -122,6 +122,16 @@ void DiceThrowComponent::onPress()
 	SFXManager::playSFX("dice_boing");
 
 	int diceRoll = Utils::randBetween(1, 6);
+	if (Globals::gameManager->getCurrentTurnUnit()->hasSkillEffect("deltafield"))
+	{
+		diceRoll = 1;
+	}
+
+	if (Globals::gameManager->getCurrentTurnUnit()->hasSkillEffect("extraspecs"))
+	{
+		diceRoll = 6;
+	}
+
 	this->componentDiceTexture.setNewTexture("assets/dice/" + std::to_string(diceRoll) + ".png");
 
 	if (this->componentType == DiceComponentType::Movement)

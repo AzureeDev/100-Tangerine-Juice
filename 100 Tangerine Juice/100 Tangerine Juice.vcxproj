@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\include;C:\Users\Sora\Documents\CPPLibraries\SDL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL\lib\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Sora\Documents\CPPLibraries\discord-rpc\win32-dynamic\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\include;C:\Users\Sora\Documents\CPPLibraries\SDL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Sora\Documents\CPPLibraries\discord-rpc\win32-dynamic\lib;C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL\lib\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\include;C:\Users\Sora\Documents\CPPLibraries\SDL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL\lib\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Sora\Documents\CPPLibraries\discord-rpc\win32-dynamic\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\include;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\include;C:\Users\Sora\Documents\CPPLibraries\SDL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Sora\Documents\CPPLibraries\discord-rpc\win32-dynamic\lib;C:\Users\Sora\Documents\CPPLibraries\SDL2_ttf-2.0.15\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_mixer-2.0.4\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL2_image-2.0.5\lib\x86;C:\Users\Sora\Documents\CPPLibraries\SDL\lib\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -90,7 +90,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;discord-rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -119,7 +119,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;discord-rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -143,6 +143,7 @@
     <ClCompile Include="BattleComponent.cpp" />
     <ClCompile Include="ButtonCallbacks.cpp" />
     <ClCompile Include="DiceThrowComponent.cpp" />
+    <ClCompile Include="Discord.cpp" />
     <ClCompile Include="GameIntro.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Globals.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="BattleComponent.h" />
     <ClInclude Include="ButtonCallbacks.h" />
     <ClInclude Include="DiceThrowComponent.h" />
+    <ClInclude Include="Discord.h" />
     <ClInclude Include="GameIntro.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Globals.h" />

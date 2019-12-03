@@ -1,5 +1,6 @@
 #include "SkillDefinitions.h"
 #include "Utils.h"
+#include "Globals.h"
 
 vector<SkillData> SkillDefinitions::def = {};
 
@@ -18,10 +19,10 @@ void SkillDefinitions::createDefinitions()
 	dash.skillOwner = "suguri";
 	dash.skillIconPath = "assets/skills/skl_dash.png";
 	dash.skillType = SkillType::Boost;
-	dash.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	dash.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-		sender->setStatusMessage("DASH\n+ 3 MOVEMENT ROLL", { 100, 255, 100, 255 });
-		sender->createSkillEffect(
+		unit->setStatusMessage("DASH\n+ 3 MOVEMENT ROLL", { 100, 255, 100, 255 });
+		unit->createSkillEffect(
 			{
 				"dash",
 				1,
@@ -40,17 +41,28 @@ void SkillDefinitions::createDefinitions()
 	SkillData speedup;
 	speedup.skillIdentifier = "speedup";
 	speedup.skillName = "Acceleration";
-	speedup.skillDescription = "Gain +2 Evasion for this battle, and -1 Defense.";
+	speedup.skillDescription = "For 2 chapters: Gain +2 Evasion, and -1 Defense.";
 	speedup.skillOwner = "suguri";
 	speedup.skillIconPath = "assets/skills/skl_speedup.png";
 	speedup.skillType = SkillType::Defensive;
-	speedup.skillCallback = [](shared_ptr<PlayerUnit>, shared_ptr<PlayerUnit> receiver)
+	speedup.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-		
+		unit->setStatusMessage("ACCELERATION", { 100, 255, 100, 255 });
+		unit->createSkillEffect(
+			{
+				"speedup",
+				2,
+				1
+			}
+		);
+
+		unit->updateTempStats(0, -1, 2);
+	};
+	speedup.skillEffectEnded = [](shared_ptr<PlayerUnit> unit)
+	{
+		unit->updateTempStats(0, 1, -2);
 	};
 	speedup.skillCost = 2;
-	speedup.skillUsableInsideBattle = true;
-	speedup.skillUsableOutsideBattle = false;
 
 	///////////////////////////////////////////////////////
 	/*
@@ -65,10 +77,10 @@ void SkillDefinitions::createDefinitions()
 	hyper_fallingstars.skillOwner = "suguri";
 	hyper_fallingstars.skillIconPath = "assets/skills/skl_hyper_fallingstars.png";
 	hyper_fallingstars.skillType = SkillType::Boost;
-	hyper_fallingstars.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	hyper_fallingstars.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-		sender->setStatusMessage("FALLING STARS", { 255, 255, 0, 255 });
-		sender->createSkillEffect(
+		unit->setStatusMessage("REVIVAL OF STARS", { 255, 255, 0, 255 });
+		unit->createSkillEffect(
 			{
 				"hyper_fallingstars",
 				-1,
@@ -80,24 +92,35 @@ void SkillDefinitions::createDefinitions()
 
 	///////////////////////////////////////////////////////
 	/*
-		Skill:			Deep Clone
+		Skill:			Last Chance
 		Belongs to:		Sora
 														 */
 	///////////////////////////////////////////////////////
-	SkillData deepclone;
-	deepclone.skillIdentifier = "deepclone";
-	deepclone.skillName = "Deep Clone";
-	deepclone.skillDescription = "Steal the positive stats of the enemy to convert them into a temporary bonus for this battle.";
-	deepclone.skillOwner = "sora";
-	deepclone.skillIconPath = "assets/skills/skl_deepclone.png";
-	deepclone.skillType = SkillType::Offensive;
-	deepclone.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	SkillData lastchance;
+	lastchance.skillIdentifier = "lastchance";
+	lastchance.skillName = "Last Chance";
+	lastchance.skillDescription = "For 2 chapters: Gain +3 Evasion, but lose 3 Attack and 3 Defense.";
+	lastchance.skillOwner = "sora";
+	lastchance.skillIconPath = "assets/skills/skl_deepclone.png";
+	lastchance.skillType = SkillType::Offensive;
+	lastchance.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
+		unit->setStatusMessage("LAST CHANCE", { 100, 255, 100, 255 });
+		unit->createSkillEffect(
+			{
+				"lastchance",
+				2,
+				1
+			}
+		);
 
+		unit->updateTempStats(-3, -3, 3);
 	};
-	deepclone.skillCost = 2;
-	deepclone.skillUsableInsideBattle = true;
-	deepclone.skillUsableOutsideBattle = false;
+	lastchance.skillEffectEnded = [](shared_ptr<PlayerUnit> unit)
+	{
+		unit->updateTempStats(3, 3, -3);
+	};
+	lastchance.skillCost = 2;
 
 	///////////////////////////////////////////////////////
 	/*
@@ -107,18 +130,34 @@ void SkillDefinitions::createDefinitions()
 	///////////////////////////////////////////////////////
 	SkillData shieldinvert;
 	shieldinvert.skillIdentifier = "shieldinvert";
-	shieldinvert.skillName = "Shield Invert";
-	shieldinvert.skillDescription = "Deal damage depending on the current attack of the enemy minus their defense. No counter attack can be made, and the battle immediately ends.";
+	shieldinvert.skillName = "Shield Breaker";
+	shieldinvert.skillDescription = "For 3 chapters: All units, including yourself, will lose 1 Defense.";
 	shieldinvert.skillOwner = "sora";
 	shieldinvert.skillIconPath = "assets/skills/skl_shieldinvert.png";
 	shieldinvert.skillType = SkillType::Defensive;
-	shieldinvert.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	shieldinvert.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-
+		unit->setStatusMessage("SHIELD BREAKER", { 255, 100, 100, 255 });
+		unit->createSkillEffect(
+			{
+				"shieldinvert",
+				3,
+				1
+			}
+		);
+		for (const auto& unit : Globals::gameManager->getUnits())
+		{
+			unit->updateTempStats(0, -1, 0);
+		}
+	};
+	shieldinvert.skillEffectEnded = [](shared_ptr<PlayerUnit> unit)
+	{
+		for (const auto& unit : Globals::gameManager->getUnits())
+		{
+			unit->updateTempStats(0, 1, 0);
+		}
 	};
 	shieldinvert.skillCost = 3;
-	shieldinvert.skillUsableInsideBattle = true;
-	shieldinvert.skillUsableOutsideBattle = false;
 
 	///////////////////////////////////////////////////////
 	/*
@@ -133,9 +172,16 @@ void SkillDefinitions::createDefinitions()
 	extraspecs.skillOwner = "sora";
 	extraspecs.skillIconPath = "assets/skills/skl_hyper_extraspecs.png";
 	extraspecs.skillType = SkillType::Boost;
-	extraspecs.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	extraspecs.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-
+		unit->setStatusMessage("EXTRAORDINARY SPECS", { 255, 255, 0, 255 });
+		unit->createSkillEffect(
+			{
+				"extraspecs",
+				1,
+				1
+			}
+		);
 	};
 	extraspecs.skillCost = 5;
 
@@ -150,11 +196,24 @@ void SkillDefinitions::createDefinitions()
 	beam.skillName = "Laser Beam";
 	beam.skillDescription = "A random unit will take 1 damage.";
 	beam.skillOwner = "sora_m";
-	beam.skillIconPath = "assets/skills/skl_placeholder.png";
+	beam.skillIconPath = "assets/skills/skl_laserbeam.png";
 	beam.skillType = SkillType::Offensive;
-	beam.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	beam.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
 	{
+		if (Globals::gameManager->getAliveUnitsCount() <= 1)
+		{
+			return false;
+		}
+		
+		return true;
+	};
+	beam.skillCallback = [](shared_ptr<PlayerUnit> unit)
+	{
+		const shared_ptr<PlayerUnit> randomUnit = Globals::gameManager->getRandomAliveUnitExcluding(unit);
+		randomUnit->setActiveUnit();
+		randomUnit->takeTerrainDamage(1);
 
+		Globals::timer->createTimer("delayCameraBackToUnit", 1, [unit, randomUnit]() { randomUnit->setInactiveUnit(); unit->setActiveUnit();  }, 1);
 	};
 	beam.skillCost = 2;
 
@@ -169,11 +228,21 @@ void SkillDefinitions::createDefinitions()
 	quickrestore.skillName = "Quick Restoration";
 	quickrestore.skillDescription = "Heal yourself by 1 HP.";
 	quickrestore.skillOwner = "sora_m";
-	quickrestore.skillIconPath = "assets/skills/skl_placeholder.png";
+	quickrestore.skillIconPath = "assets/skills/skl_quickrestore.png";
 	quickrestore.skillType = SkillType::Boost;
-	quickrestore.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	quickrestore.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
 	{
+		if (unit->getCurrentHealth() == unit->getMaxHealth())
+		{
+			return false;
+		}
 
+		return true;
+	};
+	quickrestore.skillCallback = [](shared_ptr<PlayerUnit> unit)
+	{
+		unit->heal(1);
+		unit->setStatusMessage("QUICK RESTORATION", { 255, 150, 255, 255 });
 	};
 	quickrestore.skillCost = 2;
 
@@ -185,18 +254,23 @@ void SkillDefinitions::createDefinitions()
 	///////////////////////////////////////////////////////
 	SkillData fairbattle;
 	fairbattle.skillIdentifier = "fairbattle";
-	fairbattle.skillName = "Fair Battle";
-	fairbattle.skillDescription = "The opponent and your stats will be adjusted to be 0.";
+	fairbattle.skillName = "Ransom";
+	fairbattle.skillDescription = "For 3 chapters: All battles won will give you 50% of the KO'd unit's stars.";
 	fairbattle.skillOwner = "hime";
-	fairbattle.skillIconPath = "assets/skills/skl_placeholder.png";
+	fairbattle.skillIconPath = "assets/skills/skl_fairbattle.png";
 	fairbattle.skillType = SkillType::Defensive;
-	fairbattle.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	fairbattle.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-
+		unit->setStatusMessage("RANSOM", { 255, 0, 0, 255 });
+		unit->createSkillEffect(
+			{
+				"fairbattle",
+				3,
+				1
+			}
+		);
 	};
 	fairbattle.skillCost = 3;
-	fairbattle.skillUsableInsideBattle = true;
-	fairbattle.skillUsableOutsideBattle = false;
 
 	///////////////////////////////////////////////////////
 	/*
@@ -209,30 +283,60 @@ void SkillDefinitions::createDefinitions()
 	dropbarrier.skillName = "Drop Barrier";
 	dropbarrier.skillDescription = "The next Drop panel won't do any effect to you.";
 	dropbarrier.skillOwner = "hime";
-	dropbarrier.skillIconPath = "assets/skills/skl_placeholder.png";
+	dropbarrier.skillIconPath = "assets/skills/skl_barrier.png";
 	dropbarrier.skillType = SkillType::Boost;
-	dropbarrier.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	dropbarrier.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
 	{
+		if (unit->hasSkillEffect("dropbarrier"))
+		{
+			return false;
+		}
 
+		return true;
+	};
+	dropbarrier.skillCallback = [](shared_ptr<PlayerUnit> unit)
+	{
+		unit->setStatusMessage("DROP BARRIER", { 125, 125, 255, 255 });
+		unit->createSkillEffect(
+			{
+				"dropbarrier",
+				-1,
+				1
+			}
+		);
 	};
 	dropbarrier.skillCost = 2;
 
 	///////////////////////////////////////////////////////
 	/*
-		Skill:			Chains
+		Skill:			Binding Chains
 		Belongs to:		Hime
 														 */
 	///////////////////////////////////////////////////////
 	SkillData chains;
 	chains.skillIdentifier = "chains";
-	chains.skillName = "Chains";
+	chains.skillName = "Binding Chains";
 	chains.skillDescription = "The next turn of all other units will be skipped.";
 	chains.skillOwner = "hime";
-	chains.skillIconPath = "assets/skills/skl_placeholder.png";
+	chains.skillIconPath = "assets/skills/skl_chains.png";
 	chains.skillType = SkillType::Boost;
-	chains.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	chains.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-
+		for (const auto& chainedUnit : Globals::gameManager->getUnits())
+		{
+			if (chainedUnit->identifier() != unit->identifier())
+			{
+				chainedUnit->playTempAnimation("dmg", 1);
+				chainedUnit->setStatusMessage("CHAINED", { 255, 0, 0, 255 });
+				chainedUnit->createSkillEffect(
+					{
+						"chains",
+						1,
+						1
+					}
+				);
+			}
+		}
 	};
 	chains.skillCost = 4;
 
@@ -245,13 +349,30 @@ void SkillDefinitions::createDefinitions()
 	SkillData extend;
 	extend.skillIdentifier = "extend";
 	extend.skillName = "Extend";
-	extend.skillDescription = "If you are KO'd, you will automatically revive on your next turn.";
+	extend.skillDescription = "Stock the following effect: If you are KO'd, you will automatically revive on your next turn.";
 	extend.skillOwner = "sham";
 	extend.skillIconPath = "assets/skills/skl_placeholder.png";
+	extend.skillRemoveOnDeath = false;
 	extend.skillType = SkillType::Boost;
-	extend.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	extend.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
 	{
+		if (unit->hasSkillEffect("extend"))
+		{
+			return false;
+		}
 
+		return true;
+	};
+	extend.skillCallback = [](shared_ptr<PlayerUnit> unit)
+	{
+		unit->setStatusMessage("EXTEND", { 125, 255, 125, 255 });
+		unit->createSkillEffect(
+			{
+				"extend",
+				-1,
+				1
+			}
+		);
 	};
 	extend.skillCost = 3;
 
@@ -264,13 +385,27 @@ void SkillDefinitions::createDefinitions()
 	SkillData deltafield;
 	deltafield.skillIdentifier = "deltafield";
 	deltafield.skillName = "Delta Field";
-	deltafield.skillDescription = "The opponent in this battle will always roll 1.";
+	deltafield.skillDescription = "Give the following effect to other units: All dice rolls will be 1.\nNote: Extraordinary Specs overrides this effect.";
 	deltafield.skillOwner = "sham";
-	deltafield.skillIconPath = "assets/skills/skl_placeholder.png";
+	deltafield.skillIconPath = "assets/skills/skl_deltafield.png";
 	deltafield.skillType = SkillType::Offensive;
-	deltafield.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	deltafield.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-
+		for (const auto& deltaFieldedUnit : Globals::gameManager->getUnits())
+		{
+			if (deltaFieldedUnit->identifier() != unit->identifier())
+			{
+				deltaFieldedUnit->playTempAnimation("dmg", 1);
+				deltaFieldedUnit->setStatusMessage("DELTA FIELD", { 0, 150, 255, 255 });
+				deltaFieldedUnit->createSkillEffect(
+					{
+						"deltafield",
+						1,
+						1
+					}
+				);
+			}
+		}
 	};
 	deltafield.skillCost = 3;
 
@@ -287,7 +422,7 @@ void SkillDefinitions::createDefinitions()
 	sbbomb.skillOwner = "sb";
 	sbbomb.skillIconPath = "assets/skills/skl_placeholder.png";
 	sbbomb.skillType = SkillType::Offensive;
-	sbbomb.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	sbbomb.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
 
 	};
@@ -302,13 +437,27 @@ void SkillDefinitions::createDefinitions()
 	SkillData mutilation;
 	mutilation.skillIdentifier = "mutilation";
 	mutilation.skillName = "Mutilation";
-	mutilation.skillDescription = "Pay 1 HP to gain 2 Attack for this battle.";
+	mutilation.skillDescription = "For 2 chapters: Pay 1 HP to gain 2 Attack.";
 	mutilation.skillOwner = "sb";
 	mutilation.skillIconPath = "assets/skills/skl_placeholder.png";
 	mutilation.skillType = SkillType::Offensive;
-	mutilation.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	mutilation.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
 
+	};
+	mutilation.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
+	{
+		if (unit->hasSkillEffect("mutilation"))
+		{
+			return false;
+		}
+
+		if (unit->getCurrentHealth() <= 1)
+		{
+			return false;
+		}
+
+		return true;
 	};
 	mutilation.skillCost = 4;
 
@@ -325,7 +474,7 @@ void SkillDefinitions::createDefinitions()
 	grandfinale.skillOwner = "sb";
 	grandfinale.skillIconPath = "assets/skills/skl_placeholder.png";
 	grandfinale.skillType = SkillType::Offensive;
-	grandfinale.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	grandfinale.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
 
 	};
@@ -344,7 +493,7 @@ void SkillDefinitions::createDefinitions()
 	stealth.skillOwner = "tsih";
 	stealth.skillIconPath = "assets/skills/skl_placeholder.png";
 	stealth.skillType = SkillType::Boost;
-	stealth.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	stealth.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
 
 	};
@@ -359,13 +508,15 @@ void SkillDefinitions::createDefinitions()
 	SkillData starsgift;
 	starsgift.skillIdentifier = "starsgift";
 	starsgift.skillName = "Stars Gift";
-	starsgift.skillDescription = "Gain 5 to 15 stars.";
+	starsgift.skillDescription = "Gain 10 to 25 stars.";
 	starsgift.skillOwner = "saki";
 	starsgift.skillIconPath = "assets/skills/skl_placeholder.png";
 	starsgift.skillType = SkillType::Boost;
-	starsgift.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	starsgift.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
-
+		const unsigned stars = Utils::randBetween(10, 25);
+		unit->setStatusMessage("STARS GIFT\n+ " + std::to_string(stars) + " STARS", { 255, 255, 0, 255 });
+		unit->addStars(stars);
 	};
 	starsgift.skillCost = 2;
 
@@ -378,13 +529,28 @@ void SkillDefinitions::createDefinitions()
 	SkillData cookie;
 	cookie.skillIdentifier = "cookie";
 	cookie.skillName = "Cookie Time!";
-	cookie.skillDescription = "All units will be healed by 1 HP. Each unit affected will pay you back 10 stars.";
+	cookie.skillDescription = "All units, excepted yourself, will be healed by 1 HP. Each unit affected will pay you back 10 stars.";
 	cookie.skillOwner = "saki";
 	cookie.skillIconPath = "assets/skills/skl_placeholder.png";
 	cookie.skillType = SkillType::Boost;
-	cookie.skillCallback = [](shared_ptr<PlayerUnit> sender, shared_ptr<PlayerUnit> receiver)
+	cookie.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
+		unsigned stars = 0;
 
+		for (const auto& healedUnit : Globals::gameManager->getUnits())
+		{
+			if (healedUnit->identifier() != unit->identifier())
+			{
+				if (healedUnit->getCurrentHealth() < healedUnit->getMaxHealth())
+				{
+					healedUnit->heal(1);
+					stars += 10;
+				}
+			}
+		}
+
+		unit->setStatusMessage("COOKIE TIME\n+ " + std::to_string(stars) + " STARS", { 255, 255, 0, 255 });
+		unit->addStars(stars);
 	};
 	cookie.skillCost = 3;
 
@@ -398,7 +564,7 @@ void SkillDefinitions::createDefinitions()
 	SkillDefinitions::def.push_back(dash);
 	SkillDefinitions::def.push_back(speedup);
 	SkillDefinitions::def.push_back(hyper_fallingstars);
-	SkillDefinitions::def.push_back(deepclone);
+	SkillDefinitions::def.push_back(lastchance);
 	SkillDefinitions::def.push_back(shieldinvert);
 	SkillDefinitions::def.push_back(extraspecs);
 	SkillDefinitions::def.push_back(beam);
@@ -414,7 +580,6 @@ void SkillDefinitions::createDefinitions()
 	SkillDefinitions::def.push_back(grandfinale);
 	SkillDefinitions::def.push_back(starsgift);
 	SkillDefinitions::def.push_back(cookie);
-	
 
 	SkillDefinitions::appendSkillToUnit();
 }

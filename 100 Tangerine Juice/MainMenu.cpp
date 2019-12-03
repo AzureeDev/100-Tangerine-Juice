@@ -3,6 +3,7 @@
 #include "MusicManager.h"
 #include "OverlayManager.h"
 #include "UnitDefinitions.h"
+#include "Discord.h"
 
 const string DEFAULT_BUTTON_TEXTURE = "assets/ui/main_menu/menu_btn.png";
 
@@ -20,6 +21,11 @@ void MainMenu::init()
 {
 	MusicManager::playMusic("assets/musics/mainmenu.mp3");
 	OverlayManager::fadeOut(3);
+	Discord::setRichPresence(
+		{
+			"Main Menu"
+		}
+	);
 
 	/* Reverse the unit vector for buttons */
 	std::reverse(UnitDefinitions::def.begin(), UnitDefinitions::def.end());

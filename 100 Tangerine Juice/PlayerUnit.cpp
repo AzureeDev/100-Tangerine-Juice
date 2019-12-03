@@ -36,14 +36,20 @@ shared_ptr<HUDUnit> PlayerUnit::hud()
 
 void PlayerUnit::destroyTurnButtons()
 {
-	this->moveBtn->disable();
-	this->skillBtn->disable();
+	if (!this->isAI())
+	{
+		this->moveBtn->disable();
+		this->skillBtn->disable();
+	}
 }
 
 void PlayerUnit::activateTurnButtons()
 {
-	this->moveBtn->activate();
-	this->skillBtn->activate();
+	if (!this->isAI())
+	{
+		this->moveBtn->activate();
+		this->skillBtn->activate();
+	}
 }
 
 void PlayerUnit::updateHudPosition(const int id)
@@ -300,9 +306,7 @@ void PlayerUnit::heal(const int amount)
 		this->s_currentHealth = this->s_maxHealth;
 	}
 
-	SFXManager::playSFX("powerup");
 	Globals::gameManager->getCurrentTurnUnit()->setStatusMessage("HEAL\n+ " + std::to_string(amount) + " HP", { 255, 128, 223, 255 });
-
 	this->hud()->updateHud();
 }
 
@@ -330,6 +334,10 @@ int PlayerUnit::takeDamage(const int attackRoll, const int defenseRoll, const Un
 			damageTaken += attackRoll;
 		}
 	}
+	else if (defenseType == UnitDefenseType::None)
+	{
+		damageTaken += attackRoll;
+	}
 
 	this->s_currentHealth -= damageTaken;
 
@@ -348,12 +356,43 @@ int PlayerUnit::takeDamage(const int attackRoll, const int defenseRoll, const Un
 	return damageTaken;
 }
 
+void PlayerUnit::takeTerrainDamage(const int dmgAmount)
+{
+	this->takeDamage(dmgAmount, 0, PlayerUnit::UnitDefenseType::None);
+	this->playTempAnimation("dmg", 0.5f);
+	this->setStatusMessage("DAMAGE\n- " + std::to_string(dmgAmount) + " HP", { 55, 0, 0, 255 });
+
+	if (dmgAmount > 2)
+	{
+		SFXManager::playSFX("dmg");
+	}
+	else
+	{
+		SFXManager::playSFX("dmg_light");
+	}
+}
+
 void PlayerUnit::onKO()
 {
 	this->s_currentRecovery = this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Recovery)];
 
-	/* Skill remove on death */
-	this->currentSkills.clear();
+	/* Skill remove on death except the ones tagged to not remove */
+
+	map<string, bool> skillRemovable = {};
+
+	for (const auto& skillData : this->unitSkills)
+	{
+		skillRemovable.insert({ skillData.skillIdentifier, skillData.skillRemoveOnDeath });
+	}
+
+	for (size_t i = 0; i < this->currentSkills.size(); ++i)
+	{
+		if (skillRemovable[this->currentSkills[i].skillIdentifier])
+		{
+			SkillDefinitions::getSkillData(this->currentSkills[i].skillIdentifier).skillEffectEnded(Globals::gameManager->getUnitByIdentifier(this->identifier()));
+			this->currentSkills.erase(this->currentSkills.begin() + i);
+		}
+	}
 }
 
 int PlayerUnit::getCurrentRecovery()
@@ -408,6 +447,19 @@ bool PlayerUnit::hasSkillEffect(const string skillIdentifier)
 	return false;
 }
 
+void PlayerUnit::removeSkillEffect(const string skillIdentifier)
+{
+	for (size_t i = 0; i < this->currentSkills.size(); ++i)
+	{
+		if (this->currentSkills[i].skillIdentifier == skillIdentifier)
+		{
+			SkillDefinitions::getSkillData(this->currentSkills[i].skillIdentifier).skillEffectEnded(Globals::gameManager->getUnitByIdentifier(this->identifier()));
+			this->currentSkills.erase(this->currentSkills.begin() + i);
+			break;
+		}
+	}
+}
+
 int PlayerUnit::getCurrentStackForEffect(const string skillIdentifier)
 {
 	for (auto& skill : this->currentSkills)
@@ -429,25 +481,24 @@ void PlayerUnit::updateSkillEffect()
 
 		if (this->currentSkills[i].skillDuration == 0)
 		{
+			SkillDefinitions::getSkillData(this->currentSkills[i].skillIdentifier).skillEffectEnded(Globals::gameManager->getUnitByIdentifier(this->identifier()));
 			this->currentSkills.erase(this->currentSkills.begin() + i);
 		}
 	}
+}
+
+void PlayerUnit::updateTempStats(const int tempAttack, const int tempDefense, const int tempEvasion)
+{
+	this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Attack)] += tempAttack;
+	this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Defense)] += tempDefense;
+	this->s_tempStats[static_cast<int>(UnitParams::UnitStatistics::Evasion)] += tempEvasion;
 }
 
 void PlayerUnit::onTurnStart()
 {
 	/* Skill effect on turn start */
 
-	auto hasSkill = [this](string skillIdentifier) {
-		if (this->hasSkillEffect(skillIdentifier))
-		{
-			return true;
-		}
-
-		return false;
-	};
-
-	if (hasSkill("hyper_fallingstars"))
+	if (this->hasSkillEffect("hyper_fallingstars"))
 	{
 		int starsMin, starsMax;
 		starsMin = 3 * this->getCurrentStackForEffect("hyper_fallingstars");
@@ -460,9 +511,24 @@ void PlayerUnit::onTurnStart()
 
 void PlayerUnit::startTurn()
 {
-	SDL_Log("Player actions here");
 	this->setActiveUnit();
+
+	if (this->hasSkillEffect("chains"))
+	{
+		SFXManager::playSFX("bad");
+		this->updateSkillEffect();
+		this->setStatusMessage("TURN SKIPPED");
+		Globals::gameManager->nextTurn();
+
+		return;
+	}
+
 	this->updateSkillEffect();
+
+	if (this->identifier() == Globals::gameManager->getLocalUnit()->identifier())
+	{
+		Globals::engine->flashApplication();
+	}
 
 	if (!this->isKO())
 	{
@@ -500,7 +566,7 @@ void PlayerUnit::startTurn()
 			);
 			this->skillBtn->supplyCallback([this]()
 				{
-					Globals::engine->createClass("UseSkillComponent", new UseSkillComponent(UseSkillComponent::GameState::OutBattle));
+					Globals::engine->createClass("UseSkillComponent", new UseSkillComponent);
 					this->destroyTurnButtons();
 				}
 			);
@@ -508,16 +574,45 @@ void PlayerUnit::startTurn()
 		else
 		{
 			/* AI Code */
-			if (Globals::engine->hasClass("DiceThrowComponent"))
-			{
-				Globals::engine->destroyClass("DiceThrowComponent");
-			}
 
-			Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI()));
+			int skillChance = 66;
+
+			if (rand() % 100 < skillChance)
+			{
+				/* Use Skill */
+
+				if (!this->aiCheckUsableSkills())
+				{
+					if (Globals::engine->hasClass("DiceThrowComponent"))
+					{
+						Globals::engine->destroyClass("DiceThrowComponent");
+					}
+
+					Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI()));
+				}
+			}
+			else
+			{
+				if (Globals::engine->hasClass("DiceThrowComponent"))
+				{
+					Globals::engine->destroyClass("DiceThrowComponent");
+				}
+
+				Globals::engine->createClass("DiceThrowComponent", new DiceThrowComponent(this->isAI()));
+			}
 		}
 	}
 	else if (this->isKO() && this->s_currentRecovery > 1)
 	{
+		if (this->hasSkillEffect("extend"))
+		{
+			this->removeSkillEffect("extend");
+			this->revive();
+			Globals::gameManager->nextTurn();
+			
+			return;
+		}
+
 		if (this->s_currentRecovery == 0)
 		{
 			this->s_currentRecovery = this->s_stats[static_cast<int>(UnitParams::UnitStatistics::Recovery)];
@@ -542,6 +637,33 @@ void PlayerUnit::startTurn()
 void PlayerUnit::movement(const int diceRoll)
 {
 	Globals::timer->createTimer("playerUnitMovement", 0.1f, [this, diceRoll]() { this->moveByDiceNb(diceRoll); }, 1);
+}
+
+bool PlayerUnit::aiCheckUsableSkills()
+{
+	int currentPower = this->getCurrentPower();
+	int skillChance = 30;
+
+	for (const auto& skill : this->unitSkills)
+	{
+		// Little randomness
+		if (rand() % 100 < (skillChance + (5 * skill.skillCost)))
+		{
+			// If the skill can be used
+			if (skill.skillConditionFunction(Globals::gameManager->getUnitByIdentifier(this->identifier())))
+			{
+				// And if the skill is affordable
+				if (skill.skillCost <= currentPower)
+				{
+					// Use it.
+					Globals::gameManager->useSkill(skill.skillIdentifier);
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 int PlayerUnit::getAttackStat() const

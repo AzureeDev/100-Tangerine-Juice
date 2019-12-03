@@ -32,7 +32,13 @@ void UnitCardComponent::init()
 
 	// UNIT SPRITE
 	unit = Unit(this->unitParams.unitId, this->unitParams.unitDefaultPose);
-	unit.texture().setFade(TextureFadingState::FadeIn);
+
+	/*if (unit.identifier() == "sora")
+	{
+		unit.applyCosmetic("lilac", "hair");
+	}*/
+
+	unit.setFade(TextureFadingState::FadeIn);
 	unit.setPosition(
 		{
 			unitCardBg.getX(),
@@ -40,6 +46,8 @@ void UnitCardComponent::init()
 		}
 	);
 	unit.setFlipped(true);
+
+	
 
 	// STATS TITLE
 	unitStatsTitle.createText("Stats of " + this->unitParams.unitName, { 225, 225, 225, 255 }, 0, Globals::resources->getFont("defaultFontLarge"));

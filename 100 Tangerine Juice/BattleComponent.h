@@ -18,9 +18,9 @@ private:
 	bool battleAIAttacker = false;
 	bool battleAIDefender = false;
 
-	/* Pointers to the shared_ptr, I suppose it's better that way rather adding a count to the original one... Besides, clearing these is easy enough. */
-	PlayerUnit* battleAttacker = nullptr;
-	PlayerUnit* battleDefender = nullptr;
+	/* Smart pointers */
+	shared_ptr<PlayerUnit> battleAttacker = nullptr;
+	shared_ptr<PlayerUnit> battleDefender = nullptr;
 
 	/* Regular Units for the rendering of the sprites. */
 	Unit battleAttackerUnit;
@@ -49,7 +49,6 @@ private:
 
 	/* Buttons */
 	LButton* battleStartBtn = nullptr;
-	LButton* battleSkillBtn = nullptr;
 	LButton* battleDefendBtn = nullptr;
 	LButton* battleEvasionBtn = nullptr;
 

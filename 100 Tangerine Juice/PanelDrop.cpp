@@ -10,25 +10,33 @@ PanelDrop::PanelDrop()
 
 void PanelDrop::trigger()
 {
-	Globals::timer->createTimer("powerPanelEffect", .5f, []()
+	if (Globals::gameManager->getCurrentTurnUnit()->getCurrentStars() == 0)
+	{
+		Globals::gameManager->nextTurn();
+		return;
+	}
+
+	Globals::timer->createTimer("dropPanelEffect", .5f, []()
 		{
+			if (Globals::gameManager->getCurrentTurnUnit()->hasSkillEffect("dropbarrier"))
+			{
+				SFXManager::playSFX("battle_start.wav");
+				Globals::gameManager->getCurrentTurnUnit()->removeSkillEffect("dropbarrier");
+				Globals::gameManager->nextTurn();
+
+				return;
+			}
+
+			const unsigned base = 3;
+			const unsigned max = 10 + static_cast<unsigned>(LilacClasses::Tangerine->getGameManager()->getCurrentChapter());
+			const unsigned starAmount = Utils::randBetween(base, max);
+				
 			SFXManager::playSFX("bad");
-
-			if (Globals::gameManager->getCurrentTurnUnit()->getCurrentStars() == 0)
-			{
-				Globals::gameManager->nextTurn();
-			}
-			else
-			{
-				const unsigned base = 10;
-				const unsigned max = 20 + static_cast<unsigned>(LilacClasses::Tangerine->getGameManager()->getCurrentChapter());
-				const unsigned starAmount = Utils::randBetween(base, max);
-
-				Globals::gameManager->getCurrentTurnUnit()->playTempAnimation("dmg");
-				Globals::gameManager->getCurrentTurnUnit()->dropStars(starAmount);
-				Globals::gameManager->getCurrentTurnUnit()->setStatusMessage("DROP...\n-" + std::to_string(starAmount), { 0, 162, 255, 255 });
-				Globals::gameManager->nextTurn();
-			}
+			Globals::gameManager->getCurrentTurnUnit()->playTempAnimation("dmg");
+			Globals::gameManager->getCurrentTurnUnit()->dropStars(starAmount);
+			Globals::gameManager->getCurrentTurnUnit()->setStatusMessage("DROP...\n-" + std::to_string(starAmount), { 0, 162, 255, 255 });
+			Globals::gameManager->nextTurn();
+			
 		}, 1
 	);
 }

@@ -9,13 +9,6 @@ using std::vector, std::shared_ptr;
 
 class UseSkillComponent : public LClass
 {
-public:
-	enum class GameState {
-		OutBattle,
-		InBattle
-	};
-
-private:
 	struct SkillButtonDef {
 		string skillIdentifier;
 		shared_ptr<LTexture> skillIcon = nullptr;
@@ -31,10 +24,9 @@ private:
 	LTexture componentTotalPwrIcon;
 	LTexture componentTotalPwrAmount;
 	vector<SkillButtonDef> skillButtons = {};
-	GameState componentGameState = GameState::OutBattle;
 
 public:
-	UseSkillComponent(const GameState currentState);
+	UseSkillComponent();
 	~UseSkillComponent();
 	void init();
 	void generateSkillButtons();

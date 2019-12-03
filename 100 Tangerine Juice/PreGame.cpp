@@ -3,6 +3,7 @@
 #include "MusicManager.h"
 #include "OverlayManager.h"
 #include "Utils.h"
+#include "Discord.h"
 
 const string DEFAULT_WORLD_ID = "ri_se_sky";
 const SDL_Color DEFAULT_WORLD_COLOR = { 79, 202, 255, 255 };
@@ -27,6 +28,12 @@ PreGame::~PreGame()
 
 void PreGame::init()
 {
+	Discord::setRichPresence(
+		{
+			"About to start a new game"
+		}
+	);
+
 	/* Reverse back to normal, since the main menu had to reverse once for the buttons. */
 	std::reverse(UnitDefinitions::def.begin(), UnitDefinitions::def.end());
 

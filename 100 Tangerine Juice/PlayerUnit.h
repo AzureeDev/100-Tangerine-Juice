@@ -22,6 +22,7 @@ public:
 	};
 
 	enum class UnitDefenseType {
+		None,
 		Defense,
 		Evasion
 	};
@@ -105,6 +106,7 @@ public:
 	void dropStars(const unsigned int amount);
 	void heal(const int amount);
 	int takeDamage(const int attackRoll, const int defenseRoll, const UnitDefenseType defenseType);
+	void takeTerrainDamage(const int dmgAmount);
 	void onKO();
 	int getCurrentRecovery();
 	void decreaseRecovery();
@@ -112,13 +114,16 @@ public:
 	void onRevived();
 	void createSkillEffect(const ActiveSkill activeSkillData);
 	bool hasSkillEffect(const string skillIdentifier);
+	void removeSkillEffect(const string skillIdentifier);
 	int getCurrentStackForEffect(const string skillIdentifier);
 	void updateSkillEffect();
+	void updateTempStats(const int tempAttack = 0, const int tempDefense = 0, const int tempEvasion = 0);
 	void onTurnStart();
 
 	/* Game state related - turn start ect */
 	virtual void startTurn();
 	virtual void movement(const int diceRoll);
+	bool aiCheckUsableSkills();
 
 	/* Stat retrieve (with boosts) */
 	int getAttackStat() const;

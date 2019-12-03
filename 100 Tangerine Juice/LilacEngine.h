@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <SDL.h>
+#include <SDL_syswm.h>
 #include "LClass.h"
 #include "Unit.h"
 
@@ -15,10 +16,11 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.59.1";
+	string engineVersion = "1.60.0";
 	string mainMenuMessage = "Welcome to 100% Tangerine Juice! Hope you will enjoy your time here. ~";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
+	SDL_SysWMinfo wmInfo;
 	SDL_Rect camera = { 0, 0, 1920, 1080 };
 	Unit* activeUnit = nullptr;
 	Unit* currentActiveUnit = nullptr;
@@ -54,6 +56,7 @@ public:
 	void destroyClass(const string className);
 	string getVersion();
 	string getMainMenuMessage();
+	void flashApplication();
 
 	void exit();
 };

@@ -3,6 +3,7 @@
 #include "MusicManager.h"
 #include "OverlayManager.h"
 #include "Utils.h"
+#include "AIUnit.h"
 
 // Panels
 #include "PanelEncounter.h"
@@ -11,7 +12,6 @@
 #include "PanelHeal.h"
 #include "PanelMove.h"
 #include "PanelPower.h"
-#include "AIUnit.h"
 
 const int MAX_MAP_SIZE = 101;
 
@@ -60,16 +60,28 @@ void Tangerine::init()
 			break;
 		}
 	}
-	
+
 	/* World definition */
-	world.setNewWorld("assets/worlds/ri_se_sky.png");
-	world.setAllowClouds(true);
-	world.setWorldColor({ 100, 100, 255, 255 });
-	world.setScrollMultiplier(6);
+	const vector<string> worlds = {
+		"assets/worlds/ml_sky_bw.png",
+		"assets/worlds/wire_bw.png",
+		"assets/worlds/ri_se_sky.png",
+		"assets/worlds/sr_sky.png"
+	};
+	const int worldChosen = rand() % worlds.size();
+	world.setNewWorld(worlds[worldChosen]);
+
+	if (worldChosen == 2) // ri_se_sky for clouds
+	{
+		world.setAllowClouds(true);
+	}
+
+	world.setWorldColor({ 79, 202, 255, 255 });
+	world.setScrollMultiplier(8);
 
 	/* Fair Random definition */
-	int fr_BonusPanels = 20;
-	int fr_DropPanels = 15;
+	int fr_BonusPanels = 25;
+	int fr_DropPanels = 10;
 	int fr_EncounterPanels = 20;
 	int fr_PowerPanels = 15;
 	int fr_MovePanels = 15;

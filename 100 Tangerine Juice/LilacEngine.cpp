@@ -2,6 +2,8 @@
 #include <ctime>
 #include <cstdlib>
 #include <filesystem>
+#define NOMINMAX
+#include <Windows.h>
 
 namespace fs = std::filesystem;
 
@@ -15,6 +17,7 @@ namespace fs = std::filesystem;
 #include "Globals.h"
 #include "GameIntro.h"
 #include "OverlayManager.h"
+#include "Discord.h"
 
 void LilacEngine::createWindow()
 {
@@ -203,9 +206,9 @@ void LilacEngine::update()
 		OverlayManager::update(deltaTime);
 
 		// Debug
-		this->DEBUG.createText("CLASSES CREATED: " + std::to_string(this->lilacClasses.size()) + "\nRESOURCES LOADED: " + std::to_string(Globals::resources->getResourcesAmount()), { 255, 255, 255, 255 });
+		/*this->DEBUG.createText("CLASSES CREATED: " + std::to_string(this->lilacClasses.size()) + "\nRESOURCES LOADED: " + std::to_string(Globals::resources->getResourcesAmount()), { 255, 255, 255, 255 });
 		this->DEBUG.setPosition(10, 10);
-		this->DEBUG.render();
+		this->DEBUG.render();*/
 		SDL_RenderPresent(this->renderer);
 	}
 }
@@ -252,6 +255,8 @@ void LilacEngine::init()
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d");
 	SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
 
+	SDL_VERSION(&this->wmInfo.version);
+
 	// Init extra modules
 	TTF_Init();
 	IMG_Init(IMG_InitFlags::IMG_INIT_PNG);
@@ -276,6 +281,9 @@ void LilacEngine::init()
 
 	// Init OverlayManager
 	OverlayManager::init();
+
+	// Init Discord
+	Discord::init("651082891001856013");
 
 	SDL_Log("Initialized. Starting the main loop...");
 
@@ -366,6 +374,27 @@ string LilacEngine::getVersion()
 string LilacEngine::getMainMenuMessage()
 {
 	return this->mainMenuMessage;
+}
+
+void LilacEngine::flashApplication()
+{
+	int flags = SDL_GetWindowFlags(this->window);
+
+	bool hasFocus = (flags & SDL_WINDOW_MOUSE_FOCUS) ? true : false;
+
+	if (!hasFocus)
+	{
+		SDL_GetWindowWMInfo(window, &this->wmInfo);
+		HWND hwnd = this->wmInfo.info.win.window;
+
+		FLASHWINFO fi;
+		fi.cbSize = sizeof(FLASHWINFO);
+		fi.hwnd = hwnd;
+		fi.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
+		fi.uCount = 0;
+		fi.dwTimeout = 0;
+		FlashWindowEx(&fi);
+	}
 }
 
 void LilacEngine::exit()
