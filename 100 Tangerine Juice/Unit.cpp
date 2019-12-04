@@ -156,7 +156,7 @@ void Unit::applyCosmetic(const string cosmeticIdentifier, const string type)
 
 	if (this->currentCosmetics.textures.count(type) == 0)
 	{
-		this->currentCosmetics.textures.insert({ type, unique_ptr<LTexture>(new LTexture) });
+		this->currentCosmetics.textures.insert({ type, shared_ptr<LTexture>(new LTexture) });
 	}
 		
 	this->currentCosmetics.textures.find(type)->second->setFixedSize(UNIT_SHEET_SIZE);

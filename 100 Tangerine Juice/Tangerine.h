@@ -22,6 +22,7 @@ private:
 	vector<shared_ptr<PlayerUnit>> units;
 	unique_ptr<GameManager> gameManager;
 	float timer = 0.0f;
+	unsigned maxMapSize = 101;
 
 public:
 	Tangerine(GameParams params);
@@ -32,4 +33,5 @@ public:
 	GameParams& getGameParams();
 	void update(const float dt);
 	World& getWorld();
+	unsigned getMapSize() const;
 };

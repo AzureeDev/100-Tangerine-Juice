@@ -13,8 +13,6 @@
 #include "PanelMove.h"
 #include "PanelPower.h"
 
-const int MAX_MAP_SIZE = 101;
-
 Tangerine::Tangerine(GameParams params)
 {
 	LilacClasses::Tangerine = this;
@@ -90,9 +88,9 @@ void Tangerine::init()
 	vector<int> fairRandomPanels = { fr_EncounterPanels, fr_BonusPanels, fr_DropPanels, fr_HealPanels, fr_MovePanels, fr_PowerPanels };
 
 	/* World generation */
-	for (size_t i = 0; i < MAX_MAP_SIZE; ++i)
+	for (size_t i = 0; i < this->maxMapSize; ++i)
 	{
-		if (i > 0 && i < 100)
+		if (i > 0 && i < this->maxMapSize - 1)
 		{
 			if (this->gameParams.pickedGeneration == GameParams::WorldGeneration::TotalRandom)
 			{
@@ -193,7 +191,7 @@ void Tangerine::init()
 				}
 			}
 		}
-		else if (i == 0 || i == 100)
+		else if (i == 0 || i == this->maxMapSize - 1)
 		{
 			panels.push_back(shared_ptr<Panel>(new Panel()));
 		}
@@ -300,4 +298,9 @@ void Tangerine::update(const float dt)
 World& Tangerine::getWorld()
 {
 	return this->world;
+}
+
+unsigned Tangerine::getMapSize() const
+{
+	return this->maxMapSize;
 }

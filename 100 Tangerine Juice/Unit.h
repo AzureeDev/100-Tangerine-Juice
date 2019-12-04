@@ -5,7 +5,7 @@
 #include "LTexture.h"
 #include "Vector2.h"
 
-using std::string, std::map, std::unique_ptr;
+using std::string, std::map, std::shared_ptr;
 
 class Unit
 {
@@ -18,7 +18,7 @@ protected:
 			{ "clothing", "" }
 		};
 
-		map<string, unique_ptr<LTexture>> textures = {};
+		map<string, shared_ptr<LTexture>> textures = {};
 	};
 
 	string unitId = "";

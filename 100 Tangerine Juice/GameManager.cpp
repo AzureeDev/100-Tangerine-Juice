@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "Discord.h"
 #include "PreGame.h"
+#include "EndgameComponent.h"
 
 void GameManager::callback(const string id, const function<void()> clbk, const float timer, const int repeat)
 {
@@ -100,6 +101,12 @@ void GameManager::initGame()
 	SFXManager::playSFX("new_chapter");
 	this->createHudMessage("Beginning of Chapter 1");
 	this->callback("gameBegin", [this]() { this->nextTurn(); }, 2);
+}
+
+void GameManager::disableButtons()
+{
+	this->mainMenu->disable();
+	this->restart->disable();
 }
 
 void GameManager::createHudMessage(const string msg, const float duration)
@@ -243,7 +250,7 @@ unsigned GameManager::getAliveUnitsCount() const
 void GameManager::nextTurn()
 {
 	Discord::setState("Currently Playing");
-	Discord::setDetails(std::to_string(this->getLocalUnit()->getUnitPanelId()) + " / 100 Panels" + " | " + std::to_string(this->getLocalUnit()->getCurrentStars()) + " / 200 Stars");
+	Discord::setDetails(std::to_string(this->getLocalUnit()->getUnitPanelId()) + " / " + std::to_string(LilacClasses::Tangerine->getMapSize()) + " Panels" + " | " + std::to_string(this->getLocalUnit()->getCurrentStars()) + " / 200 Stars");
 
 	if (this->isStandingOnPanel(this->map.size() - 1))
 	{
@@ -287,6 +294,8 @@ void GameManager::gameEnded()
 	/*
 		Game ending code here...
 	*/
+
+	Globals::engine->createClass("EndgameComponent", new EndgameComponent);
 }
 
 bool GameManager::isStandingOnPanel(const int panelId) const

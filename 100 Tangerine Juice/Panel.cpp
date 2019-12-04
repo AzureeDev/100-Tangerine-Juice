@@ -28,7 +28,7 @@ void Panel::setIdentifier(const int id)
 	{
 		identifierStr = "Start";
 	}
-	else if (id == 100)
+	else if (id == LilacClasses::Tangerine->getMapSize() - 1)
 	{
 		identifierStr = "Finish";
 	}

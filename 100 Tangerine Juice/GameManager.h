@@ -50,6 +50,7 @@ public:
 	GameManager(Map& map, Players& units);
 	~GameManager();
 	void initGame();
+	void disableButtons(); // Disable the restart and back to menu buttons
 	void createHudMessage(const string msg, const float duration = 3.0f);
 	vector<shared_ptr<PlayerUnit>> getUnits();
 	shared_ptr<PlayerUnit> getCurrentTurnUnit();

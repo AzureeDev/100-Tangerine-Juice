@@ -639,7 +639,7 @@ void SkillDefinitions::createDefinitions()
 			}
 		}
 
-		unit->setStatusMessage("COOKIE TIME\n+ " + std::to_string(stars) + " STARS", { 255, 255, 0, 255 });
+		unit->setStatusMessage("SAKI COOKIE\n+ " + std::to_string(stars) + " STARS", { 255, 255, 0, 255 });
 		unit->addStars(stars);
 	};
 	cookie.skillCost = 3;

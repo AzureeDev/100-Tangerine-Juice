@@ -93,6 +93,7 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("bleachFontMedium", "assets/fonts/bleach_fixed.ttf", 34);
 	Globals::resources->createFont("bleachFontX", "assets/fonts/bleach_fixed.ttf", 44);
 	Globals::resources->createFont("bleachFontLarge", "assets/fonts/bleach_fixed.ttf", 54);
+	Globals::resources->createFont("bleachFontExLarge", "assets/fonts/bleach_fixed.ttf", 70);
 	
 	Globals::resources->createFont("qeFont", "assets/fonts/qe.ttf", 24);
 

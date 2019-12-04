@@ -164,6 +164,9 @@
     <ClCompile Include="Discord.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="EndgameComponent.cpp">
+      <Filter>LClasses\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="Discord.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="EndgameComponent.h">
+      <Filter>LClasses\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
