@@ -20,7 +20,7 @@ void PanelDrop::trigger()
 		{
 			if (Globals::gameManager->getCurrentTurnUnit()->hasSkillEffect("dropbarrier"))
 			{
-				SFXManager::playSFX("battle_start.wav");
+				SFXManager::playSFX("battle_start");
 				Globals::gameManager->getCurrentTurnUnit()->removeSkillEffect("dropbarrier");
 				Globals::gameManager->nextTurn();
 
