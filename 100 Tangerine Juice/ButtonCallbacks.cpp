@@ -46,6 +46,7 @@ void ButtonCallbacks::backToMainMenu()
 	LilacClasses::MainMenu->clearButtons();
 	LilacClasses::MainMenu->setHeaderTitle("MAIN MENU");
 	LilacClasses::MainMenu->createMainMenuButtons();
+	LilacClasses::MainMenu->hideHelpPicture();
 }
 
 void ButtonCallbacks::openLink(const string link)

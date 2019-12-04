@@ -134,6 +134,34 @@ void MainMenu::createInformationBar()
 	informationBarLabel.setPosition({ 0, informationBar.getY() + informationBarLabel.getHeight() / 2 });
 }
 
+void MainMenu::createHelpPicture(const string helpPictureTexture)
+{
+	helpPicture.destroy();
+	helpPicture.setPosition(
+		{
+			500,
+			informationBar.bottom().y
+		}
+	);
+
+	helpPicture.setNewTexture(helpPictureTexture);
+	helpPicture.setFade(TextureFadingState::FadeIn, 3);
+}
+
+void MainMenu::hideHelpPicture()
+{
+	helpPicture.destroy();
+}
+
+void MainMenu::createBackBtn()
+{
+	LButton* back = Globals::UI->createButton("back", DEFAULT_BUTTON_TEXTURE);
+	back->supplyCallback(ButtonCallbacks::backToMainMenu);
+	mainMenuButtons.push_back({ "back", back });
+	this->calculateButtonPosition();
+	back->setText("Back");
+}
+
 void MainMenu::setHeaderTitle(const string newTitle)
 {
 	topBarScrollLabel.createText(newTitle, { 255, 255, 255, 255 }, 0, Globals::resources->getFont("bleachFontLarge"));
@@ -183,6 +211,7 @@ void MainMenu::createMainMenuButtons()
 {
 	LButton* gameStart = Globals::UI->createButton("gameStart", DEFAULT_BUTTON_TEXTURE);
 	LButton* characterDatabase = Globals::UI->createButton("characterDatabase", DEFAULT_BUTTON_TEXTURE);
+	LButton* helpBtn = Globals::UI->createButton("helpBtn", DEFAULT_BUTTON_TEXTURE);
 	LButton* gameCredits = Globals::UI->createButton("gameCredits", DEFAULT_BUTTON_TEXTURE);
 	LButton* gameQuit = Globals::UI->createButton("gameQuit", DEFAULT_BUTTON_TEXTURE);
 
@@ -190,9 +219,11 @@ void MainMenu::createMainMenuButtons()
 	characterDatabase->supplyCallback(ButtonCallbacks::mainMenuUnitDB);
 	gameCredits->supplyCallback(ButtonCallbacks::mainMenuCredits);
 	gameQuit->supplyCallback(ButtonCallbacks::quitGame);
+	helpBtn->supplyCallback([this]() { this->createHelpButtons(); });
 
 	mainMenuButtons.push_back({ "gameQuit", gameQuit });
 	mainMenuButtons.push_back({ "gameCredits", gameCredits });
+	mainMenuButtons.push_back({ "helpBtn", helpBtn });
 	mainMenuButtons.push_back({ "characterDatabase", characterDatabase });
 	mainMenuButtons.push_back({ "gameStart", gameStart });
 
@@ -200,13 +231,14 @@ void MainMenu::createMainMenuButtons()
 
 	gameStart->setText("Start");
 	characterDatabase->setText("Unit Database");
+	helpBtn->setText("Help");
 	gameCredits->setText("Credits");
 	gameQuit->setText("Exit");
 }
 
 void MainMenu::createCreditsButtons()
 {
-	LButton* back = Globals::UI->createButton("back", DEFAULT_BUTTON_TEXTURE);
+	this->createBackBtn();
 	LButton* fbf = Globals::UI->createButton("fbf", DEFAULT_BUTTON_TEXTURE);
 	LButton* oj = Globals::UI->createButton("oj", DEFAULT_BUTTON_TEXTURE);
 	LButton* deku = Globals::UI->createButton("deku", DEFAULT_BUTTON_TEXTURE);
@@ -214,16 +246,13 @@ void MainMenu::createCreditsButtons()
 	deku->supplyCallback(ButtonCallbacks::openLink, "https://music.apple.com/us/artist/deku/657266888");
 	oj->supplyCallback(ButtonCallbacks::openLink, "http://daidai.moo.jp/");
 	fbf->supplyCallback(ButtonCallbacks::openLink, "https://fruitbatfactory.com/");
-	back->supplyCallback(ButtonCallbacks::backToMainMenu);
-
-	mainMenuButtons.push_back({ "back", back });
+	
 	mainMenuButtons.push_back({ "fbf", fbf });
 	mainMenuButtons.push_back({ "deku", deku });
 	mainMenuButtons.push_back({ "oj", oj });
 
 	this->calculateButtonPosition();
 
-	back->setText("Back");
 	fbf->setText("Fruitbat Factory");
 	deku->setText("DEKU");
 	oj->setText("Orange_Juice");
@@ -231,11 +260,7 @@ void MainMenu::createCreditsButtons()
 
 void MainMenu::createUnitDBButtons()
 {
-	LButton* back = Globals::UI->createButton("back", DEFAULT_BUTTON_TEXTURE);
-	back->supplyCallback(ButtonCallbacks::backToMainMenu);
-	mainMenuButtons.push_back({ "back", back });
-	this->calculateButtonPosition();
-	back->setText("Back");
+	this->createBackBtn();
 
 	/*
 		Create units
@@ -251,6 +276,35 @@ void MainMenu::createUnitDBButtons()
 		this->calculateButtonPosition();
 		btn->setText(params.unitName);
 	}
+}
+
+void MainMenu::createHelpButtons()
+{
+	this->clearButtons();
+	this->setHeaderTitle("HELP");
+
+	this->createBackBtn();
+
+	LButton* discordHelpBtn = Globals::UI->createButton("discordHelpBtn", DEFAULT_BUTTON_TEXTURE);
+	LButton* battleHelpBtn = Globals::UI->createButton("battleHelpBtn", DEFAULT_BUTTON_TEXTURE);
+	LButton* panelHelpBtn = Globals::UI->createButton("panelHelpBtn", DEFAULT_BUTTON_TEXTURE);
+	LButton* howToHelpBtn = Globals::UI->createButton("howToHelpBtn", DEFAULT_BUTTON_TEXTURE);
+
+	discordHelpBtn->supplyCallback(ButtonCallbacks::openLink, "https://discord.gg/yy6cxwZ");
+	battleHelpBtn->supplyCallback([this]() { this->createHelpPicture("assets/help/help3.png"); });
+	panelHelpBtn->supplyCallback([this]() { this->createHelpPicture("assets/help/help2.png"); });
+	howToHelpBtn->supplyCallback([this]() { this->createHelpPicture("assets/help/help1.png"); });
+
+	mainMenuButtons.push_back({ "discordHelpBtn", discordHelpBtn });
+	mainMenuButtons.push_back({ "battleHelpBtn", battleHelpBtn });
+	mainMenuButtons.push_back({ "panelHelpBtn", panelHelpBtn });
+	mainMenuButtons.push_back({ "howToHelpBtn", howToHelpBtn });
+
+	this->calculateButtonPosition();
+	discordHelpBtn->setText("Ask on Discord");
+	battleHelpBtn->setText("Battles");
+	panelHelpBtn->setText("Panels");
+	howToHelpBtn->setText("How to play");
 }
 
 LTexture MainMenu::getInformationBar() const
@@ -274,6 +328,9 @@ void MainMenu::update(const float dt)
 	// Info bar
 	informationBar.render();
 	informationBarLabel.render();
+
+	// Help Picture
+	helpPicture.render();
 
 	// Left panel layer
 	leftPanel.render();

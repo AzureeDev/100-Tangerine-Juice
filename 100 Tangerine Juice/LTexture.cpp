@@ -43,10 +43,14 @@ LTexture::~LTexture()
 
 void LTexture::destroy()
 {
-	this->textureWidth = 0;
-	this->textureHeight = 0;
-	Globals::resources->destroyTexture(this->texturePath);
-	this->texture = nullptr;
+	if (this->texture != nullptr)
+	{
+		this->textureWidth = 0;
+		this->textureHeight = 0;
+		Globals::resources->destroyTexture(this->texturePath);
+		this->texture = nullptr;
+		this->texturePath = "";
+	}
 }
 
 void LTexture::destroyText()

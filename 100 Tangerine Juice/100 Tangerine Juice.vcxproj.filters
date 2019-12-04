@@ -161,7 +161,9 @@
     <ClCompile Include="UseSkillComponent.cpp">
       <Filter>LClasses\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Discord.cpp" />
+    <ClCompile Include="Discord.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -282,7 +284,9 @@
     <ClInclude Include="UseSkillComponent.h">
       <Filter>LClasses\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Discord.h" />
+    <ClInclude Include="Discord.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

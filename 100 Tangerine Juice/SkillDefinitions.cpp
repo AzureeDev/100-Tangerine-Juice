@@ -75,7 +75,7 @@ void SkillDefinitions::createDefinitions()
 	SkillData hyper_fallingstars;
 	hyper_fallingstars.skillIdentifier = "hyper_fallingstars";
 	hyper_fallingstars.skillName = "Revival of Stars";
-	hyper_fallingstars.skillDescription = "You will now get 3 to 6 stars for every start of your turn. The effect can be stacked, but is lost upon getting KO'd.";
+	hyper_fallingstars.skillDescription = "You will now get 5 to 10 stars for every start of your turn. The effect can be stacked, but is lost upon getting KO'd.";
 	hyper_fallingstars.skillOwner = "suguri";
 	hyper_fallingstars.skillIconPath = "assets/skills/skl_hyper_fallingstars.png";
 	hyper_fallingstars.skillType = SkillType::Boost;
@@ -257,17 +257,26 @@ void SkillDefinitions::createDefinitions()
 	SkillData fairbattle;
 	fairbattle.skillIdentifier = "fairbattle";
 	fairbattle.skillName = "Ransom";
-	fairbattle.skillDescription = "For 3 chapters: All battles won will give you 50% of the KO'd unit's stars.";
+	fairbattle.skillDescription = "As long you're not KO'd, all battles won will now give you 50% of the KO'd unit's stars.";
 	fairbattle.skillOwner = "hime";
 	fairbattle.skillIconPath = "assets/skills/skl_fairbattle.png";
 	fairbattle.skillType = SkillType::Defensive;
+	fairbattle.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
+	{
+		if (unit->hasSkillEffect("fairbattle"))
+		{
+			return false;
+		}
+
+		return true;
+	};
 	fairbattle.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
 		unit->setStatusMessage("RANSOM", { 255, 0, 0, 255 });
 		unit->createSkillEffect(
 			{
 				"fairbattle",
-				3,
+				-1,
 				1
 			}
 		);
@@ -290,6 +299,11 @@ void SkillDefinitions::createDefinitions()
 	dropbarrier.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
 	{
 		if (unit->hasSkillEffect("dropbarrier"))
+		{
+			return false;
+		}
+
+		if (LilacClasses::Tangerine->getGameParams().pickedGeneration == GameParams::WorldGeneration::Battlefield)
 		{
 			return false;
 		}
@@ -402,7 +416,7 @@ void SkillDefinitions::createDefinitions()
 				deltaFieldedUnit->createSkillEffect(
 					{
 						"deltafield",
-						1,
+						2,
 						1
 					}
 				);
@@ -499,10 +513,20 @@ void SkillDefinitions::createDefinitions()
 	SkillData grandfinale;
 	grandfinale.skillIdentifier = "grandfinale";
 	grandfinale.skillName = "Grand Finale";
-	grandfinale.skillDescription = "All the other units will be KO'd instantly.";
+	grandfinale.skillDescription = "All the other units will be KO'd instantly. This can only be used once.";
 	grandfinale.skillOwner = "sb";
 	grandfinale.skillIconPath = "assets/skills/skl_grandfinale.png";
 	grandfinale.skillType = SkillType::Offensive;
+	grandfinale.skillRemoveOnDeath = false;
+	grandfinale.skillConditionFunction = [](shared_ptr<PlayerUnit> unit)
+	{
+		if (unit->hasSkillEffect("grandfinale"))
+		{
+			return false;
+		}
+
+		return true;
+	};
 	grandfinale.skillCallback = [](shared_ptr<PlayerUnit> unit)
 	{
 		OverlayManager::fadeIn(12);
@@ -521,6 +545,14 @@ void SkillDefinitions::createDefinitions()
 						killedUnit->takeTerrainDamage(666);
 					}
 				}
+
+				unit->createSkillEffect(
+					{
+						"grandfinale",
+						-1,
+						1
+					}
+				);
 			}
 		, 1);
 	};

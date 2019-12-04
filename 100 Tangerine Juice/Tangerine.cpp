@@ -273,7 +273,7 @@ unique_ptr<GameManager>& Tangerine::getGameManager()
 	return this->gameManager;
 }
 
-GameParams Tangerine::getGameParams() const
+GameParams& Tangerine::getGameParams()
 {
 	return this->gameParams;
 }

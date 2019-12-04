@@ -29,7 +29,7 @@ public:
 	void init();
 	vector<shared_ptr<Panel>>& getMap();
 	unique_ptr<GameManager>& getGameManager();
-	GameParams getGameParams() const;
+	GameParams& getGameParams();
 	void update(const float dt);
 	World& getWorld();
 };

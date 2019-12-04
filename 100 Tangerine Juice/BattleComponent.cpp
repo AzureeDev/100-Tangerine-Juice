@@ -560,6 +560,15 @@ void BattleComponent::attackOutcome(int attackRoll, int defenseRoll, bool isEvas
 
 void BattleComponent::battleEnded()
 {
+	if (this->battleAttacker->isKO())
+	{
+		this->battleDefender->addPower(this->battleAttacker->getCurrentPower());
+	}
+	else if (this->battleDefender->isKO())
+	{
+		this->battleAttacker->addPower(this->battleDefender->getCurrentPower());
+	}
+
 	Globals::engine->destroyClass("BattleComponent");
 	Globals::gameManager->nextTurn();
 }

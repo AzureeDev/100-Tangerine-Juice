@@ -22,6 +22,7 @@ private:
 	LTexture topBarScrollLabel;
 	LTexture informationBar;
 	LTexture informationBarLabel;
+	LTexture helpPicture;
 
 	LTexture gameLogo;
 
@@ -41,6 +42,9 @@ public:
 	void createLeftPanel();
 	void createTopBar();
 	void createInformationBar();
+	void createHelpPicture(const string helpPictureTexture);
+	void hideHelpPicture();
+	void createBackBtn();
 	void setHeaderTitle(const string newTitle);
 
 	void clearButtons();
@@ -48,6 +52,7 @@ public:
 	void createMainMenuButtons();
 	void createCreditsButtons();
 	void createUnitDBButtons();
+	void createHelpButtons();
 
 	LTexture getInformationBar() const;
 

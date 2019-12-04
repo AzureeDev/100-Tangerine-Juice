@@ -378,18 +378,13 @@ void PlayerUnit::onKO()
 
 	/* Skill remove on death except the ones tagged to not remove */
 
-	map<string, bool> skillRemovable = {};
-
-	for (const auto& skillData : this->unitSkills)
-	{
-		skillRemovable.insert({ skillData.skillIdentifier, skillData.skillRemoveOnDeath });
-	}
-
 	for (size_t i = 0; i < this->currentSkills.size(); ++i)
 	{
-		if (skillRemovable[this->currentSkills[i].skillIdentifier])
+		const SkillData skillData = SkillDefinitions::getSkillData(this->currentSkills[i].skillIdentifier);
+
+		if (skillData.skillRemoveOnDeath)
 		{
-			SkillDefinitions::getSkillData(this->currentSkills[i].skillIdentifier).skillEffectEnded(Globals::gameManager->getUnitByIdentifier(this->identifier()));
+			skillData.skillEffectEnded(Globals::gameManager->getUnitByIdentifier(this->identifier()));
 			this->currentSkills.erase(this->currentSkills.begin() + i);
 		}
 	}
@@ -501,8 +496,8 @@ void PlayerUnit::onTurnStart()
 	if (this->hasSkillEffect("hyper_fallingstars"))
 	{
 		int starsMin, starsMax;
-		starsMin = 3 * this->getCurrentStackForEffect("hyper_fallingstars");
-		starsMax = 6 * this->getCurrentStackForEffect("hyper_fallingstars");
+		starsMin = 5 * this->getCurrentStackForEffect("hyper_fallingstars");
+		starsMax = 10 * this->getCurrentStackForEffect("hyper_fallingstars");
 		int starsGained = Utils::randBetween(starsMin, starsMax);
 		this->setStatusMessage("REVIVAL OF STARS\n+ " + std::to_string(starsGained) + " STARS", { 255, 255, 0, 255 });
 		this->addStars(starsGained);
@@ -653,7 +648,7 @@ bool PlayerUnit::aiCheckUsableSkills()
 	for (const auto& skill : sortedSkills)
 	{
 		// Little randomness
-		if (rand() % 100 < (skillChance + (5 * skill.skillCost)))
+		if (rand() % 100 < (skillChance + (5 * skill.skillCost) + (10 * (this->getMaxHealth() - this->getCurrentHealth() ) ) ))
 		{
 			// If the skill can be used
 			if (skill.skillConditionFunction(Globals::gameManager->getUnitByIdentifier(this->identifier())))
