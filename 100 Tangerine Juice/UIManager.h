@@ -3,20 +3,22 @@
 #include <vector>
 #include <memory>
 #include "LButton.h"
+#include "LTextInput.h"
 
-using std::string;
-using std::vector;
-using std::shared_ptr;
+using std::string, std::vector, std::shared_ptr;
 
-struct ButtonDefinition { string name; shared_ptr<LButton> buttonRef; };
 class UIManager
 {
-private:
+	struct ButtonDefinition { string name; shared_ptr<LButton> buttonRef = nullptr; };
+	struct TextInputDefinition { string name; shared_ptr<LTextInput> textInputRef = nullptr; };
 	vector<ButtonDefinition> buttons = {};
+	vector<TextInputDefinition> textInputs = {};
 
 public:
 	LButton* createButton(const string btnName, const string btnTexturePath = "assets/ui/transparent.png");
 	shared_ptr<LButton> createSharedButton(const string btnName, const string btnTexturePath = "assets/ui/transparent.png");
+	shared_ptr<LTextInput> createTextInput(const string inputName, const string inputTexturePath = "assets/ui/rect_base.png");
 	void destroyButton(const string btnName);
-	vector<ButtonDefinition> getButtons();
+	vector<UIManager::ButtonDefinition> getButtons();
+	vector<UIManager::TextInputDefinition> getTextInputs();
 };

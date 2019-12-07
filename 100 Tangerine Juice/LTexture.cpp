@@ -83,21 +83,25 @@ void LTexture::createText(const string text, const SDL_Color color, const int ma
 	}
 
 	const unsigned int textMaxLength = maxLength == 0 ? Globals::engine->getDisplaySettings().w : maxLength;
-	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(custom_font, text.c_str(), color, textMaxLength);
-
-	if (textSurface != nullptr)
+	
+	if (!text.empty())
 	{
-		this->texture = SDL_CreateTextureFromSurface(Globals::engine->getRenderer(), textSurface);
-		this->textureWidth = textSurface->w;
-		this->textureHeight = textSurface->h;
-		this->currentText = text;
+		SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(custom_font, text.c_str(), color, textMaxLength);
 
-		SDL_FreeSurface(textSurface);
-		textSurface = nullptr;
-	}
-	else
-	{
-		SDL_Log("LTexture::createText() - Couldn't create a Surface. Error: %s", TTF_GetError());
+		if (textSurface != nullptr)
+		{
+			this->texture = SDL_CreateTextureFromSurface(Globals::engine->getRenderer(), textSurface);
+			this->textureWidth = textSurface->w;
+			this->textureHeight = textSurface->h;
+			this->currentText = text;
+
+			SDL_FreeSurface(textSurface);
+			textSurface = nullptr;
+		}
+		else
+		{
+			SDL_Log("LTexture::createText() - Couldn't create a Surface. Error: %s", TTF_GetError());
+		}
 	}
 }
 
@@ -174,6 +178,11 @@ SDL_Color LTexture::getHighlightColor()
 int LTexture::getAnimationCount()
 {
 	return this->nbAnimations;
+}
+
+TextureFadingState& LTexture::getTextureFadingState()
+{
+	return this->textureFadeState;
 }
 
 void LTexture::resetBaseColor()
@@ -376,6 +385,16 @@ void LTexture::placeLeftScreen()
 	int screenHeight = Globals::engine->getDisplaySettings().h;
 
 	this->setY((screenHeight / 2) - this->getHeight() / 2);
+}
+
+void LTexture::placeMiddleX()
+{
+	this->setPosition(
+		{
+			(Globals::engine->getDisplaySettings().wsWidth / 2) - (this->getWidth() / 2),
+			this->getPosition().y
+		}
+	);
 }
 
 void LTexture::render(SDL_Rect cameraRect)

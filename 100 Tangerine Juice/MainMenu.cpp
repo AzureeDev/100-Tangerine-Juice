@@ -83,6 +83,7 @@ void MainMenu::createLeftPanel()
 		}
 	);
 
+	this->createAccount();
 	this->createMainMenuButtons();
 
 	engineVersionLabel.createText("LilacEngine v" + Globals::engine->getVersion() + " | @Sora #7688", { 15, 15, 15, 255 });
@@ -92,6 +93,26 @@ void MainMenu::createLeftPanel()
 			Globals::engine->getDisplaySettings().wsHeight - engineVersionLabel.getHeight() - 10
 		}
 	);
+}
+
+void MainMenu::createAccount()
+{
+	/* Account unit */
+	accountUnit = Unit(Globals::account->unit());
+	accountUnit.setFlipped(true);
+	accountUnit.texture().setPosition({ (500 / 2) - (accountUnit.texture().getSheetSize() / 2) - 128, gameLogo.bottom().y - 64 });
+
+	/* Account name */
+	accountName.createText(Globals::account->name(), { 10, 10, 10, 255 }, 280, Globals::resources->getFont("defaultFont36"));
+	accountName.setPosition(
+		{
+			accountUnit.x() + accountUnit.texture().getSheetSize() - 300,
+			accountUnit.y() + 308
+		}
+	);
+
+	accountLevel.createText("LEVEL " + std::to_string(Globals::account->level()), { 45, 45, 45, 255 }, 0, Globals::resources->getFont("defaultFontMedium"));
+	accountLevel.setPosition(accountName.bottom());
 }
 
 void MainMenu::createTopBar()
@@ -209,7 +230,10 @@ void MainMenu::calculateButtonPosition()
 
 void MainMenu::createMainMenuButtons()
 {
+	this->hideAccount = false;
+
 	LButton* gameStart = Globals::UI->createButton("gameStart", DEFAULT_BUTTON_TEXTURE);
+	LButton* shop = Globals::UI->createButton("shop", DEFAULT_BUTTON_TEXTURE);
 	LButton* characterDatabase = Globals::UI->createButton("characterDatabase", DEFAULT_BUTTON_TEXTURE);
 	LButton* helpBtn = Globals::UI->createButton("helpBtn", DEFAULT_BUTTON_TEXTURE);
 	LButton* gameCredits = Globals::UI->createButton("gameCredits", DEFAULT_BUTTON_TEXTURE);
@@ -225,11 +249,13 @@ void MainMenu::createMainMenuButtons()
 	mainMenuButtons.push_back({ "gameCredits", gameCredits });
 	mainMenuButtons.push_back({ "helpBtn", helpBtn });
 	mainMenuButtons.push_back({ "characterDatabase", characterDatabase });
+	mainMenuButtons.push_back({ "shop", shop });
 	mainMenuButtons.push_back({ "gameStart", gameStart });
 
 	this->calculateButtonPosition();
 
 	gameStart->setText("Start");
+	shop->setText("Shop");
 	characterDatabase->setText("Unit Database");
 	helpBtn->setText("Help");
 	gameCredits->setText("Credits");
@@ -260,6 +286,7 @@ void MainMenu::createCreditsButtons()
 
 void MainMenu::createUnitDBButtons()
 {
+	this->hideAccount = true;
 	this->createBackBtn();
 
 	/*
@@ -335,6 +362,15 @@ void MainMenu::update(const float dt)
 	// Left panel layer
 	leftPanel.render();
 
+	// Account
+
+	if (!hideAccount)
+	{
+		accountUnit.render({});
+		accountName.render();
+		accountLevel.render();
+	}
+	
 	// Buttons
 	for (size_t i = 0; i < mainMenuButtons.size(); ++i)
 	{

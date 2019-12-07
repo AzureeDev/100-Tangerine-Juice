@@ -167,6 +167,21 @@
     <ClCompile Include="EndgameComponent.cpp">
       <Filter>LClasses\Components</Filter>
     </ClCompile>
+    <ClCompile Include="CosmeticDefinitions.cpp">
+      <Filter>Definitions</Filter>
+    </ClCompile>
+    <ClCompile Include="LTextInput.cpp">
+      <Filter>Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerPersistentData.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Account.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -292,6 +307,24 @@
     </ClInclude>
     <ClInclude Include="EndgameComponent.h">
       <Filter>LClasses\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CosmeticDefinitions.h">
+      <Filter>Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="LTextInput.h">
+      <Filter>Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerPersistentData.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Account.h">
+      <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

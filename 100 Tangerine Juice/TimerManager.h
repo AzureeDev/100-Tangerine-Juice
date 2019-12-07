@@ -28,6 +28,7 @@ private:
 
 public:
 	void createTimer(const string timerID, const float interval, const function<void()> callback, const int executionRepeat = 0);
+	bool hasTimer(const string timerID) const;
 	void removeTimer(const string timerID);
 	void removeAll();
 	void update(const float dt);

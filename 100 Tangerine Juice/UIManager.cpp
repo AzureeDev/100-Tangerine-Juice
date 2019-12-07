@@ -34,6 +34,22 @@ shared_ptr<LButton> UIManager::createSharedButton(const string btnName, const st
 	return this->buttons.back().buttonRef;
 }
 
+shared_ptr<LTextInput> UIManager::createTextInput(const string inputName, const string inputTexturePath)
+{
+	for (size_t i = 0; i < this->textInputs.size(); ++i)
+	{
+		if (this->textInputs[i].name == inputName)
+		{
+			return this->textInputs[i].textInputRef;
+		}
+	}
+
+	this->textInputs.push_back({ inputName, shared_ptr<LTextInput>(new LTextInput()) });
+	this->textInputs.back().textInputRef->init();
+
+	return this->textInputs.back().textInputRef;
+}
+
 void UIManager::destroyButton(const string btnName)
 {
 	for (size_t i = 0; i < this->buttons.size(); ++i)
@@ -51,7 +67,12 @@ void UIManager::destroyButton(const string btnName)
 	SDL_Log("UIManager::destroyButton() : Couldn't destroy the button %s : it wasn't found.", btnName.c_str());
 }
 
-vector<ButtonDefinition> UIManager::getButtons()
+vector<UIManager::ButtonDefinition> UIManager::getButtons()
 {
 	return this->buttons;
+}
+
+vector<UIManager::TextInputDefinition> UIManager::getTextInputs()
+{
+	return this->textInputs;
 }

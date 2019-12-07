@@ -6,9 +6,9 @@
 #include <SDL_syswm.h>
 #include "LClass.h"
 #include "Unit.h"
+#include "PlayerPersistentData.h"
 
-using std::string;
-using std::vector;
+using std::string, std::vector;
 
 struct DisplaySettings { int w; int h; int refreshRate; int wsWidth; int wsHeight; };
 struct LilacClass { string name; LClass* lilacClass; };
@@ -16,7 +16,7 @@ struct LilacClass { string name; LClass* lilacClass; };
 class LilacEngine
 {
 private:
-	string engineVersion = "1.63.0";
+	string engineVersion = "1.64.0";
 	string mainMenuMessage = "Welcome to 100% Tangerine Juice! Hope you will enjoy your time here. ~";
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
@@ -30,6 +30,7 @@ private:
 	LTexture DEBUG;
 	float timer = 0.0f;
 	bool running = true;
+	std::shared_ptr<PlayerPersistentData> playerData = std::make_shared<PlayerPersistentData>(PlayerPersistentData());
 
 private:
 	void createWindow();
@@ -56,6 +57,7 @@ public:
 	void destroyClass(const string className);
 	string getVersion();
 	string getMainMenuMessage();
+	std::shared_ptr<PlayerPersistentData> getPlayerData();
 	void flashApplication();
 
 	void exit();

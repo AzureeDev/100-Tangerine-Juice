@@ -22,6 +22,19 @@ void TimerManager::createTimer(const string timerID, const float interval, const
 	);
 }
 
+bool TimerManager::hasTimer(const string timerID) const
+{
+	for (const auto& timer : this->timers)
+	{
+		if (timer.timerName == timerID)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void TimerManager::removeTimer(const string timerID)
 {
 	for (size_t i = 0; i < this->timers.size(); ++i)

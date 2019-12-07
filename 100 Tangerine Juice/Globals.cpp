@@ -14,6 +14,7 @@ unique_ptr<ResourcesManager> Globals::resources = nullptr;
 unique_ptr<LClass> Globals::classEngine = nullptr;
 unique_ptr<UIManager> Globals::UI = nullptr;
 unique_ptr<TimerManager> Globals::timer = nullptr;
+unique_ptr<Account> Globals::account = nullptr;
 GameManager* Globals::gameManager = nullptr;
 BattleComponent* Globals::currentBattleInstance = nullptr;
 

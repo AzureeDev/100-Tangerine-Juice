@@ -15,6 +15,13 @@ class MainMenu : public LClass
 private:
 	World world;
 
+	bool hideAccount = false;
+	Unit accountUnit;
+	LTexture accountName;
+	LTexture accountLevel;
+	LTexture accountStarIcon;
+	LTexture accountStarAmount;
+
 	LTexture engineVersionLabel;
 	LTexture leftPanel;
 	LTexture topBar;
@@ -40,6 +47,7 @@ public:
 	void createWorld();
 	void createFwdUnits();
 	void createLeftPanel();
+	void createAccount();
 	void createTopBar();
 	void createInformationBar();
 	void createHelpPicture(const string helpPictureTexture);

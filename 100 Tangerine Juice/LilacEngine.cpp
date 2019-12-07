@@ -18,6 +18,7 @@ namespace fs = std::filesystem;
 #include "GameIntro.h"
 #include "OverlayManager.h"
 #include "Discord.h"
+#include "SaveManager.h"
 
 void LilacEngine::createWindow()
 {
@@ -72,6 +73,7 @@ void LilacEngine::initGlobals()
 	Globals::UI = std::make_unique<UIManager>(UIManager());
 	Globals::classEngine = std::make_unique<LClass>(LClass());
 	Globals::timer = std::make_unique<TimerManager>(TimerManager());
+	Globals::account = std::make_unique<Account>(Account());
 }
 
 void LilacEngine::initBaseResources()
@@ -83,6 +85,7 @@ void LilacEngine::initBaseResources()
 	// Fonts
 	Globals::resources->createFont("defaultFontTiny", "assets/fonts/sofia.otf", 11);
 	Globals::resources->createFont("defaultFontSmall", "assets/fonts/sofia.otf", 16);
+	Globals::resources->createFont("defaultFontMedium", "assets/fonts/sofia.otf", 20);
 	Globals::resources->createFont("defaultFont", "assets/fonts/sofia.otf", 24);
 	Globals::resources->createFont("defaultFont27", "assets/fonts/sofia.otf", 27);
 	Globals::resources->createFont("defaultFont32", "assets/fonts/sofia.otf", 32);
@@ -143,11 +146,32 @@ void LilacEngine::update()
 				this->exit();
 				break;
 
+			case SDL_EventType::SDL_TEXTINPUT:
+				for (const auto& uiTxtInput : Globals::UI->getTextInputs())
+				{
+					if (uiTxtInput.textInputRef->isActive())
+					{
+						std::string key = event.text.text;
+						uiTxtInput.textInputRef->onKeyPress(key);
+					}
+				}
+				break;
+
 			case SDL_EventType::SDL_KEYDOWN:
 
 				switch (event.key.keysym.sym) {
 				case SDLK_ESCAPE:
 					this->checkBackButton();
+					break;
+
+				case SDLK_BACKSPACE:
+					for (const auto& uiTxtInput : Globals::UI->getTextInputs())
+					{
+						if (uiTxtInput.textInputRef->isActive())
+						{
+							uiTxtInput.textInputRef->onBackspacePress();
+						}
+					}
 					break;
 				}
 
@@ -277,6 +301,12 @@ void LilacEngine::init()
 	UnitDefinitions::createDefinitions();
 	SkillDefinitions::createDefinitions();
 
+	// Init Save Manager
+	SaveManager::init(this->playerData);
+
+	// Init Account
+	Globals::account->init();
+
 	// Init the base classes
 	this->initBaseClasses();
 
@@ -377,6 +407,11 @@ string LilacEngine::getMainMenuMessage()
 	return this->mainMenuMessage;
 }
 
+std::shared_ptr<PlayerPersistentData> LilacEngine::getPlayerData()
+{
+	return this->playerData;
+}
+
 void LilacEngine::flashApplication()
 {
 	int flags = SDL_GetWindowFlags(this->window);
@@ -403,6 +438,9 @@ void LilacEngine::exit()
 	/*
 		On quit, quit all SDL modules and extra classes that need a cleanup
 	*/
+
+	// Save progress
+	SaveManager::save(this->playerData.get());
 
 	SDL_Log("Quitting");
 

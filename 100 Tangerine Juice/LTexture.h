@@ -61,6 +61,7 @@ public:
 	int getAlpha();
 	SDL_Color getHighlightColor();
 	int getAnimationCount();
+	TextureFadingState& getTextureFadingState();
 	void resetBaseColor();
 	void setColor(const SDL_Color color, const bool setDefault = false);
 	void setColorNoAlpha(const SDL_Color color);
@@ -85,5 +86,6 @@ public:
 	void reverseScroll(const bool state);
 	void placeMiddleScreen(const bool useSheetSize = false);
 	void placeLeftScreen();
+	void placeMiddleX();
 	void render(SDL_Rect cameraRect = {});
 };

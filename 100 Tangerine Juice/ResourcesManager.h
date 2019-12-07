@@ -23,11 +23,11 @@ struct SFXDefinition { string path; Mix_Chunk* instance; };
 class ResourcesManager
 {
 private:
-	vector<TextureDefinition> textures;
-	vector<FontDefinition> fonts;
-	vector<MusicDefinition> musics;
-	vector<SFXDefinition> sfx;
-	vector<LTexture*> ltextures;
+	vector<TextureDefinition> textures = {};
+	vector<FontDefinition> fonts = {};
+	vector<MusicDefinition> musics = {};
+	vector<SFXDefinition> sfx = {};
+	vector<LTexture*> ltextures = {};
 
 public:
 	SDL_Texture* createTexture(const string path);

@@ -139,9 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Account.cpp" />
     <ClCompile Include="AIUnit.cpp" />
     <ClCompile Include="BattleComponent.cpp" />
     <ClCompile Include="ButtonCallbacks.cpp" />
+    <ClCompile Include="CosmeticDefinitions.cpp" />
     <ClCompile Include="DiceThrowComponent.cpp" />
     <ClCompile Include="Discord.cpp" />
     <ClCompile Include="EndgameComponent.cpp" />
@@ -149,6 +151,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="HUDUnit.cpp" />
+    <ClCompile Include="LTextInput.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="PanelBonus.cpp" />
     <ClCompile Include="PanelDrop.cpp" />
@@ -156,6 +159,7 @@
     <ClCompile Include="PanelHeal.cpp" />
     <ClCompile Include="PanelMove.cpp" />
     <ClCompile Include="PanelPower.cpp" />
+    <ClCompile Include="PlayerPersistentData.cpp" />
     <ClCompile Include="PlayerUnit.cpp" />
     <ClCompile Include="PreGame.cpp" />
     <ClCompile Include="LButton.cpp" />
@@ -168,6 +172,7 @@
     <ClCompile Include="MusicManager.cpp" />
     <ClCompile Include="OverlayManager.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="SaveManager.cpp" />
     <ClCompile Include="SFXManager.cpp" />
     <ClCompile Include="SkillDefinitions.cpp" />
     <ClCompile Include="Tangerine.cpp" />
@@ -182,9 +187,11 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Account.h" />
     <ClInclude Include="AIUnit.h" />
     <ClInclude Include="BattleComponent.h" />
     <ClInclude Include="ButtonCallbacks.h" />
+    <ClInclude Include="CosmeticDefinitions.h" />
     <ClInclude Include="DiceThrowComponent.h" />
     <ClInclude Include="Discord.h" />
     <ClInclude Include="EndgameComponent.h" />
@@ -192,6 +199,8 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="HUDUnit.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="LTextInput.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="PanelBonus.h" />
     <ClInclude Include="PanelDrop.h" />
@@ -199,6 +208,7 @@
     <ClInclude Include="PanelHeal.h" />
     <ClInclude Include="PanelMove.h" />
     <ClInclude Include="PanelPower.h" />
+    <ClInclude Include="PlayerPersistentData.h" />
     <ClInclude Include="PlayerUnit.h" />
     <ClInclude Include="PreGame.h" />
     <ClInclude Include="LButton.h" />
@@ -211,6 +221,7 @@
     <ClInclude Include="OverlayManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="SaveManager.h" />
     <ClInclude Include="SFXManager.h" />
     <ClInclude Include="SkillDefinitions.h" />
     <ClInclude Include="Tangerine.h" />
