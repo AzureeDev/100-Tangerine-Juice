@@ -4,10 +4,10 @@
 #include <SDL_mixer.h>
 #include <vector>
 #include <string>
+#include <memory>
 #include "LTexture.h"
 
-using std::vector;
-using std::string;
+using std::vector, std::string, std::shared_ptr, std::make_shared;
 
 /*
 	Structs for resource definition
@@ -27,13 +27,14 @@ private:
 	vector<FontDefinition> fonts = {};
 	vector<MusicDefinition> musics = {};
 	vector<SFXDefinition> sfx = {};
-	vector<LTexture*> ltextures = {};
+	vector<shared_ptr<LTexture>> ltextures = {};
 
 public:
 	SDL_Texture* createTexture(const string path);
 	void destroyTexture(const string path);
 	void destroyTexture(const SDL_Texture* texture);
-	LTexture* createLTexture(const string path);
+	shared_ptr<LTexture> createLTexture(const string path);
+	shared_ptr<LTexture> createLTexture();
 	void destroyLTexture(const string path);
 	TTF_Font* createFont(const string name, const string path, const int ptSize = 16);
 	TTF_Font* getFont(const string name); // Simple getter so we don't ship a path everytime

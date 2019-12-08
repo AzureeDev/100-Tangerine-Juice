@@ -219,6 +219,12 @@ void LButton::setText(const string text)
 	);
 }
 
+void LButton::setText(const string text, const SDL_Color color)
+{
+	this->setTextColor(color);
+	this->setText(text);
+}
+
 void LButton::setTextColor(const SDL_Color color)
 {
 	this->buttonTextColor = color;

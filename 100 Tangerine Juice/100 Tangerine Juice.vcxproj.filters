@@ -182,6 +182,7 @@
     <ClCompile Include="Account.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Shop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -326,6 +327,7 @@
     <ClInclude Include="Account.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Shop.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="100 Tangerine Juice.rc">

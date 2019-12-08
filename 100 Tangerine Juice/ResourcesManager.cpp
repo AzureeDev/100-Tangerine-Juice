@@ -67,21 +67,25 @@ void ResourcesManager::destroyTexture(const SDL_Texture* texture)
 	}
 }
 
-LTexture* ResourcesManager::createLTexture(const string path)
+shared_ptr<LTexture> ResourcesManager::createLTexture(const string path)
 {
 	/*
-		Create a new LTexture - this is a test against the text textures generated going at odd places, not destroying correctly / destroying too early.
+		Create a new LTexture
 	*/
 
-	for (size_t i = 0; i < this->ltextures.size(); ++i)
-	{
-		if (this->ltextures[i]->getPath() == path)
-		{
-			return this->ltextures[i];
-		}
-	}
+	shared_ptr<LTexture> newTexture = make_shared<LTexture>(LTexture(path));
+	this->ltextures.push_back(newTexture);
 
-	LTexture* newTexture = new LTexture(path);
+	return newTexture;
+}
+
+shared_ptr<LTexture> ResourcesManager::createLTexture()
+{
+	/*
+		Create a new LTexture (constructor empty)
+	*/
+
+	shared_ptr<LTexture> newTexture = make_shared<LTexture>(LTexture());
 	this->ltextures.push_back(newTexture);
 
 	return newTexture;
@@ -92,18 +96,6 @@ void ResourcesManager::destroyLTexture(const string path)
 	/*
 		Destroys the texture defined by path
 	*/
-
-	for (size_t i = 0; i < this->ltextures.size(); ++i)
-	{
-		if (this->ltextures[i]->getPath() == path)
-		{
-			delete this->ltextures[i];
-			this->ltextures[i] = nullptr;
-			this->ltextures.erase(this->ltextures.begin() + i);
-
-			break;
-		}
-	}
 }
 
 TTF_Font* ResourcesManager::createFont(const string name, const string path, const int ptSize)
@@ -198,12 +190,6 @@ void ResourcesManager::destroy()
 	for (const auto& texture : this->textures)
 	{
 		SDL_DestroyTexture(texture.instance);
-	}
-
-	for (size_t i = 0; i < this->ltextures.size(); ++i)
-	{
-		delete this->ltextures[i];
-		this->ltextures[i] = nullptr;
 	}
 
 	for (const auto& font : this->fonts)

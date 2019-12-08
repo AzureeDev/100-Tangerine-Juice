@@ -8,7 +8,7 @@ struct CosmeticData
 {
 	string id;
 	string type = "hair"; // available: [hair][clothing]
-	vector<string> unitIds = {};
+	string unitId;
 	unsigned cost = 0;
 	unsigned levelUnlock = 1;
 };
@@ -19,5 +19,6 @@ class CosmeticDefinitions
 public:
 	static void createDefinitions();
 	static CosmeticData getCosmeticData(const string cosmeticIdentifier);
+	static vector<CosmeticData> getAllHairs();
 };
 

@@ -51,6 +51,8 @@ void Unit::setAnimation(const string newAnimation)
 		return;
 	}
 
+	this->currentAnimation = newAnimation;
+
 	for (const auto& cosmetics : this->currentCosmetics.identifiers)
 	{
 		if (cosmetics.second != "")
@@ -60,8 +62,6 @@ void Unit::setAnimation(const string newAnimation)
 	}
 
 	SDL_Log("Animation changed to %s", newAnimation.c_str());
-
-	this->currentAnimation = newAnimation;
 	this->unitTexture.setNewTexture("assets/units/" + this->unitId + "/" + newAnimation + ".png");
 }
 

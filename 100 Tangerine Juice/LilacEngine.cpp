@@ -19,6 +19,7 @@ namespace fs = std::filesystem;
 #include "OverlayManager.h"
 #include "Discord.h"
 #include "SaveManager.h"
+#include "CosmeticDefinitions.h"
 
 void LilacEngine::createWindow()
 {
@@ -91,6 +92,12 @@ void LilacEngine::initBaseResources()
 	Globals::resources->createFont("defaultFont32", "assets/fonts/sofia.otf", 32);
 	Globals::resources->createFont("defaultFont36", "assets/fonts/sofia.otf", 36);
 	Globals::resources->createFont("defaultFontLarge", "assets/fonts/sofia.otf", 48);
+
+	Globals::resources->createFont("escom", "assets/fonts/escom.ttf", 24);
+	Globals::resources->createFont("escom27", "assets/fonts/escom.ttf", 27);
+	Globals::resources->createFont("escom32", "assets/fonts/escom.ttf", 32);
+	Globals::resources->createFont("escom36", "assets/fonts/escom.ttf", 36);
+	Globals::resources->createFont("escomLarge", "assets/fonts/escom.ttf", 48);
 
 	Globals::resources->createFont("bleachFont", "assets/fonts/bleach_fixed.ttf", 24);
 	Globals::resources->createFont("bleachFontMedium", "assets/fonts/bleach_fixed.ttf", 34);
@@ -300,6 +307,7 @@ void LilacEngine::init()
 	// Init Definitions
 	UnitDefinitions::createDefinitions();
 	SkillDefinitions::createDefinitions();
+	CosmeticDefinitions::createDefinitions();
 
 	// Init Save Manager
 	SaveManager::init(this->playerData);

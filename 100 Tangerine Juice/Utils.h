@@ -35,6 +35,8 @@ struct Utils
 	static int randBetween(const int min, const int max);
 	template <typename T>
 	static void shuffle(std::vector<T>& vec);
+	template <typename Nb>
+	static std::string thousandFormat(const Nb number);
 };
 
 template<typename Nb>
@@ -51,4 +53,18 @@ inline void Utils::shuffle(std::vector<T>& vec)
 {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::shuffle(vec.begin(), vec.end(), std::default_random_engine(seed));
+}
+
+template<typename Nb>
+inline std::string Utils::thousandFormat(const Nb number)
+{
+	std::string numWithCommas = std::to_string(number);
+	int insertPosition = numWithCommas.length() - 3;
+
+	while (insertPosition > 0) {
+		numWithCommas.insert(insertPosition, ",");
+		insertPosition -= 3;
+	}
+
+	return numWithCommas;
 }

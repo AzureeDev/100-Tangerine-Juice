@@ -4,6 +4,8 @@
 #include "OverlayManager.h"
 #include "UnitDefinitions.h"
 #include "Discord.h"
+#include "Utils.h"
+#include "Shop.h"
 
 const string DEFAULT_BUTTON_TEXTURE = "assets/ui/main_menu/menu_btn.png";
 
@@ -113,6 +115,13 @@ void MainMenu::createAccount()
 
 	accountLevel.createText("LEVEL " + std::to_string(Globals::account->level()), { 45, 45, 45, 255 }, 0, Globals::resources->getFont("defaultFontMedium"));
 	accountLevel.setPosition(accountName.bottom());
+
+	accountStarIcon.setNewTexture("assets/ui/star.png");
+	accountStarIcon.setPosition(accountLevel.bottom().x, accountLevel.bottom().y + 32);
+	accountStarIcon.setColor({ 15, 15, 15, 255 });
+
+	accountStarAmount.createText(Utils::thousandFormat(Globals::account->stars()), { 15, 15, 15, 255 }, 0, Globals::resources->getFont("defaultFont27"));
+	accountStarAmount.setPosition({ accountStarIcon.right() + 16, accountStarIcon.getY() + (accountStarIcon.getHeight() / 2) - (accountStarAmount.getHeight() / 2) + 3 });
 }
 
 void MainMenu::createTopBar()
@@ -244,6 +253,20 @@ void MainMenu::createMainMenuButtons()
 	gameCredits->supplyCallback(ButtonCallbacks::mainMenuCredits);
 	gameQuit->supplyCallback(ButtonCallbacks::quitGame);
 	helpBtn->supplyCallback([this]() { this->createHelpButtons(); });
+	shop->supplyCallback([this]()
+		{
+			this->clearButtons();
+			OverlayManager::fadeIn(9);
+			MusicManager::fadeOutMusic(500);
+
+			Globals::timer->createTimer("shopState", 1.5f, []()
+				{
+					Globals::engine->createClass("Shop", new Shop);
+					Globals::engine->destroyClass("MainMenu");
+				}, 1
+			);
+		}
+	);
 
 	mainMenuButtons.push_back({ "gameQuit", gameQuit });
 	mainMenuButtons.push_back({ "gameCredits", gameCredits });
@@ -369,6 +392,8 @@ void MainMenu::update(const float dt)
 		accountUnit.render({});
 		accountName.render();
 		accountLevel.render();
+		accountStarIcon.render();
+		accountStarAmount.render();
 	}
 	
 	// Buttons

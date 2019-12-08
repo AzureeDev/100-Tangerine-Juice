@@ -63,6 +63,7 @@ public:
 	void setEnabled(const bool state);
 	void setHighlightColor(const SDL_Color color);
 	void setText(const string text);
+	void setText(const string text, const SDL_Color color);
 	void setTextColor(const SDL_Color color);
 	void setAllowSound(const bool state);
 	void setAllowAnimation(const bool state);
