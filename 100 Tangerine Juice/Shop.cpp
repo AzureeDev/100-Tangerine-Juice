@@ -189,7 +189,7 @@ void Shop::generateCosmetics(const string category)
 				bool firstIndex = i == 0 + (MAX_PER_PAGE * (this->currentPage - 1));
 
 				shared_ptr<LButton> btn = Globals::UI->createSharedButton(cosmetic.id + "_" + std::to_string(i) + "_btn", "assets/ui/rect_base.png");
-				btn->getTexture().setSize(244, 312);
+				btn->getTexture().setSize(244, 360);
 				btn->getTexture().setColor({ 0, 0, 0, 100 }, true);
 				btn->setHighlightColor({ 79, 202, 255, 35 });
 
@@ -220,6 +220,15 @@ void Shop::generateCosmetics(const string category)
 					}
 				}
 
+				shared_ptr<LTexture> cosmeticName = Globals::resources->createLTexture();
+				cosmeticName->createText(cosmetic.name, { 79, 202, 255, 255 }, 0, Globals::resources->getFont("escom27"));
+				cosmeticName->setPosition(
+					{
+						btn->getX() + (btn->getTexture().getWidth() / 2) - (cosmeticName->getWidth() / 2),
+						btn->getY() + 10
+					}
+				);
+
 				shared_ptr<LTexture> starIcon = Globals::resources->createLTexture("assets/ui/star.png");
 				starIcon->setPosition(
 					{
@@ -242,6 +251,7 @@ void Shop::generateCosmetics(const string category)
 					cosmetic.id,
 					Unit(cosmetic.unitId, "aggressive"),
 					btn,
+					cosmeticName,
 					starIcon,
 					starAmount
 				};
@@ -250,7 +260,7 @@ void Shop::generateCosmetics(const string category)
 				data.cosmeticUnit.setPosition(
 					{
 						btn->getX() + (btn->getTexture().getWidth() / 2) - (data.cosmeticUnit.texture().getSheetSize() / 2),
-						btn->getY() - 115
+						btn->getY() - 64
 					}
 				);
 
@@ -350,6 +360,7 @@ void Shop::update(const float dt)
 	{
 		cosmetic.second.cosmeticBtn->render();
 		cosmetic.second.cosmeticUnit.render({});
+		cosmetic.second.cosmeticName->render();
 		cosmetic.second.starAmount->render();
 		cosmetic.second.starIcon->render();
 	}

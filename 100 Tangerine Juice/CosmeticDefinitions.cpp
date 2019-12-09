@@ -15,62 +15,28 @@ struct CosmeticData
 void CosmeticDefinitions::createDefinitions()
 {
 	CosmeticDefinitions::def = {
-		{
-			"silver",
-			"hair",
-			"sora",
-			450,
-			1
-		},
-		{
-			"green",
-			"hair",
-			"sora",
-			600,
-			1
-		},
-		{
-			"red_sun",
-			"hair",
-			"sora",
-			1500,
-			1
-		},
-		{
-			"lilac",
-			"hair",
-			"sora",
-			3400,
-			1
-		},
-		{
-			"fire_ice",
-			"hair",
-			"sora",
-			5000,
-			1
-		},
-		{
-			"golden",
-			"hair",
-			"sora",
-			10000,
-			1
-		},
-		{
-			"lilac_gold",
-			"hair",
-			"sora",
-			10000,
-			1
-		},
-		{
-			"cosmic",
-			"hair",
-			"sora",
-			50000,
-			1
-		},
+		/* Hair */
+		{ "silver", "Silver", "hair", "sora", 450, 1 },
+		{ "green", "Forest Green", "hair", "sora", 600, 1 },
+		{ "red_sun", "Red Sun", "hair", "sora", 1500, 1 },
+		{ "lilac", "Lilac", "hair", "sora", 3400, 1 },
+		{ "fire_ice", "Fire & Ice", "hair", "sora", 5000, 1 },
+		{ "golden", "Golden", "hair", "sora", 10000, 1 },
+		{ "lilac_gold", "Golden Lilac", "hair", "sora", 10000, 1 },
+		{ "cosmic", "Cosmic", "hair", "sora", 50000, 1 },
+
+		{ "citron", "Citron", "hair", "sham", 1000, 1 },
+		{ "ice", "Ice", "hair", "sham", 1200, 1 },
+		{ "ocean", "Ocean Blue", "hair", "sham", 2500, 1 },
+		{ "fushia", "Fushia", "hair", "sham", 5000, 1 },
+		{ "golden", "Golden", "hair", "sham", 10000, 1 },
+
+
+		/* Clothing */
+
+		/* Eye */
+
+		/* Dice */
 	};
 }
 

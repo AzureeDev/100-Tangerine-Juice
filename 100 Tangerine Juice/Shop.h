@@ -20,6 +20,7 @@ private:
 		string cosmeticId;
 		Unit cosmeticUnit;
 		shared_ptr<LButton> cosmeticBtn = nullptr;
+		shared_ptr<LTexture> cosmeticName = nullptr;
 		shared_ptr<LTexture> starIcon = nullptr;
 		shared_ptr<LTexture> starAmount = nullptr;
 	};

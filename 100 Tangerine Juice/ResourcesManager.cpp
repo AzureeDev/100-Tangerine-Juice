@@ -22,6 +22,7 @@ SDL_Texture* ResourcesManager::createTexture(const string path)
 	if (texture == nullptr)
 	{
 		SDL_Log("ResourcesManager::createTexture - There was an error loading %s. Is the path correct?", path.c_str());
+		return;
 	}
 
 	this->textures.push_back({ path, texture });

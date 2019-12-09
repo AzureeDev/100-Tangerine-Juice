@@ -7,6 +7,7 @@ using std::string, std::vector;
 struct CosmeticData
 {
 	string id;
+	string name;
 	string type = "hair"; // available: [hair][clothing]
 	string unitId;
 	unsigned cost = 0;
